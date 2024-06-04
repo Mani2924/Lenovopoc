@@ -139,7 +139,7 @@ module.exports = {
       {
         schema: config.db.schema,
         freezeTableName: true,
-      }
+      },
     );
   },
   async down(queryInterface) {

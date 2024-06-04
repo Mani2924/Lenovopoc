@@ -12,7 +12,9 @@ function addTime(initialTime, hoursToAdd, minutesToAdd) {
   let [timeWithoutMilliseconds] = initialTime.split('.');
 
   // Split the initial time into hours, minutes, and seconds
-  let [hours, minutes, seconds] = timeWithoutMilliseconds.split(':').map(Number);
+  let [hours, minutes, seconds] = timeWithoutMilliseconds
+    .split(':')
+    .map(Number);
 
   // Add the hours and minutes
   hours += hoursToAdd;
@@ -49,54 +51,25 @@ generalService.getById = async (id) => {
   return result;
 };
 
+generalService.getWeeklyDataById = async (id) => {
+  const result = await weeklyData.findOne({ where: { id } });
+  return result;
+};
+
+generalService.update = async (id, comments) => {
+  const result = await weeklyData.update(
+    {
+      comments,
+    },
+    { where: { id } },
+  );
+  return result;
+};
+
 generalService.bulkCreate = async (data) => {
   const result = await general.bulkCreate(data);
   return result;
 };
-
-// generalService.hourlyData = async () => {
-//   const result = await general.findAll({
-//     where: {
-//       stage: 'FVT',
-//     },
-//   });
-//   return result;
-// };
-
-// generalService.hourlyData = async () => {
-//   try {
-//     // Get current date and time
-//     const now = new Date(Date.now());
-//     console.log('now', now);
-
-//     // Set the time for the start of the previous hour (6 PM in this case)
-//     const previousHourStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 0, 0); // Adjust hours and minutes as needed
-
-//     console.log('.....previousHourStart........', previousHourStart);
-
-//     // Set the time for the end of the previous hour (7 PM in this case)
-//     const previousHourEnd = new Date(previousHourStart.getTime() + 60  60  1000); // Add 1 hour in milliseconds
-
-//     // console.log('.............', previousHourEnd);
-
-//     // Filter data based on column d between previous hour start and end timestamps
-//     const result = await general.findAll({
-//       where: {
-//         stage: 'FVT',
-//         d: {
-//           [Op.gte]: Sequelize.fn('date_trunc', 'hour', previousHourStart), // Truncate to start of hour
-//           [Op.lt]: Sequelize.fn('date_trunc', 'hour', previousHourEnd), // Truncate to start of next hour
-//         },
-//       },
-//     });
-
-//     console.log('result', result);
-
-//     return result;
-//   } catch (err) {
-//     console.log('err', err);
-//   }
-// };
 
 generalService.hourlyData = async () => {
   try {
@@ -113,14 +86,20 @@ generalService.hourlyData = async () => {
 
     // Convert to the desired time zone (+05:30)
     const timeZone = 'Asia/Kolkata';
-    const formattedPreviousHourStart = moment(previousHourStart).tz(timeZone).format('YYYY-MM-DD HH:mm:ss');
-    const formattedPreviousHourEnd = moment(previousHourEnd).tz(timeZone).format('YYYY-MM-DD HH:mm:ss');
-
-    console.log('formattedPreviousHourStart', formattedPreviousHourStart);
-    console.log('formattedPreviousHourEnd', formattedPreviousHourEnd);
+    const formattedPreviousHourStart = moment(previousHourStart)
+      .tz(timeZone)
+      .format('YYYY-MM-DD HH:mm:ss');
+    const formattedPreviousHourEnd = moment(previousHourEnd)
+      .tz(timeZone)
+      .format('YYYY-MM-DD HH:mm:ss');
 
     const result = await db.general.findAll({
-      attributes: ['mt', 'line', [fn('MAX', col('d')), 'max_d'], [fn('COUNT', col('*')), 'total_count']],
+      attributes: [
+        'mt',
+        'line',
+        [fn('MAX', col('d')), 'max_d'],
+        [fn('COUNT', col('*')), 'total_count'],
+      ],
       where: {
         stage: 'FVT',
         d: {
@@ -164,19 +143,14 @@ generalService.hourlyData = async () => {
         const formattedDate = dateInTimeZone.format('YYYY-MM-DD');
         const formattedTime = dateInTimeZone.format('HH:mm:ss');
 
-        // console.log('endTime', formattedDate);
-        // console.log('endTime', formattedTime);
-
-        // console.log('mt', mt);
-
         const target = targetLookup[mt];
 
         return {
-          date: formattedDate,
+          date: timestamp,
           time: formattedTime,
           mt,
           line,
-          totalCount: +totalCount,
+          totalcount: +totalCount,
           target,
           comments: 'Target Completed',
         };
@@ -191,29 +165,39 @@ generalService.hourlyData = async () => {
   }
 };
 
-generalService.getShiftRecord = async (line, startDate, endDate, startTime, endTime, condition) => {
+generalService.getShiftRecord = async (
+  line,
+  startDate,
+  endDate,
+  startTime,
+  endTime,
+  condition,
+) => {
   const query = `
-  SELECT 
-    time AS x,
-    totalCount AS y,
-    CONCAT(mt, ' ', target) AS z,
-    mt,
-    target,
-    comments,
-    date,
-    line
-  FROM 
-    public."weeklyData"
-  WHERE 
-    line = :line
-    AND (
-      (time >= :startTime AND DATE(date) = :endDate) ${condition}
-      (time < :endTime AND DATE(date) = :startDate)
-    )
-  GROUP BY 
-    time, mt, target, comments, date, line,totalCount
-  ORDER BY 
-    date ASC, time ASC;`;
+  SELECT
+  id,  -- Add id to the selected fields
+  time AS x,
+  totalCount AS y,
+  CONCAT(mt, ' ', target) AS z,
+  mt,
+  target,
+  comments,
+  date,
+  line
+FROM
+  public."weeklyData"
+WHERE
+  line = :line
+  AND (
+    (time >= :startTime AND DATE(date) = :endDate) ${condition}
+    (time < :endTime AND DATE(date) = :startDate)
+  )
+GROUP BY
+  id,  -- Add id to the grouped fields
+  time, mt, target, comments, date, line,totalCount
+ORDER BY
+  date ASC, time ASC;
+`;
 
   const result = await db.sequelize.query(query, {
     replacements: {

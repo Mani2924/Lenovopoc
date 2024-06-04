@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
       time: DataTypes.TIME,
       mt: DataTypes.STRING,
       target: DataTypes.INTEGER,
-      totalCount: DataTypes.INTEGER,
-      line:DataTypes.STRING,
+      totalcount: DataTypes.INTEGER,
+      line: DataTypes.STRING,
       comments: DataTypes.STRING,
       isActive: DataTypes.BOOLEAN,
       deletedAt: DataTypes.DATE,
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       schema: config.db.schema,
       freezeTableName: true,
       paranoid: true,
-    }
+    },
   );
 
   weeklyData.associate = function (models) {};
