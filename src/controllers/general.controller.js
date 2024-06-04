@@ -4,16 +4,16 @@ const rescodes = require('../utility/rescodes');
 
 const logger = require('../config/logger');
 
+const RedisDB = require('../config/redis');
+
 const userController = {};
 
 userController.shiftData = async (req, res, next) => {
   try {
-    // const { date, line, shift } = req.query;
     const { line } = req.query;
 
-    // console.log('date', date);
-    // console.log('line', line);
-    // console.log('shift', shift);
+    // redis
+    const redisInstance = new RedisDB();
 
     const currentDate = new Date();
 
@@ -37,8 +37,6 @@ userController.shiftData = async (req, res, next) => {
     let condition = 'AND';
 
     if (currentTime >= '09:00:00' && currentTime < '21:00:00') {
-      // Get the previous date
-
       startDate = currentDateString;
 
       currentDate.setDate(currentDate.getDate() - 1);
@@ -52,6 +50,19 @@ userController.shiftData = async (req, res, next) => {
       condition = 'OR';
     }
 
+    let shiftData = await redisInstance.getValueFromRedis(
+      `${line}-${startDate}-${endDate}`,
+    );
+    if (shiftData) {
+      shiftData = JSON.parse(shiftData);
+      console.log('from redis');
+      res.response = {
+        code: 200,
+        data: { status: 'Ok', message: rescodes?.success, data: shiftData },
+      };
+      return next();
+    }
+
     const general = await generalService.getShiftRecord(
       line,
       startDate,
@@ -60,6 +71,7 @@ userController.shiftData = async (req, res, next) => {
       endTime,
       condition,
     );
+
     // Function to convert time to range
     const convertTimeToRange = (time) => {
       const [hour] = time.split(':');
@@ -74,6 +86,13 @@ userController.shiftData = async (req, res, next) => {
         x: convertTimeToRange(item.x),
       };
     });
+
+    // storing data in redis
+    if (updatedData?.length) {
+      let appData = JSON.stringify(updatedData);
+      redisInstance.setValueInRedis(`${line}-${startDate}-${endDate}`, appData);
+    }
+
     res.response = {
       code: 200,
       data: { status: 'Ok', message: rescodes?.success, data: updatedData },

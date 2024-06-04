@@ -72,8 +72,8 @@ createSchema();
 
 cron.schedule('*/15 * * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
-  // console.log(`Data updating........${currentTime}........`);
-  logger.info(`Data updating........${currentTime}........`);
+  console.log(`Data updating........${currentTime}........`);
+  // logger.info(`Data updating........${currentTime}........`);
   const newSampleData = sampleData();
   await generalService.create(newSampleData);
   // await generalService.hourlyData();

@@ -71,50 +71,6 @@ generalService.bulkCreate = async (data) => {
   return result;
 };
 
-// generalService.hourlyData = async () => {
-//   const result = await general.findAll({
-//     where: {
-//       stage: 'FVT',
-//     },
-//   });
-//   return result;
-// };
-
-// generalService.hourlyData = async () => {
-//   try {
-//     // Get current date and time
-//     const now = new Date(Date.now());
-//     console.log('now', now);
-
-//     // Set the time for the start of the previous hour (6 PM in this case)
-//     const previousHourStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 0, 0); // Adjust hours and minutes as needed
-
-//     console.log('.....previousHourStart........', previousHourStart);
-
-//     // Set the time for the end of the previous hour (7 PM in this case)
-//     const previousHourEnd = new Date(previousHourStart.getTime() + 60  60  1000); // Add 1 hour in milliseconds
-
-//     // console.log('.............', previousHourEnd);
-
-//     // Filter data based on column d between previous hour start and end timestamps
-//     const result = await general.findAll({
-//       where: {
-//         stage: 'FVT',
-//         d: {
-//           [Op.gte]: Sequelize.fn('date_trunc', 'hour', previousHourStart), // Truncate to start of hour
-//           [Op.lt]: Sequelize.fn('date_trunc', 'hour', previousHourEnd), // Truncate to start of next hour
-//         },
-//       },
-//     });
-
-//     console.log('result', result);
-
-//     return result;
-//   } catch (err) {
-//     console.log('err', err);
-//   }
-// };
-
 generalService.hourlyData = async () => {
   try {
     // Calculate the current time
@@ -136,9 +92,6 @@ generalService.hourlyData = async () => {
     const formattedPreviousHourEnd = moment(previousHourEnd)
       .tz(timeZone)
       .format('YYYY-MM-DD HH:mm:ss');
-
-    // console.log('formattedPreviousHourStart', formattedPreviousHourStart);
-    // console.log('formattedPreviousHourEnd', formattedPreviousHourEnd);
 
     const result = await db.general.findAll({
       attributes: [
@@ -190,15 +143,10 @@ generalService.hourlyData = async () => {
         const formattedDate = dateInTimeZone.format('YYYY-MM-DD');
         const formattedTime = dateInTimeZone.format('HH:mm:ss');
 
-        // console.log('endTime', formattedDate);
-        // console.log('endTime', formattedTime);
-
-        // console.log('mt', mt);
-
         const target = targetLookup[mt];
 
         return {
-          date: formattedDate,
+          date: timestamp,
           time: formattedTime,
           mt,
           line,
@@ -226,27 +174,30 @@ generalService.getShiftRecord = async (
   condition,
 ) => {
   const query = `
-  SELECT 
-    time AS x,
-    totalCount AS y,
-    CONCAT(mt, ' ', target) AS z,
-    mt,
-    target,
-    comments,
-    date,
-    line
-  FROM 
-    public."weeklyData"
-  WHERE 
-    line = :line
-    AND (
-      (time >= :startTime AND DATE(date) = :endDate) ${condition}
-      (time < :endTime AND DATE(date) = :startDate)
-    )
-  GROUP BY 
-    time, mt, target, comments, date, line,totalCount
-  ORDER BY 
-    date ASC, time ASC;`;
+  SELECT
+  id,  -- Add id to the selected fields
+  time AS x,
+  totalCount AS y,
+  CONCAT(mt, ' ', target) AS z,
+  mt,
+  target,
+  comments,
+  date,
+  line
+FROM
+  public."weeklyData"
+WHERE
+  line = :line
+  AND (
+    (time >= :startTime AND DATE(date) = :endDate) ${condition}
+    (time < :endTime AND DATE(date) = :startDate)
+  )
+GROUP BY
+  id,  -- Add id to the grouped fields
+  time, mt, target, comments, date, line,totalCount
+ORDER BY
+  date ASC, time ASC;
+`;
 
   const result = await db.sequelize.query(query, {
     replacements: {
