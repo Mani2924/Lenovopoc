@@ -12,7 +12,9 @@ function addTime(initialTime, hoursToAdd, minutesToAdd) {
   let [timeWithoutMilliseconds] = initialTime.split('.');
 
   // Split the initial time into hours, minutes, and seconds
-  let [hours, minutes, seconds] = timeWithoutMilliseconds.split(':').map(Number);
+  let [hours, minutes, seconds] = timeWithoutMilliseconds
+    .split(':')
+    .map(Number);
 
   // Add the hours and minutes
   hours += hoursToAdd;
@@ -46,6 +48,21 @@ generalService.create = async (data) => {
 
 generalService.getById = async (id) => {
   const result = await general.findOne({ where: { id } });
+  return result;
+};
+
+generalService.getWeeklyDataById = async (id) => {
+  const result = await weeklyData.findOne({ where: { id } });
+  return result;
+};
+
+generalService.update = async (id, comments) => {
+  const result = await weeklyData.update(
+    {
+      comments,
+    },
+    { where: { id } },
+  );
   return result;
 };
 
@@ -113,14 +130,23 @@ generalService.hourlyData = async () => {
 
     // Convert to the desired time zone (+05:30)
     const timeZone = 'Asia/Kolkata';
-    const formattedPreviousHourStart = moment(previousHourStart).tz(timeZone).format('YYYY-MM-DD HH:mm:ss');
-    const formattedPreviousHourEnd = moment(previousHourEnd).tz(timeZone).format('YYYY-MM-DD HH:mm:ss');
+    const formattedPreviousHourStart = moment(previousHourStart)
+      .tz(timeZone)
+      .format('YYYY-MM-DD HH:mm:ss');
+    const formattedPreviousHourEnd = moment(previousHourEnd)
+      .tz(timeZone)
+      .format('YYYY-MM-DD HH:mm:ss');
 
-    console.log('formattedPreviousHourStart', formattedPreviousHourStart);
-    console.log('formattedPreviousHourEnd', formattedPreviousHourEnd);
+    // console.log('formattedPreviousHourStart', formattedPreviousHourStart);
+    // console.log('formattedPreviousHourEnd', formattedPreviousHourEnd);
 
     const result = await db.general.findAll({
-      attributes: ['mt', 'line', [fn('MAX', col('d')), 'max_d'], [fn('COUNT', col('*')), 'total_count']],
+      attributes: [
+        'mt',
+        'line',
+        [fn('MAX', col('d')), 'max_d'],
+        [fn('COUNT', col('*')), 'total_count'],
+      ],
       where: {
         stage: 'FVT',
         d: {
@@ -176,7 +202,7 @@ generalService.hourlyData = async () => {
           time: formattedTime,
           mt,
           line,
-          totalCount: +totalCount,
+          totalcount: +totalCount,
           target,
           comments: 'Target Completed',
         };
@@ -191,7 +217,14 @@ generalService.hourlyData = async () => {
   }
 };
 
-generalService.getShiftRecord = async (line, startDate, endDate, startTime, endTime, condition) => {
+generalService.getShiftRecord = async (
+  line,
+  startDate,
+  endDate,
+  startTime,
+  endTime,
+  condition,
+) => {
   const query = `
   SELECT 
     time AS x,

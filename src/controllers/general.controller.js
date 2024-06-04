@@ -20,7 +20,12 @@ userController.shiftData = async (req, res, next) => {
     // Format the current date as YYYY-MM-DD
     let currentDateString = currentDate.toISOString().split('T')[0];
 
-    const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+    const options = {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    };
     const currentTime = currentDate.toLocaleTimeString('en-GB', options);
 
     let startTime = '09:00:00';
@@ -47,10 +52,14 @@ userController.shiftData = async (req, res, next) => {
       condition = 'OR';
     }
 
-
-
-
-    const general = await generalService.getShiftRecord(line, startDate, endDate, startTime, endTime, condition);
+    const general = await generalService.getShiftRecord(
+      line,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      condition,
+    );
     // Function to convert time to range
     const convertTimeToRange = (time) => {
       const [hour] = time.split(':');
@@ -69,9 +78,6 @@ userController.shiftData = async (req, res, next) => {
       code: 200,
       data: { status: 'Ok', message: rescodes?.success, data: updatedData },
     };
-
-
-
 
     return next();
   } catch (error) {
@@ -92,7 +98,12 @@ userController.currentShiftData = async (req, res, next) => {
 
     let currentDateString = currentDate.toISOString().split('T')[0];
 
-    const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+    const options = {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    };
     const currentTime = currentDate.toLocaleTimeString('en-GB', options);
 
     let startTime = '09:00:00';
@@ -117,7 +128,14 @@ userController.currentShiftData = async (req, res, next) => {
       condition = 'OR';
     }
 
-    const general = await generalService.getShiftRecord(line, startDate, endDate, startTime, endTime, condition);
+    const general = await generalService.getShiftRecord(
+      line,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      condition,
+    );
     const convertTimeToRange = (time) => {
       const [hour] = time.split(':');
       const previousHour = (parseInt(hour) - 1).toString().padStart(2, '0');
@@ -140,6 +158,45 @@ userController.currentShiftData = async (req, res, next) => {
     return next();
   } catch (error) {
     logger.error(error);
+    res.response = {
+      code: 400,
+      data: { status: 'Error', message: rescodes?.wentWrong },
+    };
+    return next();
+  }
+};
+
+userController.updateCurrentShiftData = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { comments } = req.body;
+
+    const checkData = await generalService.getWeeklyDataById(id);
+
+    if (!checkData) {
+      res.response = {
+        code: 404,
+        data: { status: 'Error', message: rescodes?.noData },
+      };
+      return next();
+    }
+
+    await generalService.update(id, comments);
+
+    res.response = {
+      code: 200,
+      data: {
+        status: 'Ok',
+        message: rescodes?.success,
+        data: 'Updated Successfully',
+      },
+    };
+
+    return next();
+  } catch (error) {
+    logger.error(error);
+    console.log(error);
+
     res.response = {
       code: 400,
       data: { status: 'Error', message: rescodes?.wentWrong },

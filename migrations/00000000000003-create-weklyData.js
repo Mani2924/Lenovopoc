@@ -28,7 +28,7 @@ module.exports = {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        totalCount: {
+        totalcount: {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
@@ -63,7 +63,7 @@ module.exports = {
       {
         schema: config.db.schema,
         freezeTableName: true,
-      }
+      },
     );
   },
   async down(queryInterface) {
