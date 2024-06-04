@@ -1,0 +1,36 @@
+2024-05-29T15:32:35.452Z error: invalid input syntax for type integer: "staticData"
+- Error
+    at Query.run (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\sequelize.js:315:28
+    at async PostgresQueryInterface.select (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async general.findAll (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\model.js:1140:21)
+    at async general.findOne (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\model.js:1240:12)
+    at async generalService.getById (C:\Users\TISED-003\Downloads\Lenovo\src\services\general.service.js:13:18)
+    at async userController.get (C:\Users\TISED-003\Downloads\Lenovo\src\controllers\general.controller.js:31:21)
+2024-05-29T15:33:46.833Z error: invalid input syntax for type integer: "staticData"
+- Error
+    at Query.run (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\sequelize.js:315:28
+    at async PostgresQueryInterface.select (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async general.findAll (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\model.js:1140:21)
+    at async general.findOne (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\model.js:1240:12)
+    at async generalService.getById (C:\Users\TISED-003\Downloads\Lenovo\src\services\general.service.js:13:18)
+    at async userController.get (C:\Users\TISED-003\Downloads\Lenovo\src\controllers\general.controller.js:31:21)
+2024-05-29T15:34:16.044Z error: invalid input syntax for type integer: "staticApi"
+- Error
+    at Query.run (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\sequelize.js:315:28
+    at async PostgresQueryInterface.select (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async general.findAll (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\model.js:1140:21)
+    at async general.findOne (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\model.js:1240:12)
+    at async generalService.getById (C:\Users\TISED-003\Downloads\Lenovo\src\services\general.service.js:13:18)
+    at async userController.get (C:\Users\TISED-003\Downloads\Lenovo\src\controllers\general.controller.js:31:21)
+2024-05-29T15:38:31.772Z error: invalid input syntax for type integer: "staticApi"
+- Error
+    at Query.run (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\sequelize.js:315:28
+    at async PostgresQueryInterface.select (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async general.findAll (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\model.js:1140:21)
+    at async general.findOne (C:\Users\TISED-003\Downloads\Lenovo\node_modules\sequelize\lib\model.js:1240:12)
+    at async generalService.getById (C:\Users\TISED-003\Downloads\Lenovo\src\services\general.service.js:13:18)
+    at async userController.get (C:\Users\TISED-003\Downloads\Lenovo\src\controllers\general.controller.js:31:21)

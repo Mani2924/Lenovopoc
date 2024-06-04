@@ -1,0 +1,41 @@
+2024-05-06T06:18:04.338Z error: roleService.getRoleNames is not a function
+- TypeError: roleService.getRoleNames is not a function
+    at adminUserModule.getById (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\src\controllers\adminUser.controller.js:26:45)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2024-05-06T06:18:04.359Z error: roleService.getRoleNames is not a function
+- TypeError: roleService.getRoleNames is not a function
+    at adminUserModule.getById (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\src\controllers\adminUser.controller.js:26:45)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2024-05-06T06:21:18.020Z error: roleService.getRoleNames is not a function
+- TypeError: roleService.getRoleNames is not a function
+    at adminUserModule.getById (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\src\controllers\adminUser.controller.js:26:45)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2024-05-06T06:21:18.103Z error: roleService.getRoleNames is not a function
+- TypeError: roleService.getRoleNames is not a function
+    at adminUserModule.getById (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\src\controllers\adminUser.controller.js:26:45)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2024-05-06T07:03:56.561Z error: roleService.getRoleNames is not a function
+- TypeError: roleService.getRoleNames is not a function
+    at adminUserModule.getById (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\src\controllers\adminUser.controller.js:26:45)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2024-05-06T07:07:31.635Z error: roleService.getRoleNames is not a function
+- TypeError: roleService.getRoleNames is not a function
+    at adminUserModule.getById (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\src\controllers\adminUser.controller.js:26:45)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2024-05-06T07:07:31.645Z error: roleService.getRoleNames is not a function
+- TypeError: roleService.getRoleNames is not a function
+    at adminUserModule.getById (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\src\controllers\adminUser.controller.js:26:45)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2024-05-06T07:16:31.468Z error: roleService.getRoleNames is not a function
+- TypeError: roleService.getRoleNames is not a function
+    at adminUserModule.getById (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\src\controllers\adminUser.controller.js:26:45)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2024-05-06T13:38:04.443Z error: column modules.orderId does not exist
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.select (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async modules.findAll (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1140:21)
+    at async Object.getModuleFeature (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\src\services\auth.service.js:41:30)
+    at async authModule.login (C:\Users\teebanrajd\Documents\project\youcanfly\youcanfly-admin-be\src\controllers\auth.controller.js:62:30)

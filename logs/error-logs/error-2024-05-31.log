@@ -1,0 +1,523 @@
+2024-05-31T05:06:57.236Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:06:57.542Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:07:13.113Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:07:13.575Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:07:27.167Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:07:27.629Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:08:55.199Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:08:55.356Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:11:55.120Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:11:55.299Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:14:55.178Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:14:55.465Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:17:55.176Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:17:55.521Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:20:55.149Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:20:55.324Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:23:55.222Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:23:55.426Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:26:55.139Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:26:55.223Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:29:56.840Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:29:57.191Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:30:11.541Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:30:11.613Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:30:26.533Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:30:26.681Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:30:41.534Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:30:41.664Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:30:56.497Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:30:56.646Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:31:11.485Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:31:11.622Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:31:26.507Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:31:26.614Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:31:41.530Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:31:41.760Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:31:56.496Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:31:56.621Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:32:11.538Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:32:11.740Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:32:26.492Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:32:26.632Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:32:42.268Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:32:42.751Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:32:57.248Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:32:57.375Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:33:12.128Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:33:12.307Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:33:27.160Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:33:27.513Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:33:55.233Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:33:55.729Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:34:11.718Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:34:12.034Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:34:26.585Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:34:26.718Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:34:42.159Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:34:42.429Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:34:57.231Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:34:57.616Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:35:12.277Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:35:12.614Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:35:26.529Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:35:26.724Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:35:41.600Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:35:41.793Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:35:57.401Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:35:57.571Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:35:57.913Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:36:12.200Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:36:12.504Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:36:16.705Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:36:18.154Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:36:19.423Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:36:27.226Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:36:27.839Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:36:42.235Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:36:42.559Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:36:50.725Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:36:52.121Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:36:53.171Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:37:01.808Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T05:37:02.190Z error: column "line" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:41:18)
+    at async userController.currentShiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:101:21)
+2024-05-31T07:23:36.807Z error: column "total_count" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:218:18)
+    at async userController.shiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:53:21)
+2024-05-31T07:23:36.826Z error: column "total_count" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:218:18)
+    at async userController.shiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:53:21)
+2024-05-31T07:24:57.701Z error: column "totalcount" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:218:18)
+    at async userController.shiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:53:21)
+2024-05-31T07:25:35.906Z error: column "totalcount" does not exist
+- Error
+    at Query.run (/Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /Users/apple/Downloads/Lenovo (2)/node_modules/sequelize/lib/sequelize.js:315:28
+    at async generalService.getShiftRecord (/Users/apple/Downloads/Lenovo (2)/src/services/general.service.js:218:18)
+    at async userController.shiftData (/Users/apple/Downloads/Lenovo (2)/src/controllers/general.controller.js:53:21)

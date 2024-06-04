@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Invite Verification</title>
+</head>
+
+<body style="font-family: Arial, sans-serif;">
+
+  <div style="background-color: #f5f5f5; padding: 20px;">
+    <h2>Invite Verification</h2>
+    <p>Good Day,</p>
+    <p>
+      Thank you for signing up! Please use the following verification code to complete your registration:
+      <strong>
+        <%= code %>
+      </strong>
+    </p>
+    <p>
+      If you haven't initiated this request, please disregard this email.
+    </p>
+    <p>
+      Alternatively, you can click <a href="<%= verifyCode %>" style="color: #007bff; text-decoration: none;">this
+        link</a> to complete the verification process.
+    </p>
+    <p>Regards,<br>youCanFly</p>
+  </div>
+
+</body>
+
+</html>

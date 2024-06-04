@@ -1,0 +1,48 @@
+2024-05-02T08:26:01.474Z error: Cannot read properties of undefined (reading 'forEach')
+- TypeError: Cannot read properties of undefined (reading 'forEach')
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\middleware\accessControl.js:48:26
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:284:15
+    at param (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:365:14)
+    at param (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:376:14)
+    at Function.process_params (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:421:3)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:280:10)
+2024-05-02T08:33:00.946Z error: featureKey.map is not a function
+- TypeError: featureKey.map is not a function
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\middleware\accessControl.js:48:37
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:47:12)
+2024-05-02T08:33:40.659Z error: featureKey.map is not a function
+- TypeError: featureKey.map is not a function
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\middleware\accessControl.js:48:37
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:47:12)
+2024-05-02T11:22:39.863Z error: Cannot destructure property 'email' of 'req.user' as it is undefined.
+- TypeError: Cannot destructure property 'email' of 'req.user' as it is undefined.
+    at authModule.adminRefreshToken (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\auth.controller.js:224:13)
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:149:13)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\middleware\validate.js:25:12
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\index.js:346:12)

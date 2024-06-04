@@ -1,0 +1,75 @@
+2024-04-30T13:20:48.950Z error: roles is not associated to adminUser!
+- SequelizeEagerLoadingError: roles is not associated to adminUser!
+    at adminUser._getIncludedAssociation (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:565:13)
+    at adminUser._validateIncludedElement (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:502:53)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at adminUser._validateIncludedElements (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:417:39)
+    at adminUser.findAll (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1124:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async adminUser.findOne (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1240:12)
+    at async Object.getUserWithRole (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:176:26)
+    at async adminUserModule.getUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:445:23)
+2024-04-30T13:39:53.851Z error: Cannot read properties of undefined (reading 'getTableName')
+- TypeError: Cannot read properties of undefined (reading 'getTableName')
+    at PostgresQueryGenerator.generateThroughJoin (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1376:40)
+    at PostgresQueryGenerator.generateInclude (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1188:24)
+    at PostgresQueryGenerator.selectQuery (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:888:34)
+    at PostgresQueryInterface.select (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:59)
+    at adminUser.findAll (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1140:47)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async adminUser.findOne (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1240:12)
+    at async Object.getUserWithRole (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:176:26)
+    at async adminUserModule.getUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:445:23)
+2024-04-30T13:42:04.871Z error: roles is associated to userModuleRoles using an alias. You must use the 'as' keyword to specify the alias within your include statement.
+- SequelizeEagerLoadingError: roles is associated to userModuleRoles using an alias. You must use the 'as' keyword to specify the alias within your include statement.
+    at userModuleRoles._getIncludedAssociation (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:576:13)
+    at userModuleRoles._validateIncludedElement (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:502:53)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at userModuleRoles._validateIncludedElements (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:417:39)
+    at adminUser._validateIncludedElement (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:557:38)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at adminUser._validateIncludedElements (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:417:39)
+    at adminUser.findAll (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1124:12)
+2024-04-30T14:12:50.899Z error: WHERE parameter "module_id" has invalid "undefined" value
+- Error: WHERE parameter "module_id" has invalid "undefined" value
+    at PostgresQueryGenerator.whereItemQuery (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1743:13)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1734:25
+    at Array.forEach (<anonymous>)
+    at PostgresQueryGenerator.whereItemsQuery (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1732:35)
+    at PostgresQueryGenerator.getWhereConditions (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:2075:19)
+    at PostgresQueryGenerator.selectQuery (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:988:28)
+    at PostgresQueryInterface.select (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:59)
+    at roles.findAll (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1140:47)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async rolesService.getAllRole (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\roles.service.js:142:22)
+2024-04-30T14:13:43.353Z error: WHERE parameter "module_id" has invalid "undefined" value
+- Error: WHERE parameter "module_id" has invalid "undefined" value
+    at PostgresQueryGenerator.whereItemQuery (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1743:13)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1734:25
+    at Array.forEach (<anonymous>)
+    at PostgresQueryGenerator.whereItemsQuery (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1732:35)
+    at PostgresQueryGenerator.getWhereConditions (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:2075:19)
+    at PostgresQueryGenerator.selectQuery (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:988:28)
+    at PostgresQueryInterface.select (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:59)
+    at roles.findAll (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1140:47)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async rolesService.getAllRole (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\roles.service.js:143:22)
+2024-04-30T14:47:12.554Z error: adminRole is not defined
+- ReferenceError: adminRole is not defined
+    at adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:253:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2024-04-30T14:52:03.642Z error: roles is not associated to adminUser!
+- SequelizeEagerLoadingError: roles is not associated to adminUser!
+    at adminUser._getIncludedAssociation (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:565:13)
+    at adminUser._validateIncludedElement (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:502:53)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:421:37
+    at Array.map (<anonymous>)
+    at adminUser._validateIncludedElements (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:417:39)
+    at adminUser.aggregate (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1252:12)
+    at adminUser.count (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1306:31)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async adminUser.findAndCountAll (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1322:27)

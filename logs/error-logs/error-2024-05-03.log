@@ -1,0 +1,156 @@
+2024-05-03T05:49:24.924Z error: Cannot destructure property 'search' of 'undefined' as it is undefined.
+- TypeError: Cannot destructure property 'search' of 'undefined' as it is undefined.
+    at categoryService.getAllCategory (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\category.service.js:27:43)
+    at categoryModule.updateOrder (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\category.controller.js:262:47)
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:149:13)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\middleware\validate.js:25:12
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:149:13)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\middleware\accessControl.js:44:12
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:149:13)
+2024-05-03T05:50:37.794Z error: Cannot destructure property 'search' of 'undefined' as it is undefined.
+- TypeError: Cannot destructure property 'search' of 'undefined' as it is undefined.
+    at categoryService.getAllCategory (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\category.service.js:27:43)
+    at categoryModule.updateOrder (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\category.controller.js:263:47)
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:149:13)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\middleware\validate.js:25:12
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:149:13)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\middleware\accessControl.js:44:12
+    at Layer.handle [as handle_request] (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\express\lib\router\route.js:149:13)
+2024-05-03T10:15:11.571Z error: WHERE parameter "name" has invalid "undefined" value
+- Error: WHERE parameter "name" has invalid "undefined" value
+    at PostgresQueryGenerator.whereItemQuery (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1743:13)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1734:25
+    at Array.forEach (<anonymous>)
+    at PostgresQueryGenerator.whereItemsQuery (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1732:35)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1840:30
+    at Array.map (<anonymous>)
+    at PostgresQueryGenerator._whereGroupBind (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1839:21)
+    at PostgresQueryGenerator.whereItemQuery (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1790:19)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-generator.js:1734:25
+    at Array.forEach (<anonymous>)
+2024-05-03T10:49:38.249Z error: Validation error
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.insert (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async adminUser.save (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:2490:35)
+    at async adminUser.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1362:12)
+    at async Object.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:105:26)
+    at async adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:282:25)
+2024-05-03T11:53:19.340Z error: Validation error
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.insert (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async adminUser.save (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:2490:35)
+    at async adminUser.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1362:12)
+    at async Object.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:105:26)
+    at async adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:282:25)
+2024-05-03T11:57:32.036Z error: Validation error
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.insert (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async adminUser.save (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:2490:35)
+    at async adminUser.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1362:12)
+    at async Object.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:105:26)
+    at async adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:282:25)
+2024-05-03T12:14:43.448Z error: Validation error
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.insert (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async adminUser.save (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:2490:35)
+    at async adminUser.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1362:12)
+    at async Object.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:105:26)
+    at async adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:283:25)
+2024-05-03T12:15:07.888Z error: Validation error
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.insert (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async adminUser.save (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:2490:35)
+    at async adminUser.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1362:12)
+    at async Object.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:105:26)
+    at async adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:285:25)
+2024-05-03T12:15:34.724Z error: Validation error
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.insert (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async adminUser.save (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:2490:35)
+    at async adminUser.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1362:12)
+    at async Object.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:105:26)
+    at async adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:284:25)
+2024-05-03T12:15:50.845Z error: Validation error
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.insert (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async adminUser.save (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:2490:35)
+    at async adminUser.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1362:12)
+    at async Object.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:105:26)
+    at async adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:284:25)
+2024-05-03T12:16:47.333Z error: Validation error
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.insert (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async adminUser.save (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:2490:35)
+    at async adminUser.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1362:12)
+    at async Object.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:105:26)
+    at async adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:283:25)
+2024-05-03T12:16:49.396Z error: Validation error
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.insert (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async adminUser.save (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:2490:35)
+    at async adminUser.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1362:12)
+    at async Object.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:105:26)
+    at async adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:283:25)
+2024-05-03T12:18:42.780Z error: Validation error
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.insert (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async adminUser.save (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:2490:35)
+    at async adminUser.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1362:12)
+    at async Object.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:105:26)
+    at async adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:283:25)
+2024-05-03T12:18:57.485Z error: Validation error
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.insert (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async adminUser.save (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:2490:35)
+    at async adminUser.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1362:12)
+    at async Object.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:105:26)
+    at async adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:283:25)
+2024-05-03T12:24:25.747Z error: Validation error
+- Error
+    at Query.run (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\postgres\query.js:50:25)
+    at C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.insert (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async adminUser.save (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:2490:35)
+    at async adminUser.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\node_modules\sequelize\lib\model.js:1362:12)
+    at async Object.create (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\services\adminUser.service.js:105:26)
+    at async adminUserModule.createUser (C:\Users\teebanrajd\Documents\project\youcanfly-admin-be\src\controllers\adminUser.controller.js:284:25)
