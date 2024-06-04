@@ -27,6 +27,9 @@ const {
   ACCESSKEYTEMP,
   SECRETKEYTEMP,
   BODY_PARSER_LIMIT,
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_CONNECTION_TIMEOUT,
 } = process.env.APP_SECRET ? JSON.parse(process.env.APP_SECRET) : {};
 
 nodeEnv.env(process.env.NODE_ENV || 'local', './env');
@@ -45,10 +48,14 @@ module.exports = {
     logEnableConsole: parseInt(process.env.LOG_ENABLE_CONSOLE, 10) === 1,
     logSuccess: process.env.LOG_SUCCESS ? process.env.LOG_SUCCESS : 1,
     logError: process.env.LOG_ERROR ? process.env.LOG_ERROR : 1,
-    logPerformance: process.env.LOG_PERFORMANCE ? process.env.LOG_PERFORMANCE : 1,
+    logPerformance: process.env.LOG_PERFORMANCE
+      ? process.env.LOG_PERFORMANCE
+      : 1,
     logMaxSize: process.env.LOG_MAXSIZE ? process.env.LOG_MAXSIZE : '128m',
     logMaxFiles: process.env.LOG_MAXFILES ? process.env.LOG_MAXFILES : '14d',
-    logDebugMode: process.env.LOG_DEBUGLEVEL ? process.env.LOG_DEBUGLEVEL : 'info',
+    logDebugMode: process.env.LOG_DEBUGLEVEL
+      ? process.env.LOG_DEBUGLEVEL
+      : 'info',
   },
   db: {
     dialect: DB_DIALECT || process.env.DB_DIALECT,
@@ -87,5 +94,14 @@ module.exports = {
   },
   credentials: {
     defaultPassword: DEFAULTPASSWORDKEY || process.env.DEFAULTPASSWORDKEY,
+  },
+  redis: {
+    host: REDIS_HOST || process.env.REDIS_HOST,
+    port: parseInt(REDIS_PORT || process.env.REDIS_PORT, 10) || 6379,
+    connectTimeout:
+      parseInt(
+        REDIS_CONNECTION_TIMEOUT || process.env.REDIS_CONNECTION_TIMEOUT,
+        10,
+      ) || 10000,
   },
 };

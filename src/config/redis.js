@@ -1,10 +1,12 @@
 const { createClient } = require('redis');
 
+const config = require('./vars');
+
 const redisLabclient = createClient({
   socket: {
-    host: '127.0.0.1',
-    port: 6379,
-    connectTimeout: 10000,
+    host: config.redis.host,
+    port: config.redis.port,
+    connectTimeout: config.redis.connectTimeout,
   },
 });
 

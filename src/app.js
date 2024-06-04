@@ -101,15 +101,15 @@ io.on('connection', (socket) => {
 });
 
 // Cron job to emit data every 15 seconds
-// cron.schedule('* * * * * *', async () => {
-//   try {
-//     const data = await getFilteredData();
-//     io.emit('dataUpdate', data);
-//     console.log('Data emitted to clients:', data);
-//   } catch (error) {
-//     console.error('Error during data fetch and emit:', error);
-//   }
-// });
+cron.schedule('* * * * * *', async () => {
+  try {
+    const data = await getFilteredData();
+    io.emit('dataUpdate', data);
+    console.log('Data emitted to clients:', data);
+  } catch (error) {
+    console.error('Error during data fetch and emit:', error);
+  }
+});
 
 // connect database
 sequelize
