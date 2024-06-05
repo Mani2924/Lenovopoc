@@ -2,7 +2,7 @@ const { Op, fn, col, Sequelize } = require('sequelize');
 
 const moment = require('moment-timezone');
 
-const { general, weeklyData } = require('../../models/index');
+const { general, weeklyData,uphtarget } = require('../../models/index');
 const db = require('../../models/index');
 
 const generalService = {};
@@ -66,6 +66,16 @@ generalService.update = async (id, comments) => {
   return result;
 };
 
+generalService.getProductOwnerEmail = async(mt)=>{
+  const result = await uphtarget.findOne({
+    where : {
+      machineType : mt
+    },
+    attributes: ['productOwnerEmail']
+  });
+  return result.productOwnerEmail;
+}
+
 generalService.bulkCreate = async (data) => {
   const result = await general.bulkCreate(data);
   return result;
@@ -119,7 +129,6 @@ generalService.hourlyData = async () => {
       targetLookup[key] = value;
     });
 
-    console.log('result', result?.length);
 
     if (result?.length > 0) {
       const a = result.map((item) => {
@@ -161,7 +170,6 @@ generalService.hourlyData = async () => {
 
     // return result;
   } catch (err) {
-    console.log('err', err);
   }
 };
 

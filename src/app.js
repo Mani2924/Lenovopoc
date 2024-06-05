@@ -72,8 +72,6 @@ createSchema();
 
 cron.schedule('*/15 * * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
-  console.log(`Data updating........${currentTime}........`);
-  // logger.info(`Data updating........${currentTime}........`);
   const newSampleData = sampleData();
   await generalService.create(newSampleData);
   // await generalService.hourlyData();
@@ -81,7 +79,6 @@ cron.schedule('*/15 * * * * *', async () => {
 
 cron.schedule('1 * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
-  console.log(`Hourly Data updating........${currentTime}........`);
   await generalService.hourlyData();
 });
 const httpServer = createServer(app);
@@ -93,10 +90,7 @@ const io = new Server(httpServer, {
 });
 
 io.on('connection', (socket) => {
-  console.log('A user connected');
-
   socket.on('disconnect', () => {
-    console.log('User disconnected');
   });
 });
 
@@ -105,9 +99,7 @@ cron.schedule('* * * * * *', async () => {
   try {
     const data = await getFilteredData();
     io.emit('dataUpdate', data);
-    console.log('Data emitted to clients:', data);
   } catch (error) {
-    console.error('Error during data fetch and emit:', error);
   }
 });
 

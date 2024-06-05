@@ -11,4 +11,4 @@ const sesClient = new SESClient({
   },
 });
 
-module.exports = { s3, sesClient };
+module.exports = {  sesClient };

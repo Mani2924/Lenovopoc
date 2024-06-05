@@ -6,18 +6,19 @@ const logger = require('../config/logger');
 
 const RedisDB = require('../config/redis');
 
+const emailService = require('../config/emailConfig')
+const path = require('path');
+
 const userController = {};
 
 userController.shiftData = async (req, res, next) => {
   try {
     const { line } = req.query;
 
-    // redis
     const redisInstance = new RedisDB();
 
     const currentDate = new Date();
 
-    // Format the current date as YYYY-MM-DD
     let currentDateString = currentDate.toISOString().split('T')[0];
 
     const options = {
@@ -216,6 +217,12 @@ userController.updateCurrentShiftData = async (req, res, next) => {
       return next();
     }
 
+    const email = await generalService.getProductOwnerEmail(checkData.mt);
+
+    const templateData = { code: 123, verifyCode: "" };
+    const templateFilePath = path.join(__dirname, '../views/comingsoon.ejs');
+    const mail = await emailService.sendEmail(email?.trim(), 'Production Down time Alart', templateFilePath, templateData);
+
     await generalService.update(id, comments);
 
     res.response = {
@@ -230,7 +237,6 @@ userController.updateCurrentShiftData = async (req, res, next) => {
     return next();
   } catch (error) {
     logger.error(error);
-    console.log(error);
 
     res.response = {
       code: 400,
@@ -239,5 +245,6 @@ userController.updateCurrentShiftData = async (req, res, next) => {
     return next();
   }
 };
+
 
 module.exports = userController;
