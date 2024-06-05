@@ -75,8 +75,16 @@ userController.shiftData = async (req, res, next) => {
     // Function to convert time to range
     const convertTimeToRange = (time) => {
       const [hour] = time.split(':');
-      const previousHour = (parseInt(hour) - 1).toString().padStart(2, '0');
-      return `${previousHour} - ${hour}`;
+      let currentHour = parseInt(hour);
+
+      // Handle the case where the input hour is "24"
+      if (currentHour === 24) {
+        currentHour = 0;
+      }
+      let nextHour = (currentHour + 1) % 24; // Ensures the hour wraps around at 23
+      nextHour = nextHour.toString().padStart(2, '0');
+
+      return `${currentHour.toString().padStart(2, '0')} - ${nextHour}`;
     };
 
     // Update the 'x' field in each object
@@ -157,8 +165,16 @@ userController.currentShiftData = async (req, res, next) => {
     );
     const convertTimeToRange = (time) => {
       const [hour] = time.split(':');
-      const previousHour = (parseInt(hour) - 1).toString().padStart(2, '0');
-      return `${previousHour} - ${hour}`;
+      let currentHour = parseInt(hour);
+
+      // Handle the case where the input hour is "24"
+      if (currentHour === 24) {
+        currentHour = 0;
+      }
+      let nextHour = (currentHour + 1) % 24; // Ensures the hour wraps around at 23
+      nextHour = nextHour.toString().padStart(2, '0');
+
+      return `${currentHour.toString().padStart(2, '0')} - ${nextHour}`;
     };
 
     // Update the 'x' field in each object
