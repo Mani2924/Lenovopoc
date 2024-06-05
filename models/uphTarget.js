@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       target: DataTypes.INTEGER,
       isActive: DataTypes.BOOLEAN,
       deletedAt: DataTypes.DATE,
-      productOwner:DataTypes.STRING,
+      productOwnerEmail:DataTypes.STRING,
     },
     {
       sequelize,

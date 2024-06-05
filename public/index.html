@@ -10,16 +10,13 @@
       const socket = io('http://localhost:8001');
 
       socket.on('connect', () => {
-        console.log('Connected to server');
       });
 
       socket.on('dataUpdate', (data) => {
-        console.log('Data received:', data);
         updateUI(data);
       });
 
       socket.on('disconnect', () => {
-        console.log('Disconnected from server');
       });
 
       function updateUI(data) {

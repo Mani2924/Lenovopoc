@@ -2,7 +2,6 @@ const { general } = require('../../models');
 const { Op, fn, col, literal } = require('sequelize');
 
 async function getFilteredData() {
-  console.log('Fetching filtered data...');
 
   try {
     const nowIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
@@ -42,11 +41,8 @@ async function getFilteredData() {
 
       return acc;
     }, {});
-
-    console.log('Filtered data:', result);
     return result;
   } catch (error) {
-    console.error('Error fetching filtered data:', error);
     throw error;
   }
 }

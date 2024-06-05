@@ -10,7 +10,6 @@ async function authenticateToken(req, res, next) {
     const token = authHeader && authHeader?.split(' ')[1];
     await jwt?.verify(token, config?.app?.accesstoken, async (err, user) => {
       if (err) {
-        // console.log(err);
         return res?.sendStatus(401);
       }
       // get user details
@@ -24,8 +23,6 @@ async function authenticateToken(req, res, next) {
           isTrash: false,
         },
       });
-      // console.log(token);
-      // console.log(users);
       if (token == null || !users) return res?.sendStatus(401);
       const usersData = { ...users?.dataValues };
       req.user = usersData;

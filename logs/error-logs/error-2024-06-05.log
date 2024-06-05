@@ -1,0 +1,4 @@
+2024-06-05T06:10:24.384Z error: path is not defined
+- ReferenceError: path is not defined
+    at userController.updateCurrentShiftData (/Users/apple/Lenovopoc/src/controllers/general.controller.js:206:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
