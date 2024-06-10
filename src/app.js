@@ -90,8 +90,7 @@ const io = new Server(httpServer, {
 });
 
 io.on('connection', (socket) => {
-  socket.on('disconnect', () => {
-  });
+  socket.on('disconnect', () => {});
 });
 
 // Cron job to emit data every 15 seconds
@@ -99,8 +98,7 @@ cron.schedule('* * * * * *', async () => {
   try {
     const data = await getFilteredData();
     io.emit('dataUpdate', data);
-  } catch (error) {
-  }
+  } catch (error) {}
 });
 
 // connect database

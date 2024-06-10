@@ -2,7 +2,7 @@ const { Op, fn, col, Sequelize } = require('sequelize');
 
 const moment = require('moment-timezone');
 
-const { general, weeklyData,uphtarget } = require('../../models/index');
+const { general, weeklyData, uphtarget } = require('../../models/index');
 const db = require('../../models/index');
 
 const generalService = {};
@@ -66,15 +66,15 @@ generalService.update = async (id, comments) => {
   return result;
 };
 
-generalService.getProductOwnerEmail = async(mt)=>{
+generalService.getProductOwnerEmail = async (mt) => {
   const result = await uphtarget.findOne({
-    where : {
-      machineType : mt
+    where: {
+      machineType: mt,
     },
-    attributes: ['productOwnerEmail']
+    attributes: ['productOwnerEmail'],
   });
   return result.productOwnerEmail;
-}
+};
 
 generalService.bulkCreate = async (data) => {
   const result = await general.bulkCreate(data);
@@ -129,7 +129,6 @@ generalService.hourlyData = async () => {
       targetLookup[key] = value;
     });
 
-
     if (result?.length > 0) {
       const a = result.map((item) => {
         const { mt, line } = item;
@@ -170,6 +169,7 @@ generalService.hourlyData = async () => {
 
     // return result;
   } catch (err) {
+    console.log(err);
   }
 };
 
@@ -220,6 +220,123 @@ ORDER BY
   });
 
   return result;
+};
+
+const presentShiftData = async (line) => {
+  // const currentDate = new Date();
+
+  // Get the current date
+  let currentDate = new Date();
+
+  // Set minutes and seconds to zero to round to the nearest hour
+  currentDate.setMinutes(0, 0, 0);
+
+  // Format the date to 'YYYY-MM-DD'
+  let currentDateString = currentDate.toISOString().split('T')[0];
+
+  // Options for formatting the time
+  const options = {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  };
+
+  // Format the time to 'HH:MM:SS'
+  const currentTime = currentDate.toLocaleTimeString('en-GB', options);
+
+  console.log(currentDateString); // Outputs the current date in 'YYYY-MM-DD' format
+  // console.log(currentTime); // Outputs the rounded time in 'HH:00:00' format
+
+  console.log('currentTime', currentTime);
+
+  // let startTime = '09:00:00';
+  // let endTime = '21:00:00';
+
+  // let startDate = currentDateString;
+  // let endDate = currentDateString;
+
+  // let condition = 'AND';
+
+  // if (currentTime >= '21:00:00' && currentTime < '09:00:00') {
+  //   startDate = currentDateString;
+
+  //   currentDate.setDate(currentDate.getDate() + 1);
+  //   currentDateString = currentDate.toISOString().split('T')[0];
+
+  //   endDate = currentDateString;
+
+  //   startTime = '21:00:00';
+  //   endTime = '09:00:00';
+
+  //   condition = 'OR';
+  // }
+
+  // const general = await generalService.getShiftRecord(
+  //   line,
+  //   startDate,
+  //   endDate,
+  //   startTime,
+  //   endTime,
+  //   condition,
+  // );
+  // const convertTimeToRange = (time) => {
+  //   const [hour] = time.split(':');
+  //   let currentHour = parseInt(hour);
+
+  //   // Handle the case where the input hour is "24"
+  //   if (currentHour === 24) {
+  //     currentHour = 0;
+  //   }
+  //   let nextHour = (currentHour + 1) % 24; // Ensures the hour wraps around at 23
+  //   nextHour = nextHour.toString().padStart(2, '0');
+
+  //   return `${currentHour.toString().padStart(2, '0')} - ${nextHour}`;
+  // };
+
+  // // Update the 'x' field in each object
+  // const updatedData = general.map((item) => {
+  //   return {
+  //     ...item,
+  //     x: convertTimeToRange(item.x),
+  //   };
+  // });
+
+  // return { data: updatedData, startDate, endDate, line };
+  return 'Hello';
+};
+
+generalService.currentShiftToRedis = async (data) => {
+  try {
+    const uniqueLines = await weeklyData.findAll({
+      attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('line')), 'line']],
+      raw: true, // Ensures raw data is returned, not Sequelize models
+    });
+    // const result = uniqueLines.map((item) => {
+    //   return item.line;
+    // });
+
+    uniqueLines.map(async (item) => {
+      const result = await presentShiftData(item.line);
+      // let appData = JSON.stringify(result);
+
+      console.log('result', result);
+    });
+    console.log('line', uniqueLines);
+  } catch (err) {
+    console.log('err', err);
+    // const temp = {
+    //   ...item,
+    //   x: convertTimeToRange(item.x),
+    // };
+    // let appData = JSON.stringify(temp);
+    // redisInstance.setValueInRedis(
+    //   `${line}-${startDate}-${endDate}`,
+    //   appData,
+    //   86400,
+    //   3,
+    // );
+  }
 };
 
 module.exports = generalService;
