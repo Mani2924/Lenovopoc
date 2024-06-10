@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Data Update</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const socket = io('http://localhost:8001');
+
+      socket.on('connect', () => {
+        console.log('Connected to server');
+      });
+
+      socket.on('dataUpdate', (data) => {
+        console.log('Data received:', data);
+        updateUI(data);
+      });
+
+      socket.on('disconnect', () => {
+        console.log('Disconnected from server');
+      });
+
+      function updateUI(data) {
+  const container = document.getElementById('data-container');
+  container.innerHTML = '';
+
+  for (const hour in data) {
+    const hourDiv = document.createElement('div');
+    hourDiv.innerHTML = `<h2>Hour: ${hour}</h2>`;
+
+    const lineCounts = data[hour];
+    for (const lineData of lineCounts) {
+      const countDiv = document.createElement('div');
+      countDiv.textContent = `Line: ${lineData.line}, Count: ${lineData.total_count}`; // Access total_count property
+      hourDiv.appendChild(countDiv);
+    }
+
+    container.appendChild(hourDiv);
+  }
+}
+    });
+  </script>
+</head>
+<body>
+  <h1>Data Updates</h1>
+  <div id="data-container"></div>
+</body>
+</html>

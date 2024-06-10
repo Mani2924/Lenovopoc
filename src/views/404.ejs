@@ -1,0 +1,13 @@
+
+    <%- include('includes/head.ejs') %>
+    
+    <% if(product){ %>
+        <% for (let prod of product){ %>
+            <p><%= prod %></p>
+        <% } %>
+        <p>products</p>
+    <% }else{ %>
+        <p>No product</p>
+    <% } %>
+
+    <%- include('includes/end.ejs') %>
