@@ -16,7 +16,11 @@ module.exports = {
           type: Sequelize.DATEONLY,
           allowNull: true,
         },
-        time: {
+        start_time: {
+          type: Sequelize.TIME,
+          allowNull: true,
+        },
+        end_time: {
           type: Sequelize.TIME,
           allowNull: true,
         },

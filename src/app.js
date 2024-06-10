@@ -74,13 +74,17 @@ cron.schedule('*/15 * * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
   const newSampleData = sampleData();
   await generalService.create(newSampleData);
+  // console.log(`Inserting General Data ..........${currentTime}............`);
   // await generalService.hourlyData();
+  // await generalService.currentShiftToRedis();
 });
 
 cron.schedule('1 * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
+  // console.log(`Inserting Hourly Data ..........${currentTime}............`);
   await generalService.hourlyData();
 });
+
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {

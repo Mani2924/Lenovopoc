@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
   weeklyData.init(
     {
       date: DataTypes.DATE,
-      time: DataTypes.TIME,
+      start_time: DataTypes.TIME,
+      end_time: DataTypes.TIME,
       mt: DataTypes.STRING,
       target: DataTypes.INTEGER,
       totalcount: DataTypes.INTEGER,

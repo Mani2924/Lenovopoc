@@ -9,11 +9,23 @@ const RedisDB = require('../config/redis');
 const emailService = require('../config/emailConfig');
 const path = require('path');
 
+const {
+  todayFirstShift,
+  todayGenaralShift,
+  todaySecondShift,
+  yesterdayFirstShift,
+  yesterdayGenaralShift,
+  yesterdaySecondShift,
+  shiftDetails,
+} = require('../data/shiftData');
+
 const userController = {};
 
 userController.shiftData = async (req, res, next) => {
   try {
-    const { line } = req.query;
+    // duration 6hrs or 8hrs
+    // shift 1 (1st 6hrs) or shift 2 (2nd 6hrs)
+    const { line, duration, shift } = req.query;
 
     const redisInstance = new RedisDB();
 
@@ -28,31 +40,66 @@ userController.shiftData = async (req, res, next) => {
       hour12: false,
     };
     const currentTime = currentDate.toLocaleTimeString('en-GB', options);
+    // const currentTime = '08:00:00';
 
-    let startTime = '09:00:00';
-    let endTime = '21:00:00';
-
+    let startTime;
+    let endTime;
+    let condition = 'AND';
     let startDate = currentDateString;
     let endDate = currentDateString;
 
-    let condition = 'AND';
+    if (
+      duration === shiftDetails?.shiftDuration &&
+      (shift === shiftDetails?.firstShift ||
+        shift === shiftDetails?.secondShift)
+    ) {
+      startTime =
+        shift === shiftDetails?.firstShift
+          ? todayFirstShift?.startTime
+          : todaySecondShift?.startTime;
+      endTime =
+        shift === shiftDetails?.firstShift
+          ? todayFirstShift?.endTime
+          : todaySecondShift?.endTime;
+    } else {
+      startTime = todayGenaralShift?.startTime;
+      endTime = todayGenaralShift?.endTime;
+    }
 
     if (currentTime >= '09:00:00' && currentTime < '21:00:00') {
-      startDate = currentDateString;
-
       currentDate.setDate(currentDate.getDate() - 1);
-      currentDateString = currentDate.toISOString().split('T')[0];
 
-      endDate = currentDate.toISOString().split('T')[0];
-
-      startTime = '21:00:00';
-      endTime = '09:00:00';
-
-      condition = 'OR';
+      if (
+        duration === shiftDetails?.shiftDuration &&
+        (shift === shiftDetails?.firstShift ||
+          shift === shiftDetails?.secondShift)
+      ) {
+        startTime =
+          shift === shiftDetails?.firstShift
+            ? yesterdayFirstShift?.startTime
+            : yesterdaySecondShift?.startTime;
+        endTime =
+          shift === shiftDetails?.firstShift
+            ? yesterdayFirstShift?.endTime
+            : yesterdaySecondShift?.endTime;
+        condition =
+          shift === shiftDetails?.firstShift
+            ? yesterdayFirstShift?.condition
+            : yesterdaySecondShift?.condition;
+        startDate =
+          shift === shiftDetails?.firstShift
+            ? currentDate.toISOString().split('T')[0]
+            : currentDateString;
+      } else {
+        startTime = yesterdayGenaralShift?.startTime;
+        endTime = yesterdayGenaralShift?.endTime;
+        condition = yesterdayGenaralShift?.condition;
+        startDate = currentDate.toISOString().split('T')[0];
+      }
     }
 
     let shiftData = await redisInstance.getValueFromRedis(
-      `${line}-${startDate}-${endDate}`,
+      `${line}-${startDate}-${endDate}-${startTime}-${endTime}`,
     );
     if (shiftData) {
       shiftData = JSON.parse(shiftData);
@@ -73,38 +120,18 @@ userController.shiftData = async (req, res, next) => {
       condition,
     );
 
-    // Function to convert time to range
-    const convertTimeToRange = (time) => {
-      const [hour] = time.split(':');
-      let currentHour = parseInt(hour);
-
-      // Handle the case where the input hour is "24"
-      if (currentHour === 24) {
-        currentHour = 0;
-      }
-      let nextHour = (currentHour + 1) % 24; // Ensures the hour wraps around at 23
-      nextHour = nextHour.toString().padStart(2, '0');
-
-      return `${currentHour.toString().padStart(2, '0')} - ${nextHour}`;
-    };
-
-    // Update the 'x' field in each object
-    const updatedData = general.map((item) => {
-      return {
-        ...item,
-        x: convertTimeToRange(item.x),
-      };
-    });
-
     // storing data in redis
-    if (updatedData?.length) {
-      let appData = JSON.stringify(updatedData);
-      redisInstance.setValueInRedis(`${line}-${startDate}-${endDate}`, appData);
+    if (general?.length) {
+      let appData = JSON.stringify(general);
+      redisInstance.setValueInRedis(
+        `${line}-${startDate}-${endDate}-${startTime}-${endTime}`,
+        appData,
+      );
     }
 
     res.response = {
       code: 200,
-      data: { status: 'Ok', message: rescodes?.success, data: updatedData },
+      data: { status: 'Ok', message: rescodes?.success, data: general },
     };
 
     return next();

@@ -148,79 +148,86 @@ generalService.hourlyData = async () => {
         }
 
         // Format the date and time separately
-        const formattedDate = dateInTimeZone.format('YYYY-MM-DD');
+        // const formattedDate = dateInTimeZone.format('YYYY-MM-DD');
         const formattedTime = dateInTimeZone.format('HH:mm:ss');
 
         const target = targetLookup[mt];
 
         return {
           date: timestamp,
-          time: formattedTime,
+          // time: formattedTime,
+          start_time: moment(
+            formattedPreviousHourStart,
+            'YYYY-MM-DD HH:mm:ss',
+          ).format('HH:mm:ss'),
+          end_time: moment(
+            formattedPreviousHourEnd,
+            'YYYY-MM-DD HH:mm:ss',
+          ).format('HH:mm:ss'),
           mt,
           line,
           totalcount: +totalCount,
           target,
-          comments: 'Target Completed',
+          comments:
+            +totalCount >= target ? 'Target Completed' : 'Target Not Completed',
         };
       });
 
       await weeklyData.bulkCreate(a);
     }
-
-    // return result;
   } catch (err) {
     console.log(err);
   }
 };
 
-generalService.getShiftRecord = async (
-  line,
-  startDate,
-  endDate,
-  startTime,
-  endTime,
-  condition,
-) => {
-  const query = `
-  SELECT
-  id,  -- Add id to the selected fields
-  time AS x,
-  totalCount AS y,
-  CONCAT(mt, ' ', target) AS z,
-  mt,
-  target,
-  comments,
-  date,
-  line
-FROM
-  public."weeklyData"
-WHERE
-  line = :line
-  AND (
-    (time >= :startTime AND DATE(date) = :endDate) ${condition}
-    (time < :endTime AND DATE(date) = :startDate)
-  )
-GROUP BY
-  id,  -- Add id to the grouped fields
-  time, mt, target, comments, date, line,totalCount
-ORDER BY
-  date ASC, time ASC;
-`;
+// generalService.getShiftRecord = async (
+//   line,
+//   startDate,
+//   endDate,
+//   startTime,
+//   endTime,
+//   condition,
+// ) => {
+//   const query = `
+//   SELECT
+//   id,  -- Add id to the selected fields
+//   time AS x,
+//   totalCount AS y,
+//   CONCAT(mt, ' ', target) AS z,
+//   mt,
+//   target,
+//   comments,
+//   date,
+//   line
+// FROM
+//   public."weeklyData"
+// WHERE
+//   line = :line
+//   AND (
+//     (time >= :startTime AND DATE(date) = :endDate) ${condition}
+//     (time < :endTime AND DATE(date) = :startDate)
+//   )
+// GROUP BY
+//   id,  -- Add id to the grouped fields
+//   time, mt, target, comments, date, line,totalCount
+// ORDER BY
+//   date ASC, time ASC;
+// `;
 
-  const result = await db.sequelize.query(query, {
-    replacements: {
-      line,
-      startTime,
-      endTime,
-      startDate,
-      endDate,
-      condition,
-    },
-    type: Sequelize.QueryTypes.SELECT,
-  });
+//   const result = await db.sequelize.query(query, {
+//     replacements: {
+//       line,
+//       startTime,
+//       endTime,
+//       startDate,
+//       endDate,
+//       condition,
+//     },
+//     type: Sequelize.QueryTypes.SELECT,
+//   });
 
-  return result;
-};
+//   return result;
+// };
 
 const presentShiftData = async (line) => {
   // const currentDate = new Date();
@@ -337,6 +344,55 @@ generalService.currentShiftToRedis = async (data) => {
     //   3,
     // );
   }
+};
+
+generalService.getShiftRecord = async (
+  line,
+  startDate,
+  endDate,
+  startTime,
+  endTime,
+  condition,
+) => {
+  const query = `
+  SELECT
+  id,  -- Add id to the selected fields
+  CONCAT(start_time, ' - ', end_time) AS x,
+  totalCount AS y,
+  CONCAT(mt, ' ', target) AS z,
+  mt,
+  target,
+  comments,
+  date,
+  line
+FROM
+  public."weeklyData"
+WHERE
+  line = :line
+  AND (
+    (start_time >= :startTime AND DATE(date) = :startDate) ${condition}
+    (end_time <= :endTime AND DATE(date) = :endDate)
+  )
+GROUP BY
+  id,  -- Add id to the grouped fields
+  start_time, end_time, mt, target, comments, date, line,totalCount
+ORDER BY
+  date ASC, start_time ASC;
+`;
+
+  const result = await db.sequelize.query(query, {
+    replacements: {
+      line,
+      startTime,
+      endTime,
+      startDate,
+      endDate,
+      condition,
+    },
+    type: Sequelize.QueryTypes.SELECT,
+  });
+
+  return result;
 };
 
 module.exports = generalService;
