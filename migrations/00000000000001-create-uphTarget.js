@@ -20,6 +20,10 @@ module.exports = {
           type: Sequelize.INTEGER,
           allowNull: true,
         },
+        productOwnerEmail: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
         isActive: {
           type: Sequelize.BOOLEAN,
           allowNull: true,
@@ -43,7 +47,7 @@ module.exports = {
       {
         schema: config.db.schema,
         freezeTableName: true,
-      }
+      },
     );
   },
   async down(queryInterface) {
