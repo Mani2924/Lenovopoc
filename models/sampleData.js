@@ -30,6 +30,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      line:{
+        type: DataTypes.STRING,
+      },
       Operation_Id: {
         type: DataTypes.STRING,
         allowNull: false,

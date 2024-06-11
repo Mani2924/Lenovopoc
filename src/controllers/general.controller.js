@@ -289,31 +289,42 @@ userController.fileUpload = async (req, res, next) => {
   try {
     const fileData = req.file.buffer;
     const workbook = XLSX.read(fileData, { type: 'buffer' });
-    const sheetName = workbook.SheetNames.find(name => name === 'Line 1' && name ==  'Line 2' && name ==  'Line 3');
 
-    lineDetail = null 
+    const sheetNames = ['Line 1', 'Line 2', 'Line 3'];
+    const lineDetails = {
+      'Line 1': 'L1',
+      'Line 2': 'L2',
+      'Line 3': 'L3',
+    };
 
-    if (!sheetName) {
-      throw new Error("Sheet named 'Line 1' not found");
-    }
-    const sheet = workbook.Sheets[sheetName];
-    const rawData = XLSX.utils.sheet_to_json(sheet);
-    const data = rawData.map(row => ({
-      Op_Finish_Time: row['Op Finish Time'],
-      dest_Operation: row['Dest Operation'],
-      Associate_Id: row['Associate Id'],
-      Mfg_Order_Id: row['Mfg Order Id'],
-      Product_Id: row['Product Id'],
-      Serial_Num: row['Serial Num'],
-      Operation_Id: row['Operation Id'],
-      Work_Position_Id: row['Work Position Id'],
-      isActive: true, 
-      deletedAt: null, 
-    }));
+    let allData = [];
 
-    await sampleData.bulkCreate(data, {
-      ignoreDuplicates: true,
+    sheetNames.forEach(sheetName => {
+      if (workbook.SheetNames.includes(sheetName)) {
+        const sheet = workbook.Sheets[sheetName];
+        const rawData = XLSX.utils.sheet_to_json(sheet);
+        const data = rawData.map(row => ({
+          Op_Finish_Time: row['Op Finish Time'],
+          dest_Operation: row['Dest Operation'],
+          Associate_Id: row['Associate Id'],
+          Mfg_Order_Id: row['Mfg Order Id'],
+          Product_Id: row['Product Id'],
+          Serial_Num: row['Serial Num'],
+          Operation_Id: row['Operation Id'],
+          Work_Position_Id: row['Work Position Id'],
+          line: lineDetails[sheetName],
+          isActive: true, 
+          deletedAt: null,
+        }));
+        allData = allData.concat(data);
+      }
     });
+
+    if (allData.length > 0) {
+      await sampleData.bulkCreate(allData, {
+        ignoreDuplicates: true,
+      });
+    }
 
     res.send('Data inserted successfully');
   } catch (error) {
