@@ -395,4 +395,5 @@ ORDER BY
   return result;
 };
 
+
 module.exports = generalService;
