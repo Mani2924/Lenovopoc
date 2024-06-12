@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      Product_Id: {
+      product_id: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      line:{
+      line: {
         type: DataTypes.STRING,
       },
       Operation_Id: {
