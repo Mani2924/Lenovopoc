@@ -561,7 +561,7 @@ ORDER BY
 
   // console.log('result', result);
 
-  return result;
+  return {data:result,count:result.length};
 };
 
 generalService.hourlyData2 = async () => {
