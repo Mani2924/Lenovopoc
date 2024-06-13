@@ -473,12 +473,12 @@ userController.previousShiftDate2 = async (req, res, next) => {
     //   );
     // }
 
-    general = general.data.map((itm) => {
+    general = general.map((itm) => {
       let { x } = itm;
       const aa = x.split(':');
       const ab = aa[2].split(' - ')[1];
-      // x = `${aa[0] < 12 ? aa[0] : aa[0] - 12} - ${ab < 12 ? ab : ab - 12} `;
-      x = `${aa[0]} - ${ab} `;
+      x = `${aa[0] < 12 ? aa[0] : aa[0] - 12} - ${ab < 12 ? ab : ab - 12} `;
+      // x = `${aa[0]} - ${ab} `;
 
       return {
         ...itm,
@@ -566,11 +566,18 @@ userController.currentShiftData2 = async (req, res, next) => {
       let nextHour = (currentHour + 1) % 24; // Ensures the hour wraps around at 23
       nextHour = nextHour.toString().padStart(2, '0');
 
-      return `${currentHour.toString().padStart(2, '0')} - ${nextHour}`;
+      // return in railway time
+      // return `${currentHour.toString().padStart(2, '0')} - ${nextHour}`;
+
+      // return in 12 hrs duration
+      let currentHourString = currentHour.toString().padStart(2, '0');
+      return `${
+        currentHourString < 12 ? currentHourString : currentHourString - 12
+      } - ${nextHour < 12 ? nextHour : nextHour - 12}`;
     };
 
     // Update the 'x' field in each object
-    let updatedData = general.data.map((item) => {
+    let updatedData = general.map((item) => {
       return {
         ...item,
         x: convertTimeToRange(item.x),
