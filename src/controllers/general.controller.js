@@ -492,7 +492,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
 
 userController.currentShiftData2 = async (req, res, next) => {
   try {
-    const { line } = req.query;
+    const { line, duration, shift } = req.query;
 
     const currentDate = new Date();
 
@@ -553,7 +553,7 @@ userController.currentShiftData2 = async (req, res, next) => {
     };
 
     // Update the 'x' field in each object
-    const updatedData = general.map((item) => {
+    let updatedData = general.map((item) => {
       return {
         ...item,
         x: convertTimeToRange(item.x),
