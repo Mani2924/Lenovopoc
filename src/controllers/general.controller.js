@@ -560,6 +560,14 @@ userController.currentShiftData2 = async (req, res, next) => {
       };
     });
 
+    if (duration === '6hrs' && shift === '1st') {
+      updatedData = updatedData.slice(0, 6);
+    } else if (duration === '6hrs' && shift === '2nd') {
+      updatedData = updatedData.slice(6, 12);
+    } else {
+      updatedData = updatedData.slice(0, 9);
+    }
+
     res.response = {
       code: 200,
       data: { status: 'Ok', message: rescodes?.success, data: updatedData },
