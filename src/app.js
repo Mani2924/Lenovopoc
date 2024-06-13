@@ -138,7 +138,7 @@ function insertDataAndUpdateTime() {
     dest_Operation: rowData['Dest Operation'],
     Associate_Id: rowData['Associate Id'],
     Mfg_Order_Id: rowData['Mfg Order Id'],
-    Product_Id: rowData['Product Id'],
+    product_id: rowData['Product Id'],
     Serial_Num: rowData['Serial Num'],
     Operation_Id: rowData['Operation Id'],
     Work_Position_Id: rowData['Work Position Id'],
@@ -146,7 +146,6 @@ function insertDataAndUpdateTime() {
     isActive: true,
     deletedAt: null,
   };
-  on;
   sampleData
     .create(newRow)
     .then(() => {
