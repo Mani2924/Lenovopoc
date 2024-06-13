@@ -370,7 +370,6 @@ userController.previousShiftDate2 = async (req, res, next) => {
     // duration 6hrs or 8hrs
     // shift 1 (1st 6hrs) or shift 2 (2nd 6hrs)
     const { line, duration, shift } = req.query;
-    console.log('....................................');
 
     // const redisInstance = new RedisDB();
 
@@ -456,7 +455,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
     //   return next();
     // }
 
-    const general = await generalService.getShiftRecord2(
+    let general = await generalService.getShiftRecord2(
       line,
       startDate,
       endDate,
@@ -473,6 +472,19 @@ userController.previousShiftDate2 = async (req, res, next) => {
     //     appData,
     //   );
     // }
+
+    general = general.map((itm) => {
+      let { x } = itm;
+      const aa = x.split(':');
+      const ab = aa[2].split(' - ')[1];
+      // x = `${aa[0] < 12 ? aa[0] : aa[0] - 12} - ${ab < 12 ? ab : ab - 12} `;
+      x = `${aa[0]} - ${ab} `;
+
+      return {
+        ...itm,
+        x,
+      };
+    });
 
     res.response = {
       code: 200,
