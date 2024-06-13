@@ -110,13 +110,12 @@ cron.schedule('** * * * * *', async () => {
     const data = await getFilteredData();
     io.emit('dataUpdate', {
       totalCount: data.totalCount,
-      timeRange: `${data.startHour} - ${data.endHour}`
+      timeRange: `${data.startHour} - ${data.endHour}`,
     });
   } catch (error) {
-    console.error("Error while emitting data:", error);
+    console.error('Error while emitting data:', error);
   }
 });
-
 
 // connect database
 

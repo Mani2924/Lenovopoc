@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       product_id: DataTypes.STRING,
       line: DataTypes.STRING,
-      op_date: DataTypes.DATE,
+      op_date: DataTypes.DATEONLY,
       start_time: DataTypes.TIME,
       end_time: DataTypes.TIME,
 

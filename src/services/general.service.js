@@ -405,19 +405,18 @@ generalService.sampleDateCountHourlyToWeeklyData = async (data) => {
   try {
     const query = `
     	SELECT
-    "product_id",
-    "line",
-    "Op_Finish_Time",
-    DATE_TRUNC('hour', "Op_Finish_Time")::DATE AS op_date,
-    TO_CHAR(DATE_TRUNC('hour', "Op_Finish_Time"), 'HH24:MI:SS') AS start_time,
-    TO_CHAR(DATE_TRUNC('hour', "Op_Finish_Time") + INTERVAL '1 hour', 'HH24:MI:SS') AS end_time,
-    COUNT(*) AS totalcount
-FROM
-    public."sampleData"
-GROUP BY
-    "product_id", "line", "Op_Finish_Time", op_date, start_time, end_time
-ORDER BY
-    op_date, start_time, "line";
+        "product_id",
+        "line",
+        DATE_TRUNC('hour', "Op_Finish_Time")::DATE AS op_date,
+        TO_CHAR(DATE_TRUNC('hour', "Op_Finish_Time"), 'HH24:MI:SS') AS start_time,
+        TO_CHAR(DATE_TRUNC('hour', "Op_Finish_Time") + INTERVAL '1 hour', 'HH24:MI:SS') AS end_time,
+        COUNT(*) AS totalcount
+    FROM
+        public."sampleData"
+    GROUP BY
+        "product_id", "line", op_date, start_time, end_time
+    ORDER BY
+        op_date, start_time, "line";
     `;
 
     const results = await db.sequelize.query(query, {
@@ -433,34 +432,20 @@ ORDER BY
     const convertToLocalStorage = (result) => {
       // Iterate over each result object
       return result.map((entry) => {
-        // Parse Op_Finish_Time as UTC
-        let opFinishTime = moment.utc(entry.Op_Finish_Time);
-
-        // console.log('opFinishTime', opFinishTime);
-
-        // Add IST time
-        opFinishTime.add(5, 'hours').add(30, 'minutes'); // IST is UTC+5:30
-
-        // console.log('opFinishTimesdfsdf', opFinishTime);
-
-        // Calculate op_date based on Op_Finish_Time
-        let opDate = opFinishTime.format('YYYY-MM-DD');
-
-        // console.log('opDate', opDate);
-
-        // Calculate start_time based on Op_Finish_Time (subtracting 1 hour)
-        let startTime = opFinishTime
-          .clone()
-          .subtract(1, 'hour')
+        // Parse op_date, start_time, and end_time strings and convert to local time
+        let opDate = moment.utc(entry.op_date).local().format('YYYY-MM-DD');
+        let startTime = moment
+          .utc(entry.start_time, 'HH:mm:ss')
+          .local()
+          // .add(30, 'minutes')
+          .format('HH:mm:ss');
+        let endTime = moment
+          .utc(entry.end_time, 'HH:mm:ss')
+          .local()
+          // .add(30, 'minutes')
           .format('HH:mm:ss');
 
-        // console.log('startTime', startTime);
-
-        // Calculate end_time based on Op_Finish_Time
-        let endTime = opFinishTime.format('HH:mm:ss');
-        // console.log('endTime', endTime);
-
-        // Return the updated object with UTC time strings
+        // Return the updated object with local time strings
         return {
           ...entry,
           op_date: opDate,
@@ -561,7 +546,7 @@ ORDER BY
 
   // console.log('result', result);
 
-  return {data:result,count:result.length};
+  return result;
 };
 
 generalService.hourlyData2 = async () => {
@@ -580,10 +565,10 @@ generalService.hourlyData2 = async () => {
     // Convert to the desired time zone (+05:30)
     const timeZone = 'Asia/Kolkata';
     const formattedPreviousHourStart = moment(previousHourStart)
-      .tz(timeZone)
+      // .tz(timeZone)
       .format('YYYY-MM-DD HH:mm:ss');
     const formattedPreviousHourEnd = moment(previousHourEnd)
-      .tz(timeZone)
+      // .tz(timeZone)
       .format('YYYY-MM-DD HH:mm:ss');
 
     const result = await db.sampleData.findAll({
@@ -604,7 +589,8 @@ generalService.hourlyData2 = async () => {
 
     console.log('formattedPreviousHourStart', formattedPreviousHourStart);
     console.log('formattedPreviousHourEnd', formattedPreviousHourEnd);
-    // console.log('result', result);
+
+    console.log('hourlyData count', result?.length);
 
     if (result?.length > 0) {
       const a = result.map((item) => {
