@@ -2,7 +2,13 @@ const { Op, fn, col, Sequelize } = require('sequelize');
 
 const moment = require('moment-timezone');
 
-const { general, weeklyData, uphtarget } = require('../../models/index');
+const {
+  general,
+  weeklyData,
+  uphtarget,
+  weeklyData1,
+  sampleData,
+} = require('../../models/index');
 const db = require('../../models/index');
 
 const generalService = {};
@@ -395,5 +401,260 @@ ORDER BY
   return result;
 };
 
+generalService.sampleDateCountHourlyToWeeklyData = async (data) => {
+  try {
+    const query = `
+    	SELECT
+    "product_id",
+    "line",
+    "Op_Finish_Time",
+    DATE_TRUNC('hour', "Op_Finish_Time")::DATE AS op_date,
+    TO_CHAR(DATE_TRUNC('hour', "Op_Finish_Time"), 'HH24:MI:SS') AS start_time,
+    TO_CHAR(DATE_TRUNC('hour', "Op_Finish_Time") + INTERVAL '1 hour', 'HH24:MI:SS') AS end_time,
+    COUNT(*) AS totalcount
+FROM
+    public."sampleData"
+GROUP BY
+    "product_id", "line", "Op_Finish_Time", op_date, start_time, end_time
+ORDER BY
+    op_date, start_time, "line";
+    `;
+
+    const results = await db.sequelize.query(query, {
+      type: Sequelize.QueryTypes.SELECT,
+    });
+
+    // const slpss = results.slice(0, 10);
+
+    // console.log('slpss', slpss);
+
+    // console.log('results', results[0]);
+
+    const convertToLocalStorage = (result) => {
+      // Iterate over each result object
+      return result.map((entry) => {
+        // Parse Op_Finish_Time as UTC
+        let opFinishTime = moment.utc(entry.Op_Finish_Time);
+
+        // console.log('opFinishTime', opFinishTime);
+
+        // Add IST time
+        opFinishTime.add(5, 'hours').add(30, 'minutes'); // IST is UTC+5:30
+
+        // console.log('opFinishTimesdfsdf', opFinishTime);
+
+        // Calculate op_date based on Op_Finish_Time
+        let opDate = opFinishTime.format('YYYY-MM-DD');
+
+        // console.log('opDate', opDate);
+
+        // Calculate start_time based on Op_Finish_Time (subtracting 1 hour)
+        let startTime = opFinishTime
+          .clone()
+          .subtract(1, 'hour')
+          .format('HH:mm:ss');
+
+        // console.log('startTime', startTime);
+
+        // Calculate end_time based on Op_Finish_Time
+        let endTime = opFinishTime.format('HH:mm:ss');
+        // console.log('endTime', endTime);
+
+        // Return the updated object with UTC time strings
+        return {
+          ...entry,
+          op_date: opDate,
+          start_time: startTime,
+          end_time: endTime,
+        };
+      });
+    };
+
+    const ab = convertToLocalStorage(results);
+    // console.log('ab', ab);
+
+    console.log('.......result..........', results?.length);
+
+    // const slp = ab.slice(0, 10);
+
+    // console.log('slp', slp);
+
+    if (results?.length > 0) {
+      // console.log('.......result..........', result[0]);
+      await weeklyData1.bulkCreate(ab);
+    }
+    // console.log('result', results);
+  } catch (err) {
+    console.log('err', err);
+  }
+};
+
+generalService.getShiftRecord2 = async (
+  line,
+  startDate,
+  endDate,
+  startTime,
+  endTime,
+  condition,
+) => {
+  const query = `
+  SELECT
+  id,  
+  CONCAT(start_time, ' - ', end_time) AS x,
+  totalCount AS y,
+  CONCAT(product_id, ' ', target) AS z,
+  product_id,
+  target,
+  comments,
+  op_date,
+  line
+FROM
+  public."weeklyData1"
+WHERE
+  line = :line
+  AND (
+    (start_time >= :startTime AND DATE(op_date) = :startDate) ${condition}
+    (end_time <= :endTime AND DATE(op_date) = :endDate)
+  )
+GROUP BY
+  id,  -- Add id to the grouped fields
+  start_time, end_time, product_id, target, comments, op_date, line,totalCount
+ORDER BY
+  op_date ASC, start_time ASC;
+`;
+
+  // SELECT
+  // id,
+  // CONCAT(start_time, ' - ', end_time) AS x,
+  // totalCount AS y,
+  // CONCAT(product_id, ' ', target) AS z,
+  // product_id,
+  // target,
+  // comments,
+  // op_date,
+  // line
+  // FROM
+  // public."weeklyData1"
+  // WHERE
+  // line = 'L2'
+  // AND (
+  //   (start_time >= '01:00:00' AND DATE(op_date) = '2024-06-10') AND
+  //   (end_time <= '23:00:00' AND DATE(op_date) = '2024-06-10')
+  // )
+  // GROUP BY
+  // id,
+  // start_time, end_time, product_id, target, comments, op_date, line, totalCount
+  // ORDER BY
+  // op_date ASC, start_time ASC;
+
+  const result = await db.sequelize.query(query, {
+    replacements: {
+      line,
+      startTime,
+      endTime,
+      startDate,
+      endDate,
+      condition,
+    },
+    type: Sequelize.QueryTypes.SELECT,
+  });
+
+  // console.log('result', result);
+
+  return result;
+};
+
+generalService.hourlyData2 = async () => {
+  try {
+    // Calculate the current time
+    const now = new Date();
+
+    // Calculate the start of the previous hour
+    const previousHourStart = new Date(now);
+    previousHourStart.setHours(previousHourStart.getHours() - 1, 0, 0, 0);
+
+    // Calculate the start of the current hour
+    const previousHourEnd = new Date(now);
+    previousHourEnd.setHours(previousHourEnd.getHours(), 0, 0, 0);
+
+    // Convert to the desired time zone (+05:30)
+    const timeZone = 'Asia/Kolkata';
+    const formattedPreviousHourStart = moment(previousHourStart)
+      .tz(timeZone)
+      .format('YYYY-MM-DD HH:mm:ss');
+    const formattedPreviousHourEnd = moment(previousHourEnd)
+      .tz(timeZone)
+      .format('YYYY-MM-DD HH:mm:ss');
+
+    const result = await db.sampleData.findAll({
+      attributes: [
+        'product_id',
+        'line',
+        [fn('MAX', col('Op_Finish_Time')), 'max_d'],
+        [fn('COUNT', col('*')), 'total_count'],
+      ],
+      where: {
+        Op_Finish_Time: {
+          [Op.gte]: formattedPreviousHourStart,
+          [Op.lt]: formattedPreviousHourEnd,
+        },
+      },
+      group: ['product_id', 'line'],
+    });
+
+    console.log('formattedPreviousHourStart', formattedPreviousHourStart);
+    console.log('formattedPreviousHourEnd', formattedPreviousHourEnd);
+    // console.log('result', result);
+
+    if (result?.length > 0) {
+      const a = result.map((item) => {
+        const { product_id, line } = item;
+
+        const totalCount = item?.dataValues?.total_count;
+
+        const timestamp = item?.dataValues?.max_d;
+
+        // Convert to the desired time zone
+        let dateInTimeZone = moment.tz(timestamp, timeZone);
+
+        // Round the time to the next hour if the minutes are between 6 and 59
+        const minutes = dateInTimeZone.minutes();
+
+        if (minutes >= 1) {
+          dateInTimeZone = dateInTimeZone.add(1, 'hour').startOf('hour');
+        }
+
+        // Format the date and time separately
+        // const formattedDate = dateInTimeZone.format('YYYY-MM-DD');
+        const formattedTime = dateInTimeZone.format('HH:mm:ss');
+
+        // const target = 100
+
+        return {
+          op_date: timestamp,
+          // time: formattedTime,
+          start_time: moment(
+            formattedPreviousHourStart,
+            'YYYY-MM-DD HH:mm:ss',
+          ).format('HH:mm:ss'),
+          end_time: moment(
+            formattedPreviousHourEnd,
+            'YYYY-MM-DD HH:mm:ss',
+          ).format('HH:mm:ss'),
+          product_id,
+          line,
+          totalcount: +totalCount,
+          // target,
+          // comments:
+          //   +totalCount >= target ? 'Target Completed' : 'Target Not Completed',
+        };
+      });
+
+      await weeklyData1.bulkCreate(a);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 module.exports = generalService;

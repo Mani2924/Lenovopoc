@@ -14,10 +14,12 @@ const logger = require('./config/logger');
 const routes = require('./routes');
 const response = require('./utility/response');
 const rescodes = require('./utility/rescodes');
-const sampleData = require('../src/data/generalDate');
+// const sampleData = require('../src/data/generalDate');
 
 const generalService = require('./services/general.service');
 const { getFilteredData } = require('./services/generalSocket.service');
+const xlsx = require('xlsx');
+const { sampleData } = require('../models/index');
 
 // app express
 const app = express();
@@ -72,17 +74,22 @@ createSchema();
 
 cron.schedule('*/15 * * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
-  const newSampleData = sampleData();
-  await generalService.create(newSampleData);
+  // const newSampleData = sampleData();
+  // await generalService.create(newSampleData);
   // console.log(`Inserting General Data ..........${currentTime}............`);
   // await generalService.hourlyData();
+  // await generalService.hourlyData2();
+
   // await generalService.currentShiftToRedis();
+  await generalService.sampleDateCountHourlyToWeeklyData();
 });
 
 cron.schedule('1 * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
   // console.log(`Inserting Hourly Data ..........${currentTime}............`);
-  await generalService.hourlyData();
+  await generalService.hourlyData2();
+
+  // await generalService.hourlyData();
 });
 
 const httpServer = createServer(app);
@@ -106,6 +113,55 @@ cron.schedule('* * * * * *', async () => {
 });
 
 // connect database
+
+// const filePath = 'C:\\Users\\Manikandan\\Downloads\\sampleData.xlsx';
+const filePath = path.join(__dirname, '../src/data/sampleData.xlsx');
+const workbook = xlsx.readFile(filePath);
+const sheetName = workbook.SheetNames[0];
+const sheet = workbook.Sheets[sheetName];
+const data = xlsx.utils.sheet_to_json(sheet);
+
+let rowIndex = 0;
+
+// Function to insert data and update "Op Finish Time"
+function insertDataAndUpdateTime() {
+  if (rowIndex >= data.length) {
+    console.log('All data inserted.');
+    return;
+  }
+
+  const rowData = data[rowIndex];
+
+  // Assuming row data is in the correct format
+  const newRow = {
+    Op_Finish_Time: new Date(),
+    dest_Operation: rowData['Dest Operation'],
+    Associate_Id: rowData['Associate Id'],
+    Mfg_Order_Id: rowData['Mfg Order Id'],
+    Product_Id: rowData['Product Id'],
+    Serial_Num: rowData['Serial Num'],
+    Operation_Id: rowData['Operation Id'],
+    Work_Position_Id: rowData['Work Position Id'],
+    line: 'L1', // Assuming lineDetails is defined somewhere
+    isActive: true,
+    deletedAt: null,
+  };
+  on;
+  sampleData
+    .create(newRow)
+    .then(() => {
+      rowIndex++;
+    })
+    .catch((error) => {
+      console.error('Error inserting row:', error);
+    });
+}
+
+// Schedule the insertion of data every 14 seconds
+cron.schedule('*/14 * * * * *', () => {
+  insertDataAndUpdateTime();
+});
+
 sequelize
   .sync({ logging: false })
   .then(() => {
