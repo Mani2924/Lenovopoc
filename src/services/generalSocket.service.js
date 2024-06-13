@@ -1,53 +1,41 @@
-const { general } = require('../../models');
-const { Op, fn, col, literal } = require('sequelize');
+const { sampleData } = require('../../models/index');
+const { Op } = require('sequelize');
+const moment = require('moment-timezone');
 
 async function getFilteredData() {
-
   try {
-    const nowIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
-    const now = new Date(nowIST);
+    // Get current time in IST
+    const nowIST = moment.tz('Asia/Kolkata');
+    
+    // Calculate start and end hour for the current hour in IST
+    const startHourIST = nowIST.clone().startOf('hour');
+    const endHourIST = startHourIST.clone().add(1, 'hour');   
+    const startHourUTC = startHourIST.clone().utc().format();
+    const endHourUTC = endHourIST.clone().utc().format();
 
-    const currentHour = now.getHours();
-    const startHour = currentHour;
-    const endHour = currentHour + 1;
-
-    const data = await general.findAll({
-      attributes: [
-        [fn('EXTRACT', literal("HOUR FROM (d + INTERVAL '5 hours 30 minutes')")), 'hour'],
-        'line',
-        [fn('COUNT', col('*')), 'total_count']
-      ],
+    const totalCount = await sampleData.count({
       where: {
-        stage: 'FVT',
-        d: {
-          [Op.gte]: new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, 0, 0),
-          [Op.lt]: new Date(now.getFullYear(), now.getMonth(), now.getDate(), endHour, 0, 0),
+        Op_Finish_Time: {
+          [Op.gte]: startHourUTC,
+          [Op.lt]: endHourUTC
         },
       },
-      group: ['hour', 'line'],
-      order: [[literal('hour'), 'ASC']],
     });
 
-    const result = data.reduce((acc, row) => {
-      const hour = parseInt(row.getDataValue('hour'), 10);
-      const line = row.getDataValue('line');
-      const count = row.getDataValue('total_count');
+    // Extract the hour component in 'HH' format (24-hour clock)
+    const startHour = startHourIST.format('HH');
+    const endHour = endHourIST.format('HH');
 
-      const hourRange = `${startHour}-${endHour}`;
-      if (!acc[hourRange]) {
-        acc[hourRange] = [];
-      }
-      acc[hourRange].push({ line, total_count: count });
-
-      return acc;
-    }, {});
-    return result;
+    return {
+      totalCount,
+      startHour,
+      endHour
+    };
   } catch (error) {
+    console.error("Error fetching total count data:", error);
     throw error;
   }
 }
-
-
 
 module.exports = {
   getFilteredData,

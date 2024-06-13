@@ -105,12 +105,18 @@ io.on('connection', (socket) => {
 });
 
 // Cron job to emit data every 15 seconds
-cron.schedule('* * * * * *', async () => {
+cron.schedule('** * * * * *', async () => {
   try {
     const data = await getFilteredData();
-    io.emit('dataUpdate', data);
-  } catch (error) {}
+    io.emit('dataUpdate', {
+      totalCount: data.totalCount,
+      timeRange: `${data.startHour} - ${data.endHour}`
+    });
+  } catch (error) {
+    console.error("Error while emitting data:", error);
+  }
 });
+
 
 // connect database
 
@@ -138,7 +144,7 @@ function insertDataAndUpdateTime() {
     dest_Operation: rowData['Dest Operation'],
     Associate_Id: rowData['Associate Id'],
     Mfg_Order_Id: rowData['Mfg Order Id'],
-    Product_Id: rowData['Product Id'],
+    product_id: rowData['Product Id'],
     Serial_Num: rowData['Serial Num'],
     Operation_Id: rowData['Operation Id'],
     Work_Position_Id: rowData['Work Position Id'],
@@ -146,7 +152,6 @@ function insertDataAndUpdateTime() {
     isActive: true,
     deletedAt: null,
   };
-  on;
   sampleData
     .create(newRow)
     .then(() => {
