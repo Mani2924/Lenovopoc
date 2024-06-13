@@ -371,7 +371,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
     // shift 1 (1st 6hrs) or shift 2 (2nd 6hrs)
     const { line, duration, shift } = req.query;
 
-    // const redisInstance = new RedisDB();
+    const redisInstance = new RedisDB();
 
     const currentDate = new Date();
 
@@ -442,18 +442,20 @@ userController.previousShiftDate2 = async (req, res, next) => {
       }
     }
 
-    // let shiftData = await redisInstance.getValueFromRedis(
-    //   `${line}-${startDate}-${endDate}-${startTime}-${endTime}`,
-    // );
-    // if (shiftData) {
-    //   shiftData = JSON.parse(shiftData);
-    //   console.log('from redis');
-    //   res.response = {
-    //     code: 200,
-    //     data: { status: 'Ok', message: rescodes?.success, data: shiftData },
-    //   };
-    //   return next();
-    // }
+    let shiftData = await redisInstance.getValueFromRedis(
+      !shift
+        ? `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}`
+        : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`,
+    );
+    if (shiftData) {
+      shiftData = JSON.parse(shiftData);
+      console.log('from redis');
+      res.response = {
+        code: 200,
+        data: { status: 'Ok', message: rescodes?.success, data: shiftData },
+      };
+      return next();
+    }
 
     let general = await generalService.getShiftRecord2(
       line,
@@ -463,15 +465,6 @@ userController.previousShiftDate2 = async (req, res, next) => {
       endTime,
       condition,
     );
-
-    // storing data in redis
-    // if (general?.length) {
-    //   let appData = JSON.stringify(general);
-    //   redisInstance.setValueInRedis(
-    //     `${line}-${startDate}-${endDate}-${startTime}-${endTime}`,
-    //     appData,
-    //   );
-    // }
 
     general = general.map((itm) => {
       let { x } = itm;
@@ -486,12 +479,26 @@ userController.previousShiftDate2 = async (req, res, next) => {
       };
     });
 
+    // storing data in redis
+    if (general?.length) {
+      let appData = JSON.stringify({
+        data: general,
+        totalCount: general?.length,
+      });
+      redisInstance.setValueInRedis(
+        !shift
+          ? `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}`
+          : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`,
+        appData,
+      );
+    }
+
     res.response = {
       code: 200,
       data: {
         status: 'Ok',
         message: rescodes?.success,
-        data: { general, totalCount: general?.length || 0 },
+        data: { data: general, totalCount: general?.length || 0 },
       },
     };
 
