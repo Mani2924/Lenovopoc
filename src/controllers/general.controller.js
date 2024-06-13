@@ -473,7 +473,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
     //   );
     // }
 
-    general = general.map((itm) => {
+    general = general.data.map((itm) => {
       let { x } = itm;
       const aa = x.split(':');
       const ab = aa[2].split(' - ')[1];
@@ -550,6 +550,7 @@ userController.currentShiftData2 = async (req, res, next) => {
       endTime,
       condition,
     );
+
     const convertTimeToRange = (time) => {
       const [hour] = time.split(':');
       let currentHour = parseInt(hour);
@@ -565,7 +566,7 @@ userController.currentShiftData2 = async (req, res, next) => {
     };
 
     // Update the 'x' field in each object
-    let updatedData = general.map((item) => {
+    let updatedData = general.data.map((item) => {
       return {
         ...item,
         x: convertTimeToRange(item.x),
