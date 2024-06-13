@@ -105,12 +105,18 @@ io.on('connection', (socket) => {
 });
 
 // Cron job to emit data every 15 seconds
-cron.schedule('* * * * * *', async () => {
+cron.schedule('** * * * * *', async () => {
   try {
     const data = await getFilteredData();
-    io.emit('dataUpdate', data);
-  } catch (error) {}
+    io.emit('dataUpdate', {
+      totalCount: data.totalCount,
+      timeRange: `${data.startHour} - ${data.endHour}`
+    });
+  } catch (error) {
+    console.error("Error while emitting data:", error);
+  }
 });
+
 
 // connect database
 

@@ -13,6 +13,7 @@
       });
 
       socket.on('dataUpdate', (data) => {
+        console.log("data",data);
         updateUI(data);
       });
 
