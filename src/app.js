@@ -81,7 +81,7 @@ cron.schedule('*/15 * * * * *', async () => {
   // await generalService.hourlyData2();
 
   // await generalService.currentShiftToRedis();
-  await generalService.sampleDateCountHourlyToWeeklyData();
+  // await generalService.sampleDateCountHourlyToWeeklyData();
 });
 
 cron.schedule('1 * * * *', async () => {
