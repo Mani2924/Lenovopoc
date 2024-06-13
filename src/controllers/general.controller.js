@@ -488,7 +488,11 @@ userController.previousShiftDate2 = async (req, res, next) => {
 
     res.response = {
       code: 200,
-      data: { status: 'Ok', message: rescodes?.success, data: general },
+      data: {
+        status: 'Ok',
+        message: rescodes?.success,
+        data: { general, totalCount: general?.length || 0 },
+      },
     };
 
     return next();
@@ -582,7 +586,11 @@ userController.currentShiftData2 = async (req, res, next) => {
 
     res.response = {
       code: 200,
-      data: { status: 'Ok', message: rescodes?.success, data: updatedData },
+      data: {
+        status: 'Ok',
+        message: rescodes?.success,
+        data: { updatedData, totalCount: updatedData?.length },
+      },
     };
 
     return next();
