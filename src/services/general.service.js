@@ -404,19 +404,19 @@ ORDER BY
 generalService.sampleDateCountHourlyToWeeklyData = async (data) => {
   try {
     const query = `
-    	SELECT
-        "product_id",
-        "line",
+    SELECT
+    "product_id",
+    "line",
         DATE_TRUNC('hour', "Op_Finish_Time")::DATE AS op_date,
         TO_CHAR(DATE_TRUNC('hour', "Op_Finish_Time"), 'HH24:MI:SS') AS start_time,
         TO_CHAR(DATE_TRUNC('hour', "Op_Finish_Time") + INTERVAL '1 hour', 'HH24:MI:SS') AS end_time,
-        COUNT(*) AS totalcount
+    COUNT(*) AS totalcount
     FROM
-        public."sampleData"
+    public."sampleData"
     GROUP BY
         "product_id", "line", op_date, start_time, end_time
     ORDER BY
-        op_date, start_time, "line";
+    op_date, start_time, "line";
     `;
 
     const results = await db.sequelize.query(query, {
@@ -591,6 +591,31 @@ generalService.hourlyData2 = async () => {
     console.log('formattedPreviousHourEnd', formattedPreviousHourEnd);
 
     console.log('hourlyData count', result?.length);
+    // console.log('hourlyData count', result);
+
+    const target = [
+      { '12JDS0AW00': 2 },
+      { '12JDS0AX00': 4 },
+      { '12LMS15K00': 13 },
+      { '11T5S30S00': 30 },
+      { '11SYS2D600': 82 },
+      { '21JKS14D00': 33 },
+      { '12LM002QIH': 1 },
+      { '11SYS2JF00': 6 },
+      { '11SYS2JT00': 8 },
+      { '82TSA0FVIH': 67 },
+      { '12JES2CQ00': 1 },
+      { '11T5S0H10N': 9 },
+      { '11SFS0G800': 1 },
+      { '82TTA0AAIN': 83 },
+    ];
+
+    const targetLookup = {};
+
+    target.forEach((item) => {
+      const [key, value] = Object.entries(item)[0];
+      targetLookup[key] = value;
+    });
 
     if (result?.length > 0) {
       const a = result.map((item) => {
@@ -614,7 +639,7 @@ generalService.hourlyData2 = async () => {
         // const formattedDate = dateInTimeZone.format('YYYY-MM-DD');
         const formattedTime = dateInTimeZone.format('HH:mm:ss');
 
-        // const target = 100
+        const target = targetLookup[product_id];
 
         return {
           op_date: timestamp,
@@ -630,9 +655,9 @@ generalService.hourlyData2 = async () => {
           product_id,
           line,
           totalcount: +totalCount,
-          // target,
-          // comments:
-          //   +totalCount >= target ? 'Target Completed' : 'Target Not Completed',
+          target,
+          comments:
+            +totalCount >= target ? 'Target Completed' : 'Target Not Completed',
         };
       });
 
