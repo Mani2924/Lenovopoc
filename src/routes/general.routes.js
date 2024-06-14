@@ -7,6 +7,7 @@ const {
   fileUpload,
   previousShiftDate2,
   currentShiftData2,
+  targetCalculation,
 } = require('../controllers/general.controller');
 const multer = require('multer');
 
@@ -25,5 +26,7 @@ router.get('/shift2', currentShiftData2);
 
 router.put('/:id', updateCurrentShiftData);
 router.route('/importExcel').post(upload.single('file'), fileUpload);
+
+router.post('/insertTarget', targetCalculation);
 
 module.exports = router;

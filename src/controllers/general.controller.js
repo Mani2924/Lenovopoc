@@ -12,7 +12,7 @@ const path = require('path');
 
 const xlsx = require('xlsx');
 const { DataTypes } = require('sequelize');
-const { sampleData } = require('../../models/index');
+const { sampleData, oldData } = require('../../models/index');
 
 const moment = require('moment');
 
@@ -348,8 +348,14 @@ userController.fileUpload = async (req, res, next) => {
 
     // console.log('allData', allData[0]);
 
+    // if (allData.length > 0) {
+    //   await sampleData.bulkCreate(allData, {
+    //     ignoreDuplicates: true,
+    //   });
+    // }
+
     if (allData.length > 0) {
-      await sampleData.bulkCreate(allData, {
+      await oldData.bulkCreate(allData, {
         ignoreDuplicates: true,
       });
     }
@@ -591,6 +597,52 @@ userController.currentShiftData2 = async (req, res, next) => {
       };
     });
 
+    let repeatedXValues = [];
+    let nonRepeatedXValues = [];
+
+    updatedData.forEach((item, index) => {
+      const firstIndex = updatedData.findIndex((el) => el.x === item.x);
+      if (
+        firstIndex !== index &&
+        !repeatedXValues.some((el) => el.x === item.x)
+      ) {
+        const repeatedItems = updatedData.filter((el) => el.x === item.x);
+        const combinedY = repeatedItems.reduce((sum, el) => sum + el.y, 0);
+        const combinedProductIds = repeatedItems
+          .map((el) => el.product_id)
+          .join(',');
+        const combinedTarget = repeatedItems.reduce(
+          (sum, el) => sum + el.target,
+          0,
+        );
+        const newItem = {
+          ...item,
+          y: combinedY,
+          product_id: combinedProductIds,
+          target: combinedTarget,
+        };
+        repeatedXValues.push(newItem);
+
+        // Remove all occurrences of items with the same x value from both arrays
+        // repeatedXValues = repeatedXValues.filter((el) => el.x !== item.x);
+        nonRepeatedXValues = nonRepeatedXValues.filter((el) => el.x !== item.x);
+      } else if (
+        !repeatedXValues.some((el) => el.x === item.x) &&
+        !nonRepeatedXValues.some((el) => el.x === item.x)
+      ) {
+        nonRepeatedXValues.push(item);
+      }
+    });
+
+    // console.log('repeatedXValues', repeatedXValues);
+    // console.log('nonRepeatedXValues', nonRepeatedXValues);
+
+    // const result = repeatedXValues.concat(nonRepeatedXValues);
+
+    updatedData = repeatedXValues.concat(nonRepeatedXValues);
+
+    // console.log('result', result);
+
     if (duration === '6hrs' && shift === '1st') {
       updatedData = updatedData.slice(0, 6);
     } else if (duration === '6hrs' && shift === '2nd') {
@@ -605,6 +657,42 @@ userController.currentShiftData2 = async (req, res, next) => {
         status: 'Ok',
         message: rescodes?.success,
         data: { updatedData, totalCount: updatedData?.length },
+      },
+    };
+
+    return next();
+  } catch (error) {
+    logger.error(error);
+    res.response = {
+      code: 400,
+      data: { status: 'Error', message: rescodes?.wentWrong },
+    };
+    return next();
+  }
+};
+
+userController.targetCalculation = async (req, res, next) => {
+  try {
+    const eachDayTargetByModel = await generalService.getProductModes();
+
+    if (eachDayTargetByModel == null) {
+      res.response = {
+        code: 400,
+        data: { status: 'Error', message: rescodes?.wentWrong },
+      };
+      return next();
+    }
+
+    const storeTargetValue = await generalService.createTargetValue(
+      eachDayTargetByModel,
+    );
+
+    res.response = {
+      code: 200,
+      data: {
+        status: 'Ok',
+        message: rescodes?.success,
+        data: storeTargetValue,
       },
     };
 

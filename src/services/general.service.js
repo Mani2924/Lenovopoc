@@ -8,6 +8,8 @@ const {
   uphtarget,
   weeklyData1,
   sampleData,
+  oldData,
+  modelTarget,
 } = require('../../models/index');
 const db = require('../../models/index');
 
@@ -665,6 +667,84 @@ generalService.hourlyData2 = async () => {
     }
   } catch (err) {
     console.log(err);
+  }
+};
+
+async function getDailyCountByProductId() {
+  try {
+    const result = await oldData.findAll({
+      attributes: [
+        [fn('DATE', col('Op_Finish_Time')), 'date'],
+        'product_id',
+        [fn('COUNT', col('product_id')), 'count'],
+      ],
+      where: {
+        line: 'L1',
+      },
+      group: ['date', 'product_id'],
+      order: [
+        ['date', 'ASC'],
+        ['product_id', 'ASC'],
+      ],
+    });
+
+    return result.map((entry) => ({
+      date: entry.get('date'),
+      product_id: entry.get('product_id'),
+      count: entry.get('count'),
+    }));
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+}
+
+function calculateMode(values) {
+  const frequencyMap = values.reduce((acc, value) => {
+    acc[value] = (acc[value] || 0) + 1;
+    return acc;
+  }, {});
+
+  let maxFrequency = 0;
+  let mode = null;
+  for (const [value, frequency] of Object.entries(frequencyMap)) {
+    if (frequency > maxFrequency) {
+      maxFrequency = frequency;
+      mode = value;
+    }
+  }
+  return mode;
+}
+
+generalService.getProductModes = async () => {
+  const dailyCounts = await getDailyCountByProductId();
+
+  // Group counts by product_id
+  const productCounts = dailyCounts.reduce((acc, { product_id, count }) => {
+    if (!acc[product_id]) {
+      acc[product_id] = [];
+    }
+    acc[product_id].push(count);
+    return acc;
+  }, {});
+
+  const productModes = Object.entries(productCounts).map(
+    ([product_id, counts]) => ({
+      product_id,
+      target: calculateMode(counts),
+    }),
+  );
+
+  return productModes;
+};
+
+generalService.createTargetValue = async (data) => {
+  try {
+    const value = await modelTarget.bulkCreate(data);
+    return value;
+  } catch (error) {
+    console.error('Error creating target values:', error);
+    throw error;
   }
 };
 
