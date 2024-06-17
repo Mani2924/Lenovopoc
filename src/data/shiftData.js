@@ -55,6 +55,22 @@ const shiftDetails = {
   generalShiftDuration: '8hrs',
 };
 
+const firstShift = {
+  shift: '1st',
+  startTime: '09:00:00',
+  endTime: '18:00:00',
+  condition: 'AND',
+  duration: '9hrs',
+};
+
+const secondShift = {
+  shift: '2nd',
+  startTime: '21:00:00',
+  endTime: '06:00:00',
+  condition: 'AND',
+  duration: '9hrs',
+};
+
 module.exports = {
   todayFirstShift,
   todaySecondShift,
@@ -64,4 +80,6 @@ module.exports = {
   yesterdayGenaralShift,
   //   shiftDuration,
   shiftDetails,
+  firstShift,
+  secondShift,
 };

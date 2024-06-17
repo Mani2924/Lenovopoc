@@ -5,13 +5,13 @@ const rescodes = require('../utility/rescodes');
 const logger = require('../config/logger');
 
 const RedisDB = require('../config/redis');
+const DateFormat = require('../utility/dateFormat');
 const XLSX = require('xlsx');
 
 const emailService = require('../config/emailConfig');
 const path = require('path');
 
 const xlsx = require('xlsx');
-const { DataTypes } = require('sequelize');
 const { sampleData, oldData } = require('../../models/index');
 
 const moment = require('moment');
@@ -24,6 +24,8 @@ const {
   yesterdayGenaralShift,
   yesterdaySecondShift,
   shiftDetails,
+  firstShift,
+  secondShift,
 } = require('../data/shiftData');
 
 const userController = {};
@@ -611,9 +613,12 @@ userController.currentShiftData2 = async (req, res, next) => {
         const combinedProductIds = repeatedItems
           .map((el) => el.product_id)
           .join(',');
-        const combinedTarget = repeatedItems.reduce(
-          (sum, el) => sum + el.target,
-          0,
+        // const combinedTarget = repeatedItems.reduce(
+        //   (sum, el) => sum + el.target,
+        //   0,
+        // );
+        const combinedTarget = Math.min(
+          ...repeatedItems.map((val) => val.target),
         );
         const newItem = {
           ...item,
@@ -693,6 +698,141 @@ userController.targetCalculation = async (req, res, next) => {
         status: 'Ok',
         message: rescodes?.success,
         data: storeTargetValue,
+      },
+    };
+
+    return next();
+  } catch (error) {
+    logger.error(error);
+    res.response = {
+      code: 400,
+      data: { status: 'Error', message: rescodes?.wentWrong },
+    };
+    return next();
+  }
+};
+
+userController.shiftDataBasedOnDate = async (req, res, next) => {
+  try {
+    // duration 6hrs or 8hrs
+    // shift 1 (1st 6hrs) or shift 2 (2nd 6hrs)
+    const { line, duration, shift, date } = req.query;
+
+    const currentDate = new DateFormat(date);
+    currentDate.setStartOfDay();
+    console.log('setStartOfDay', currentDate);
+
+    // currentDate.addHours(5);
+    currentDate.setHours(2);
+
+    console.log('currentDate', currentDate);
+    // console.log('currentDate', currentDate.getHours());
+
+    res.response = {
+      code: 200,
+      data: {
+        status: 'Ok',
+        message: rescodes?.success,
+        data: 'success',
+      },
+    };
+
+    return next();
+  } catch (error) {
+    logger.error(error);
+    res.response = {
+      code: 400,
+      data: { status: 'Error', message: rescodes?.wentWrong },
+    };
+    return next();
+  }
+};
+
+userController.displayPreviousTwoShiftsData = async (req, res, next) => {
+  try {
+    const { line, duration, date } = req.query;
+
+    const currentDate = new Date();
+    // const currentDate = new Date(date);
+
+    currentDate.setDate(currentDate.getDate() - 1);
+
+    let currentDateString = currentDate.toISOString().split('T')[0];
+
+    let startTime;
+    let endTime;
+    let condition = 'AND';
+    let startDate = currentDateString;
+    let endDate = currentDateString;
+    let condition2 = 'AND start_time < end_time';
+
+    if (duration === shiftDetails?.shiftDuration) {
+      startTime = todayFirstShift?.startTime;
+      endTime = todayFirstShift?.endTime;
+    } else {
+      startTime = todayGenaralShift?.startTime;
+      endTime = todayGenaralShift?.endTime;
+    }
+
+    let general = await generalService.getShiftRecord3(
+      line,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      condition,
+      condition2,
+    );
+
+    currentDate.setDate(currentDate.getDate() + 1);
+    endDate = currentDate.toISOString().split('T')[0];
+    condition2 = 'AND end_time > start_time';
+
+    if (duration === shiftDetails?.shiftDuration) {
+      startTime = yesterdayFirstShift?.startTime;
+      endTime = yesterdayFirstShift?.endTime;
+      condition = yesterdayFirstShift?.condition;
+    } else {
+      startTime = yesterdayGenaralShift?.startTime;
+      endTime = yesterdayGenaralShift?.endTime;
+      condition = yesterdayGenaralShift?.condition;
+    }
+
+    let general2 = await generalService.getShiftRecord3(
+      line,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      condition,
+      condition2,
+    );
+    const convert = (general) => {
+      return general.map((itm) => {
+        let { x } = itm;
+        const aa = x.split(':');
+        const ab = aa[2].split(' - ')[1];
+        x = `${aa[0] < 12 ? aa[0] : aa[0] - 12} - ${ab < 12 ? ab : ab - 12} `;
+        // x = `${aa[0]} - ${ab} `;
+
+        return {
+          ...itm,
+          x,
+        };
+      });
+    };
+
+    const result = {
+      shiftA: convert(general),
+      shiftB: convert(general2),
+      totalCount: general?.length + general2?.length || 0,
+    };
+    res.response = {
+      code: 200,
+      data: {
+        status: 'Ok',
+        message: rescodes?.success,
+        data: result,
       },
     };
 

@@ -8,6 +8,8 @@ const {
   previousShiftDate2,
   currentShiftData2,
   targetCalculation,
+  shiftDataBasedOnDate,
+  displayPreviousTwoShiftsData,
 } = require('../controllers/general.controller');
 const multer = require('multer');
 
@@ -23,6 +25,9 @@ router.get('/shiftdata', shiftData);
 router.get('/previousshiftdata', previousShiftDate2);
 router.get('/shift', currentShiftData);
 router.get('/shift2', currentShiftData2);
+router.get('/', shiftDataBasedOnDate);
+
+router.get('/displayprevioustwoshiftsdata', displayPreviousTwoShiftsData);
 
 router.put('/:id', updateCurrentShiftData);
 router.route('/importExcel').post(upload.single('file'), fileUpload);
