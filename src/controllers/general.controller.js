@@ -644,7 +644,8 @@ userController.currentShiftData2 = async (req, res, next) => {
 
     // const result = repeatedXValues.concat(nonRepeatedXValues);
 
-    updatedData = repeatedXValues.concat(nonRepeatedXValues);
+    // updatedData = repeatedXValues.concat(nonRepeatedXValues);
+    updatedData = nonRepeatedXValues.concat(repeatedXValues);
 
     // console.log('result', result);
 
@@ -750,7 +751,7 @@ userController.shiftDataBasedOnDate = async (req, res, next) => {
 
 userController.displayPreviousTwoShiftsData = async (req, res, next) => {
   try {
-    const { line, duration, date } = req.query;
+    const { line, duration, date, shift } = req.query;
 
     const currentDate = new Date();
     // const currentDate = new Date(date);
@@ -766,9 +767,9 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
     let endDate = currentDateString;
     let condition2 = 'AND start_time < end_time';
 
-    if (duration === shiftDetails?.shiftDuration) {
-      startTime = todayFirstShift?.startTime;
-      endTime = todayFirstShift?.endTime;
+    if (duration === '6hrs') {
+      startTime = firstShift?.startTime;
+      endTime = firstShift?.endTime;
     } else {
       startTime = todayGenaralShift?.startTime;
       endTime = todayGenaralShift?.endTime;
@@ -788,10 +789,10 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
     endDate = currentDate.toISOString().split('T')[0];
     condition2 = 'AND end_time > start_time';
 
-    if (duration === shiftDetails?.shiftDuration) {
-      startTime = yesterdayFirstShift?.startTime;
-      endTime = yesterdayFirstShift?.endTime;
-      condition = yesterdayFirstShift?.condition;
+    if (duration === '6hrs') {
+      startTime = secondShift?.startTime;
+      endTime = secondShift?.endTime;
+      condition = secondShift?.condition;
     } else {
       startTime = yesterdayGenaralShift?.startTime;
       endTime = yesterdayGenaralShift?.endTime;
@@ -808,7 +809,8 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       condition2,
     );
     const convert = (general) => {
-      return general.map((itm) => {
+      let updatedData;
+      const data = general.map((itm) => {
         let { x } = itm;
         const aa = x.split(':');
         const ab = aa[2].split(' - ')[1];
@@ -820,19 +822,30 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
           x,
         };
       });
-    };
 
-    const result = {
-      shiftA: convert(general),
-      shiftB: convert(general2),
-      totalCount: general?.length + general2?.length || 0,
+      if (duration === '6hrs' && shift === '1st') {
+        updatedData = data.slice(0, 6);
+      } else if (duration === '6hrs' && shift === '2nd') {
+        updatedData = data.slice(6, 12);
+      } else {
+        updatedData = data.slice(0, 9);
+      }
+
+      return updatedData;
     };
+    const shiftA = convert(general);
+    const shiftB = convert(general2);
+
     res.response = {
       code: 200,
       data: {
         status: 'Ok',
         message: rescodes?.success,
-        data: result,
+        data: {
+          shiftA,
+          shiftB,
+          totalCount: shiftA?.length + shiftB?.length || 0,
+        },
       },
     };
 
