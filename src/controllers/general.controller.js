@@ -399,6 +399,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
     let condition = 'AND';
     let startDate = currentDateString;
     let endDate = currentDateString;
+    let condition2 = 'AND start_time < end_time';
 
     if (
       duration === shiftDetails?.shiftDuration &&
@@ -472,13 +473,17 @@ userController.previousShiftDate2 = async (req, res, next) => {
       startTime,
       endTime,
       condition,
+      condition2,
     );
 
     general = general.map((itm) => {
       let { x } = itm;
       const aa = x.split(':');
       const ab = aa[2].split(' - ')[1];
-      x = `${aa[0] < 12 ? aa[0] : aa[0] - 12} - ${ab < 12 ? ab : ab - 12} `;
+      // x = `${aa[0] < 12 ? aa[0] : aa[0] - 12} - ${ab < 12 ? ab : ab - 12} `;
+      x = `${aa[0] <= 12 ? (aa[0] === '00' ? '12' : aa[0]) : aa[0] - 12} - ${
+        ab <= 12 ? (ab === '00' ? '12' : ab) : ab - 12
+      }`;
       // x = `${aa[0]} - ${ab} `;
 
       return {
@@ -546,6 +551,7 @@ userController.currentShiftData2 = async (req, res, next) => {
     let endDate = currentDateString;
 
     let condition = 'AND';
+    let condition2 = 'AND start_time < end_time';
 
     if (currentTime >= '21:00:00' && currentTime < '09:00:00') {
       startDate = currentDateString;
@@ -568,6 +574,7 @@ userController.currentShiftData2 = async (req, res, next) => {
       startTime,
       endTime,
       condition,
+      condition2,
     );
 
     const convertTimeToRange = (time) => {
@@ -587,8 +594,8 @@ userController.currentShiftData2 = async (req, res, next) => {
       // return in 12 hrs duration
       let currentHourString = currentHour.toString().padStart(2, '0');
       return `${
-        currentHourString < 12 ? currentHourString : currentHourString - 12
-      } - ${nextHour < 12 ? nextHour : nextHour - 12}`;
+        currentHourString <= 12 ? currentHourString : currentHourString - 12
+      } - ${nextHour <= 12 ? nextHour : nextHour - 12}`;
     };
 
     // Update the 'x' field in each object
@@ -814,7 +821,11 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
         let { x } = itm;
         const aa = x.split(':');
         const ab = aa[2].split(' - ')[1];
-        x = `${aa[0] < 12 ? aa[0] : aa[0] - 12} - ${ab < 12 ? ab : ab - 12} `;
+
+        x = `${aa[0] <= 12 ? (aa[0] === '00' ? '12' : aa[0]) : aa[0] - 12} - ${
+          ab <= 12 ? (ab === '00' ? '12' : ab) : ab - 12
+        } `;
+
         // x = `${aa[0]} - ${ab} `;
 
         return {

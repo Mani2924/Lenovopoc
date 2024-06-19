@@ -483,6 +483,7 @@ generalService.getShiftRecord2 = async (
   startTime,
   endTime,
   condition,
+  condition2,
 ) => {
   const query = `
   SELECT
@@ -501,7 +502,7 @@ WHERE
   line = :line
   AND (
     (start_time >= :startTime AND DATE(op_date) = :startDate) ${condition}
-    (end_time <= :endTime AND DATE(op_date) = :endDate)
+    (end_time <= :endTime AND DATE(op_date) = :endDate)  ${condition2}
   )
 GROUP BY
   id,  -- Add id to the grouped fields
