@@ -10,6 +10,7 @@ const {
   targetCalculation,
   shiftDataBasedOnDate,
   displayPreviousTwoShiftsData,
+  getDownTime
 } = require('../controllers/general.controller');
 const multer = require('multer');
 
@@ -26,6 +27,7 @@ router.get('/previousshiftdata', previousShiftDate2);
 router.get('/shift', currentShiftData);
 router.get('/shift2', currentShiftData2);
 router.get('/', shiftDataBasedOnDate);
+router.get('/getDownTime', getDownTime);
 
 router.get('/displayprevioustwoshiftsdata', displayPreviousTwoShiftsData);
 

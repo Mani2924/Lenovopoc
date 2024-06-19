@@ -5,7 +5,7 @@ const rescodes = require('../utility/rescodes');
 const logger = require('../config/logger');
 
 const RedisDB = require('../config/redis');
-const DateFormat = require('../utility/dateFormat');
+// const DateFormat = require('../utility/dateFormat');
 const XLSX = require('xlsx');
 
 const emailService = require('../config/emailConfig');
@@ -868,6 +868,147 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       data: { status: 'Error', message: rescodes?.wentWrong },
     };
     return next();
+  }
+};
+
+const getPreviousTwoHoursIntervals = () => {
+  const now = new Date();
+  const end = new Date(now);
+  const start = new Date(now);
+
+  // Set the start time to two hours before the current time
+  start.setHours(start.getHours() - 2);
+
+  const formatTime = (date) => {
+    const hours = date.getHours() % 12 || 12;
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = date.getHours() >= 12 ? 'pm' : 'am';
+    return `${hours}:${minutes} ${ampm}`;
+  };
+
+  return {
+    start: formatTime(start),
+    end: formatTime(end),
+  };
+};
+
+
+
+const getLastTwoFullHoursIntervals = () => {
+  const now = new Date();
+  const end1 = new Date(now);
+  const end2 = new Date(now);
+
+  // Round down to the previous full hour for the end times
+  end1.setMinutes(0, 0, 0);
+  end2.setMinutes(0, 0, 0);
+
+  // Set the start times to one and two hours before the current full hour
+  end1.setHours(end1.getHours() - 1);
+  end2.setHours(end2.getHours() - 2);
+
+  const formatTime = (date) => {
+    const hours = date.getHours() % 12 || 12;
+    const ampm = date.getHours() >= 12 ? 'pm' : 'am';
+    return `${hours}:00 ${ampm}`;
+  };
+
+  const interval1 = `${formatTime(end2)} - ${formatTime(end1)}`;
+  const interval2 = `${formatTime(end1)} - ${formatTime(now)}`;
+
+  return [interval1, interval2];
+};
+
+userController.getDownTime = async (req, res, next) => {
+  try {
+    const { isShift, record } = req.query;
+    const now = new Date();
+    const currentHour = now.getHours();
+    let downtimeDetails = [];
+
+    if (isShift === 'false' || !isShift) {
+      if (record === 'true') {
+        downtimeDetails = [
+          {
+            interval: "03:00 - 04:00 pm",
+            downTime: '10 mins',
+            message: "Conveyor is stopped"
+          },
+          {
+            interval: "04:00 - 05:00 pm",
+            downTime: '20 mins',
+            message: "Part Failure"
+          },
+          {
+            interval: "05:00 - 06:00 pm",
+            downTime: '15 mins',
+            message: "No Load"
+          },
+          {
+            interval: "06:00 - 07:00 pm",
+            downTime: '10 mins',
+            message: "Operator trainer"
+          },
+          {
+            interval: "07:00 - 08:00 pm",
+            downTime: '07 mins',
+            message: "Production failure"
+          }
+        ];
+      } else {
+        // Return the standard downtime details
+        downtimeDetails = [
+          {
+            interval: "03:00 - 04:00 pm",
+            downTime: '10 mins',
+            message: "Conveyor is stopped"
+          },
+          {
+            interval: "04:00 - 05:00 pm",
+            downTime: '17 mins',
+            message: "Part Failure"
+          }
+        ];
+      }
+    } else if (isShift === 'true') {
+      if (currentHour === 9) {
+        downtimeDetails = [];
+      } else if (currentHour === 10) {
+        const [interval1] = getLastTwoFullHoursIntervals();
+        downtimeDetails = [
+          {
+            interval: interval1,
+            downTime: '17 mins',
+            message: "No Load"
+          }
+        ];
+      } else {
+        const [interval1, interval2] = getLastTwoFullHoursIntervals();
+        downtimeDetails = [
+          {
+            interval: interval1,
+            downTime: '10 mins',
+            message: "No Load"
+          },
+          {
+            interval: interval2,
+            downTime: '12 mins',
+            message: "Operator trainer"
+          }
+        ];
+      }
+    }
+
+    res.status(200).json({
+      code: 200,
+      data: downtimeDetails
+    });
+  } catch (error) {
+    res.status(400).json({
+      code: 400,
+      data: { status: 'Error', message: 'Something went wrong' }
+    });
+    return next(error);
   }
 };
 
