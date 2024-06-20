@@ -617,16 +617,15 @@ userController.currentShiftData2 = async (req, res, next) => {
         currentHour = 0;
       }
       let nextHour = (currentHour + 1) % 24; // Ensures the hour wraps around at 23
-      nextHour = nextHour.toString().padStart(2, "0");
 
-      // return in railway time
-      // return `${currentHour.toString().padStart(2, '0')} - ${nextHour}`;
+      // Format the hours for 12-hour clock with leading zeros
+      const currentHour12 = currentHour % 12 === 0 ? 12 : currentHour % 12;
+      const nextHour12 = nextHour % 12 === 0 ? 12 : nextHour % 12;
 
-      // return in 12 hrs duration
-      let currentHourString = currentHour.toString().padStart(2, "0");
-      return `${
-        currentHourString <= 12 ? currentHourString : currentHourString - 12
-      } - ${nextHour <= 12 ? nextHour : nextHour - 12}`;
+      const currentHourString = currentHour12.toString().padStart(2, "0");
+      const nextHourString = nextHour12.toString().padStart(2, "0");
+
+      return `${currentHourString} - ${nextHourString}`;
     };
 
     // Update the 'x' field in each object
@@ -684,6 +683,8 @@ userController.currentShiftData2 = async (req, res, next) => {
 
     // updatedData = repeatedXValues.concat(nonRepeatedXValues);
     updatedData = nonRepeatedXValues.concat(repeatedXValues);
+
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~",updatedData);
 
     // console.log('result', result);
 
