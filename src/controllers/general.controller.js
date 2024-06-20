@@ -1,20 +1,20 @@
-const generalService = require('../services/general.service');
+const generalService = require("../services/general.service");
 
-const rescodes = require('../utility/rescodes');
+const rescodes = require("../utility/rescodes");
 
-const logger = require('../config/logger');
+const logger = require("../config/logger");
 
-const RedisDB = require('../config/redis');
+const RedisDB = require("../config/redis");
 // const DateFormat = require('../utility/dateFormat');
-const XLSX = require('xlsx');
+const XLSX = require("xlsx");
 
-const emailService = require('../config/emailConfig');
-const path = require('path');
+const emailService = require("../config/emailConfig");
+const path = require("path");
 
-const xlsx = require('xlsx');
-const { sampleData, oldData } = require('../../models/index');
+const xlsx = require("xlsx");
+const { sampleData, oldData } = require("../../models/index");
 
-const moment = require('moment');
+const moment = require("moment");
 
 const {
   todayFirstShift,
@@ -27,7 +27,7 @@ const {
   shiftDetails,
   firstShift,
   secondShift,
-} = require('../data/shiftData');
+} = require("../data/shiftData");
 
 const userController = {};
 
@@ -41,20 +41,20 @@ userController.shiftData = async (req, res, next) => {
 
     const currentDate = new Date();
 
-    let currentDateString = currentDate.toISOString().split('T')[0];
+    let currentDateString = currentDate.toISOString().split("T")[0];
 
     const options = {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
       hour12: false,
     };
-    const currentTime = currentDate.toLocaleTimeString('en-GB', options);
+    const currentTime = currentDate.toLocaleTimeString("en-GB", options);
     // const currentTime = '08:00:00';
 
     let startTime;
     let endTime;
-    let condition = 'AND';
+    let condition = "AND";
     let startDate = currentDateString;
     let endDate = currentDateString;
 
@@ -76,7 +76,7 @@ userController.shiftData = async (req, res, next) => {
       endTime = todayGenaralShift?.endTime;
     }
 
-    if (currentTime >= '09:00:00' && currentTime < '21:00:00') {
+    if (currentTime >= "09:00:00" && currentTime < "21:00:00") {
       currentDate.setDate(currentDate.getDate() - 1);
 
       if (
@@ -98,25 +98,25 @@ userController.shiftData = async (req, res, next) => {
             : yesterdaySecondShift?.condition;
         startDate =
           shift === shiftDetails?.firstShift
-            ? currentDate.toISOString().split('T')[0]
+            ? currentDate.toISOString().split("T")[0]
             : currentDateString;
       } else {
         startTime = yesterdayGenaralShift?.startTime;
         endTime = yesterdayGenaralShift?.endTime;
         condition = yesterdayGenaralShift?.condition;
-        startDate = currentDate.toISOString().split('T')[0];
+        startDate = currentDate.toISOString().split("T")[0];
       }
     }
 
     let shiftData = await redisInstance.getValueFromRedis(
-      `${line}-${startDate}-${endDate}-${startTime}-${endTime}`,
+      `${line}-${startDate}-${endDate}-${startTime}-${endTime}`
     );
     if (shiftData) {
       shiftData = JSON.parse(shiftData);
-      console.log('from redis');
+      console.log("from redis");
       res.response = {
         code: 200,
-        data: { status: 'Ok', message: rescodes?.success, data: shiftData },
+        data: { status: "Ok", message: rescodes?.success, data: shiftData },
       };
       return next();
     }
@@ -127,7 +127,7 @@ userController.shiftData = async (req, res, next) => {
       endDate,
       startTime,
       endTime,
-      condition,
+      condition
     );
 
     // storing data in redis
@@ -135,13 +135,13 @@ userController.shiftData = async (req, res, next) => {
       let appData = JSON.stringify(general);
       redisInstance.setValueInRedis(
         `${line}-${startDate}-${endDate}-${startTime}-${endTime}`,
-        appData,
+        appData
       );
     }
 
     res.response = {
       code: 200,
-      data: { status: 'Ok', message: rescodes?.success, data: general },
+      data: { status: "Ok", message: rescodes?.success, data: general },
     };
 
     return next();
@@ -149,7 +149,7 @@ userController.shiftData = async (req, res, next) => {
     logger.error(error);
     res.response = {
       code: 400,
-      data: { status: 'Error', message: rescodes?.wentWrong },
+      data: { status: "Error", message: rescodes?.wentWrong },
     };
     return next();
   }
@@ -163,36 +163,36 @@ userController.currentShiftData = async (req, res, next) => {
 
     // const redisInstance = new RedisDB();
 
-    let currentDateString = currentDate.toISOString().split('T')[0];
+    let currentDateString = currentDate.toISOString().split("T")[0];
 
     const options = {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
       hour12: false,
     };
-    const currentTime = currentDate.toLocaleTimeString('en-GB', options);
+    const currentTime = currentDate.toLocaleTimeString("en-GB", options);
 
-    let startTime = '09:00:00';
-    let endTime = '21:00:00';
+    let startTime = "09:00:00";
+    let endTime = "21:00:00";
 
     let startDate = currentDateString;
     let endDate = currentDateString;
 
-    let condition = 'AND';
+    let condition = "AND";
 
-    if (currentTime >= '21:00:00' && currentTime < '09:00:00') {
+    if (currentTime >= "21:00:00" && currentTime < "09:00:00") {
       startDate = currentDateString;
 
       currentDate.setDate(currentDate.getDate() + 1);
-      currentDateString = currentDate.toISOString().split('T')[0];
+      currentDateString = currentDate.toISOString().split("T")[0];
 
       endDate = currentDateString;
 
-      startTime = '21:00:00';
-      endTime = '09:00:00';
+      startTime = "21:00:00";
+      endTime = "09:00:00";
 
-      condition = 'OR';
+      condition = "OR";
     }
 
     const general = await generalService.getShiftRecord(
@@ -201,10 +201,10 @@ userController.currentShiftData = async (req, res, next) => {
       endDate,
       startTime,
       endTime,
-      condition,
+      condition
     );
     const convertTimeToRange = (time) => {
-      const [hour] = time.split(':');
+      const [hour] = time.split(":");
       let currentHour = parseInt(hour);
 
       // Handle the case where the input hour is "24"
@@ -212,9 +212,9 @@ userController.currentShiftData = async (req, res, next) => {
         currentHour = 0;
       }
       let nextHour = (currentHour + 1) % 24; // Ensures the hour wraps around at 23
-      nextHour = nextHour.toString().padStart(2, '0');
+      nextHour = nextHour.toString().padStart(2, "0");
 
-      return `${currentHour.toString().padStart(2, '0')} - ${nextHour}`;
+      return `${currentHour.toString().padStart(2, "0")} - ${nextHour}`;
     };
 
     // Update the 'x' field in each object
@@ -227,7 +227,7 @@ userController.currentShiftData = async (req, res, next) => {
 
     res.response = {
       code: 200,
-      data: { status: 'Ok', message: rescodes?.success, data: updatedData },
+      data: { status: "Ok", message: rescodes?.success, data: updatedData },
     };
 
     return next();
@@ -235,7 +235,7 @@ userController.currentShiftData = async (req, res, next) => {
     logger.error(error);
     res.response = {
       code: 400,
-      data: { status: 'Error', message: rescodes?.wentWrong },
+      data: { status: "Error", message: rescodes?.wentWrong },
     };
     return next();
   }
@@ -251,20 +251,20 @@ userController.updateCurrentShiftData = async (req, res, next) => {
     if (!checkData) {
       res.response = {
         code: 404,
-        data: { status: 'Error', message: rescodes?.noData },
+        data: { status: "Error", message: rescodes?.noData },
       };
       return next();
     }
 
     const email = await generalService.getProductOwnerEmail(checkData.mt);
 
-    const templateData = { code: 123, verifyCode: '' };
-    const templateFilePath = path.join(__dirname, '../views/comingsoon.ejs');
+    const templateData = { code: 123, verifyCode: "" };
+    const templateFilePath = path.join(__dirname, "../views/comingsoon.ejs");
     const mail = await emailService.sendEmail(
       email?.trim(),
-      'Production Down time Alert',
+      "Production Down time Alert",
       templateFilePath,
-      templateData,
+      templateData
     );
 
     await generalService.update(id, comments);
@@ -272,9 +272,9 @@ userController.updateCurrentShiftData = async (req, res, next) => {
     res.response = {
       code: 200,
       data: {
-        status: 'Ok',
+        status: "Ok",
         message: rescodes?.success,
-        data: 'Updated Successfully',
+        data: "Updated Successfully",
       },
     };
 
@@ -284,7 +284,7 @@ userController.updateCurrentShiftData = async (req, res, next) => {
 
     res.response = {
       code: 400,
-      data: { status: 'Error', message: rescodes?.wentWrong },
+      data: { status: "Error", message: rescodes?.wentWrong },
     };
     return next();
   }
@@ -293,13 +293,13 @@ userController.updateCurrentShiftData = async (req, res, next) => {
 userController.fileUpload = async (req, res, next) => {
   try {
     const fileData = req.file.buffer;
-    const workbook = XLSX.read(fileData, { type: 'buffer' });
+    const workbook = XLSX.read(fileData, { type: "buffer" });
 
-    const sheetNames = ['Line 1', 'Line 2', 'Line 3'];
+    const sheetNames = ["Line 1", "Line 2", "Line 3"];
     const lineDetails = {
-      'Line 1': 'L1',
-      'Line 2': 'L2',
-      'Line 3': 'L3',
+      "Line 1": "L1",
+      "Line 2": "L2",
+      "Line 3": "L3",
     };
 
     let allData = [];
@@ -317,9 +317,9 @@ userController.fileUpload = async (req, res, next) => {
     // };
 
     const a = (itm) => {
-      let parsedDate = moment(itm, 'MM/DD/YY hh:mm A');
+      let parsedDate = moment(itm, "MM/DD/YY hh:mm A");
       parsedDate.date(12).month(5); // Setting date to 11th and month to June (index 5 represents June)
-      return parsedDate.format('MM/DD/YY hh:mm A');
+      return parsedDate.format("MM/DD/YY hh:mm A");
     };
     sheetNames.forEach((sheetName) => {
       if (workbook.SheetNames.includes(sheetName)) {
@@ -327,20 +327,20 @@ userController.fileUpload = async (req, res, next) => {
         const rawData = XLSX.utils.sheet_to_json(sheet);
         const data = rawData.map((row) => ({
           // Op_Finish_Time: row['Op Finish Time'],
-          Op_Finish_Time: a(row['Op Finish Time']),
+          Op_Finish_Time: a(row["Op Finish Time"]),
 
           // Op_Finish_Time: moment(
           //   new Date((row['Op Finish Time'] - (25567 + 2)) * 86400 * 1000),
           // )
           //   .utc()
           //   .format('YYYY-MM-DD HH:mm:ssZ'),
-          dest_Operation: row['Dest Operation'],
-          Associate_Id: row['Associate Id'],
-          Mfg_Order_Id: row['Mfg Order Id'],
-          product_id: row['Product Id'],
-          Serial_Num: row['Serial Num'],
-          Operation_Id: row['Operation Id'],
-          Work_Position_Id: row['Work Position Id'],
+          dest_Operation: row["Dest Operation"],
+          Associate_Id: row["Associate Id"],
+          Mfg_Order_Id: row["Mfg Order Id"],
+          product_id: row["Product Id"],
+          Serial_Num: row["Serial Num"],
+          Operation_Id: row["Operation Id"],
+          Work_Position_Id: row["Work Position Id"],
           line: lineDetails[sheetName],
           isActive: true,
           deletedAt: null,
@@ -363,12 +363,12 @@ userController.fileUpload = async (req, res, next) => {
       });
     }
 
-    res.send('Data inserted successfully');
+    res.send("Data inserted successfully");
   } catch (error) {
     logger.error(error);
     res.status(400).json({
-      status: 'Error',
-      message: 'Something went wrong',
+      status: "Error",
+      message: "Something went wrong",
     });
     return next();
   }
@@ -384,23 +384,31 @@ userController.previousShiftDate2 = async (req, res, next) => {
 
     const currentDate = new Date();
 
-    let currentDateString = currentDate.toISOString().split('T')[0];
+    let currentDateString = currentDate.toISOString().split("T")[0];
 
     const options = {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
       hour12: false,
     };
-    const currentTime = currentDate.toLocaleTimeString('en-GB', options);
+    const currentTime = currentDate.toLocaleTimeString("en-GB", options);
     // const currentTime = '08:00:00';
 
     let startTime;
     let endTime;
-    let condition = 'AND';
+    let condition = "AND";
     let startDate = currentDateString;
     let endDate = currentDateString;
-    let condition2 = 'AND start_time < end_time';
+    let condition2 = "AND start_time < end_time";
+
+    const formatTime = (time) => {
+      const [hours, minutes, seconds] = time.split(":");
+      return `${hours.padStart(2, "0")}:${minutes.padStart(
+        2,
+        "0"
+      )}:${seconds.padStart(2, "0")}`;
+    };
 
     if (
       duration === shiftDetails?.shiftDuration &&
@@ -409,18 +417,18 @@ userController.previousShiftDate2 = async (req, res, next) => {
     ) {
       startTime =
         shift === shiftDetails?.firstShift
-          ? todayFirstShift?.startTime
-          : todaySecondShift?.startTime;
+          ? formatTime(todayFirstShift?.startTime)
+          : formatTime(todaySecondShift?.startTime);
       endTime =
         shift === shiftDetails?.firstShift
-          ? todayFirstShift?.endTime
-          : todaySecondShift?.endTime;
+          ? formatTime(todayFirstShift?.endTime)
+          : formatTime(todaySecondShift?.endTime);
     } else {
-      startTime = todayGenaralShift?.startTime;
-      endTime = todayGenaralShift?.endTime;
+      startTime = formatTime(todayGenaralShift?.startTime);
+      endTime = formatTime(todayGenaralShift?.endTime);
     }
 
-    if (currentTime >= '09:00:00' && currentTime < '21:00:00') {
+    if (currentTime >= "09:00:00" && currentTime < "21:00:00") {
       currentDate.setDate(currentDate.getDate() - 1);
 
       if (
@@ -428,49 +436,48 @@ userController.previousShiftDate2 = async (req, res, next) => {
         (shift === shiftDetails?.firstShift ||
           shift === shiftDetails?.secondShift)
       ) {
-
         startTime =
           shift === shiftDetails?.firstShift
-            ? yesterdayFirstShift?.startTime
-            : yesterdaySecondShift?.startTime;
+            ? formatTime(yesterdayFirstShift?.startTime)
+            : formatTime(yesterdaySecondShift?.startTime);
         endTime =
           shift === shiftDetails?.firstShift
-            ? yesterdayFirstShift?.endTime
-            : yesterdaySecondShift?.endTime;
+            ? formatTime(yesterdayFirstShift?.endTime)
+            : formatTime(yesterdaySecondShift?.endTime);
         condition =
           shift === shiftDetails?.firstShift
             ? yesterdayFirstShift?.condition
             : yesterdaySecondShift?.condition;
         startDate =
           shift === shiftDetails?.firstShift
-            ? currentDate.toISOString().split('T')[0]
+            ? currentDate.toISOString().split("T")[0]
             : currentDateString;
       } else {
-        if(duration === '9hrs'){
-          startTime = yesterdayGenaralShift?.startTime;
-          endTime = yesterdayGenaralShift?.endTime;
+        if (duration === "9hrs") {
+          startTime = formatTime(yesterdayGenaralShift?.startTime);
+          endTime = formatTime(yesterdayGenaralShift?.endTime);
           condition = yesterdayGenaralShift?.condition;
-          startDate = currentDate.toISOString().split('T')[0];
-        }else{
-          startTime = yesterdayTwileShift?.startTime;
-          endTime = yesterdayTwileShift?.endTime;
+          startDate = currentDate.toISOString().split("T")[0];
+        } else {
+          startTime = formatTime(yesterdayTwileShift?.startTime);
+          endTime = formatTime(yesterdayTwileShift?.endTime);
           condition = yesterdayTwileShift?.condition;
-          startDate = currentDate.toISOString().split('T')[0];
-        }  
+          startDate = currentDate.toISOString().split("T")[0];
+        }
       }
     }
 
     let shiftData = await redisInstance.getValueFromRedis(
       !shift
         ? `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}`
-        : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`,
+        : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`
     );
     if (shiftData) {
       shiftData = JSON.parse(shiftData);
-      console.log('from redis');
+      console.log("from redis");
       res.response = {
         code: 200,
-        data: { status: 'Ok', message: rescodes?.success, data: shiftData },
+        data: { status: "Ok", message: rescodes?.success, data: shiftData },
       };
       return next();
     }
@@ -482,17 +489,32 @@ userController.previousShiftDate2 = async (req, res, next) => {
       startTime,
       endTime,
       condition,
-      condition2,
+      condition2
     );
 
     general = general.map((itm) => {
       let { x } = itm;
-      const aa = x.split(':');
-      const ab = aa[2].split(' - ')[1];
+      const aa = x.split(":");
+      const ab = aa[2].split(" - ")[1];
       // x = `${aa[0] < 12 ? aa[0] : aa[0] - 12} - ${ab < 12 ? ab : ab - 12} `;
-      x = `${aa[0] <= 12 ? (aa[0] === '00' ? '12' : aa[0]) : aa[0] - 12} - ${
-        ab <= 12 ? (ab === '00' ? '12' : ab) : ab - 12
-      }`;
+      const startHour = aa[0].padStart(2, "0");
+      const startFormatted =
+        startHour <= 12
+          ? startHour === "00"
+            ? "12"
+            : startHour
+          : (startHour - 12).toString().padStart(2, "0");
+
+      const endHour = ab.padStart(2, "0");
+      const endFormatted =
+        endHour <= 12
+          ? endHour === "00"
+            ? "12"
+            : endHour
+          : (endHour - 12).toString().padStart(2, "0");
+
+      x = `${startFormatted} - ${endFormatted}`;
+
       // x = `${aa[0]} - ${ab} `;
 
       return {
@@ -511,14 +533,14 @@ userController.previousShiftDate2 = async (req, res, next) => {
         !shift
           ? `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}`
           : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`,
-        appData,
+        appData
       );
     }
 
     res.response = {
       code: 200,
       data: {
-        status: 'Ok',
+        status: "Ok",
         message: rescodes?.success,
         data: { data: general, totalCount: general?.length || 0 },
       },
@@ -529,7 +551,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
     logger.error(error);
     res.response = {
       code: 400,
-      data: { status: 'Error', message: rescodes?.wentWrong },
+      data: { status: "Error", message: rescodes?.wentWrong },
     };
     return next();
   }
@@ -543,37 +565,37 @@ userController.currentShiftData2 = async (req, res, next) => {
 
     // const redisInstance = new RedisDB();
 
-    let currentDateString = currentDate.toISOString().split('T')[0];
+    let currentDateString = currentDate.toISOString().split("T")[0];
 
     const options = {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
       hour12: false,
     };
-    const currentTime = currentDate.toLocaleTimeString('en-GB', options);
+    const currentTime = currentDate.toLocaleTimeString("en-GB", options);
 
-    let startTime = '09:00:00';
-    let endTime = '21:00:00';
+    let startTime = "09:00:00";
+    let endTime = "21:00:00";
 
     let startDate = currentDateString;
     let endDate = currentDateString;
 
-    let condition = 'AND';
-    let condition2 = 'AND start_time < end_time';
+    let condition = "AND";
+    let condition2 = "AND start_time < end_time";
 
-    if (currentTime >= '21:00:00' && currentTime < '09:00:00') {
+    if (currentTime >= "21:00:00" && currentTime < "09:00:00") {
       startDate = currentDateString;
 
       currentDate.setDate(currentDate.getDate() + 1);
-      currentDateString = currentDate.toISOString().split('T')[0];
+      currentDateString = currentDate.toISOString().split("T")[0];
 
       endDate = currentDateString;
 
-      startTime = '21:00:00';
-      endTime = '09:00:00';
+      startTime = "21:00:00";
+      endTime = "09:00:00";
 
-      condition = 'OR';
+      condition = "OR";
     }
 
     const general = await generalService.getShiftRecord2(
@@ -583,11 +605,11 @@ userController.currentShiftData2 = async (req, res, next) => {
       startTime,
       endTime,
       condition,
-      condition2,
+      condition2
     );
 
     const convertTimeToRange = (time) => {
-      const [hour] = time.split(':');
+      const [hour] = time.split(":");
       let currentHour = parseInt(hour);
 
       // Handle the case where the input hour is "24"
@@ -595,13 +617,13 @@ userController.currentShiftData2 = async (req, res, next) => {
         currentHour = 0;
       }
       let nextHour = (currentHour + 1) % 24; // Ensures the hour wraps around at 23
-      nextHour = nextHour.toString().padStart(2, '0');
+      nextHour = nextHour.toString().padStart(2, "0");
 
       // return in railway time
       // return `${currentHour.toString().padStart(2, '0')} - ${nextHour}`;
 
       // return in 12 hrs duration
-      let currentHourString = currentHour.toString().padStart(2, '0');
+      let currentHourString = currentHour.toString().padStart(2, "0");
       return `${
         currentHourString <= 12 ? currentHourString : currentHourString - 12
       } - ${nextHour <= 12 ? nextHour : nextHour - 12}`;
@@ -628,13 +650,13 @@ userController.currentShiftData2 = async (req, res, next) => {
         const combinedY = repeatedItems.reduce((sum, el) => sum + el.y, 0);
         const combinedProductIds = repeatedItems
           .map((el) => el.product_id)
-          .join(',');
+          .join(",");
         // const combinedTarget = repeatedItems.reduce(
         //   (sum, el) => sum + el.target,
         //   0,
         // );
         const combinedTarget = Math.min(
-          ...repeatedItems.map((val) => val.target),
+          ...repeatedItems.map((val) => val.target)
         );
         const newItem = {
           ...item,
@@ -665,9 +687,9 @@ userController.currentShiftData2 = async (req, res, next) => {
 
     // console.log('result', result);
 
-    if (duration === '6hrs' && shift === '1st') {
+    if (duration === "6hrs" && shift === "1st") {
       updatedData = updatedData.slice(0, 6);
-    } else if (duration === '6hrs' && shift === '2nd') {
+    } else if (duration === "6hrs" && shift === "2nd") {
       updatedData = updatedData.slice(6, 12);
     } else {
       updatedData = updatedData.slice(0, 9);
@@ -676,7 +698,7 @@ userController.currentShiftData2 = async (req, res, next) => {
     res.response = {
       code: 200,
       data: {
-        status: 'Ok',
+        status: "Ok",
         message: rescodes?.success,
         data: { updatedData, totalCount: updatedData?.length },
       },
@@ -687,7 +709,7 @@ userController.currentShiftData2 = async (req, res, next) => {
     logger.error(error);
     res.response = {
       code: 400,
-      data: { status: 'Error', message: rescodes?.wentWrong },
+      data: { status: "Error", message: rescodes?.wentWrong },
     };
     return next();
   }
@@ -700,19 +722,19 @@ userController.targetCalculation = async (req, res, next) => {
     if (eachDayTargetByModel == null) {
       res.response = {
         code: 400,
-        data: { status: 'Error', message: rescodes?.wentWrong },
+        data: { status: "Error", message: rescodes?.wentWrong },
       };
       return next();
     }
 
     const storeTargetValue = await generalService.createTargetValue(
-      eachDayTargetByModel,
+      eachDayTargetByModel
     );
 
     res.response = {
       code: 200,
       data: {
-        status: 'Ok',
+        status: "Ok",
         message: rescodes?.success,
         data: storeTargetValue,
       },
@@ -723,7 +745,7 @@ userController.targetCalculation = async (req, res, next) => {
     logger.error(error);
     res.response = {
       code: 400,
-      data: { status: 'Error', message: rescodes?.wentWrong },
+      data: { status: "Error", message: rescodes?.wentWrong },
     };
     return next();
   }
@@ -737,20 +759,20 @@ userController.shiftDataBasedOnDate = async (req, res, next) => {
 
     const currentDate = new DateFormat(date);
     currentDate.setStartOfDay();
-    console.log('setStartOfDay', currentDate);
+    console.log("setStartOfDay", currentDate);
 
     // currentDate.addHours(5);
     currentDate.setHours(2);
 
-    console.log('currentDate', currentDate);
+    console.log("currentDate", currentDate);
     // console.log('currentDate', currentDate.getHours());
 
     res.response = {
       code: 200,
       data: {
-        status: 'Ok',
+        status: "Ok",
         message: rescodes?.success,
-        data: 'success',
+        data: "success",
       },
     };
 
@@ -759,7 +781,7 @@ userController.shiftDataBasedOnDate = async (req, res, next) => {
     logger.error(error);
     res.response = {
       code: 400,
-      data: { status: 'Error', message: rescodes?.wentWrong },
+      data: { status: "Error", message: rescodes?.wentWrong },
     };
     return next();
   }
@@ -774,16 +796,16 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
 
     currentDate.setDate(currentDate.getDate() - 1);
 
-    let currentDateString = currentDate.toISOString().split('T')[0];
+    let currentDateString = currentDate.toISOString().split("T")[0];
 
     let startTime;
     let endTime;
-    let condition = 'AND';
+    let condition = "AND";
     let startDate = currentDateString;
     let endDate = currentDateString;
-    let condition2 = 'AND start_time < end_time';
+    let condition2 = "AND start_time < end_time";
 
-    if (duration === '6hrs') {
+    if (duration === "6hrs") {
       startTime = firstShift?.startTime;
       endTime = firstShift?.endTime;
     } else {
@@ -798,14 +820,14 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       startTime,
       endTime,
       condition,
-      condition2,
+      condition2
     );
 
     currentDate.setDate(currentDate.getDate() + 1);
-    endDate = currentDate.toISOString().split('T')[0];
-    condition2 = 'AND end_time > start_time';
+    endDate = currentDate.toISOString().split("T")[0];
+    condition2 = "AND end_time > start_time";
 
-    if (duration === '6hrs') {
+    if (duration === "6hrs") {
       startTime = secondShift?.startTime;
       endTime = secondShift?.endTime;
       condition = secondShift?.condition;
@@ -822,17 +844,17 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       startTime,
       endTime,
       condition,
-      condition2,
+      condition2
     );
     const convert = (general) => {
       let updatedData;
       const data = general.map((itm) => {
         let { x } = itm;
-        const aa = x.split(':');
-        const ab = aa[2].split(' - ')[1];
+        const aa = x.split(":");
+        const ab = aa[2].split(" - ")[1];
 
-        x = `${aa[0] <= 12 ? (aa[0] === '00' ? '12' : aa[0]) : aa[0] - 12} - ${
-          ab <= 12 ? (ab === '00' ? '12' : ab) : ab - 12
+        x = `${aa[0] <= 12 ? (aa[0] === "00" ? "12" : aa[0]) : aa[0] - 12} - ${
+          ab <= 12 ? (ab === "00" ? "12" : ab) : ab - 12
         } `;
 
         // x = `${aa[0]} - ${ab} `;
@@ -843,9 +865,9 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
         };
       });
 
-      if (duration === '6hrs' && shift === '1st') {
+      if (duration === "6hrs" && shift === "1st") {
         updatedData = data.slice(0, 6);
-      } else if (duration === '6hrs' && shift === '2nd') {
+      } else if (duration === "6hrs" && shift === "2nd") {
         updatedData = data.slice(6, 12);
       } else {
         updatedData = data.slice(0, 9);
@@ -859,7 +881,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
     res.response = {
       code: 200,
       data: {
-        status: 'Ok',
+        status: "Ok",
         message: rescodes?.success,
         data: {
           shiftA,
@@ -874,7 +896,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
     logger.error(error);
     res.response = {
       code: 400,
-      data: { status: 'Error', message: rescodes?.wentWrong },
+      data: { status: "Error", message: rescodes?.wentWrong },
     };
     return next();
   }
@@ -890,8 +912,8 @@ const getPreviousTwoHoursIntervals = () => {
 
   const formatTime = (date) => {
     const hours = date.getHours() % 12 || 12;
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const ampm = date.getHours() >= 12 ? 'pm' : 'am';
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const ampm = date.getHours() >= 12 ? "pm" : "am";
     return `${hours}:${minutes} ${ampm}`;
   };
 
@@ -900,8 +922,6 @@ const getPreviousTwoHoursIntervals = () => {
     end: formatTime(end),
   };
 };
-
-
 
 const getLastTwoFullHoursIntervals = () => {
   const now = new Date();
@@ -918,7 +938,7 @@ const getLastTwoFullHoursIntervals = () => {
 
   const formatTime = (date) => {
     const hours = date.getHours() % 12 || 12;
-    const ampm = date.getHours() >= 12 ? 'pm' : 'am';
+    const ampm = date.getHours() >= 12 ? "pm" : "am";
     return `${hours}:00 ${ampm}`;
   };
 
@@ -935,51 +955,51 @@ userController.getDownTime = async (req, res, next) => {
     const currentHour = now.getHours();
     let downtimeDetails = [];
 
-    if (isShift === 'false' || !isShift) {
-      if (record === 'true') {
+    if (isShift === "false" || !isShift) {
+      if (record === "true") {
         downtimeDetails = [
           {
             interval: "03:00 - 04:00 pm",
-            downTime: '10 mins',
-            message: "Conveyor is stopped"
+            downTime: "10 mins",
+            message: "Conveyor is stopped",
           },
           {
             interval: "04:00 - 05:00 pm",
-            downTime: '20 mins',
-            message: "Part Failure"
+            downTime: "20 mins",
+            message: "Part Failure",
           },
           {
             interval: "05:00 - 06:00 pm",
-            downTime: '15 mins',
-            message: "No Load"
+            downTime: "15 mins",
+            message: "No Load",
           },
           {
             interval: "06:00 - 07:00 pm",
-            downTime: '10 mins',
-            message: "Operator trainer"
+            downTime: "10 mins",
+            message: "Operator trainer",
           },
           {
             interval: "07:00 - 08:00 pm",
-            downTime: '07 mins',
-            message: "Production failure"
-          }
+            downTime: "07 mins",
+            message: "Production failure",
+          },
         ];
       } else {
         // Return the standard downtime details
         downtimeDetails = [
           {
             interval: "03:00 - 04:00 pm",
-            downTime: '10 mins',
-            message: "Conveyor is stopped"
+            downTime: "10 mins",
+            message: "Conveyor is stopped",
           },
           {
             interval: "04:00 - 05:00 pm",
-            downTime: '17 mins',
-            message: "Part Failure"
-          }
+            downTime: "17 mins",
+            message: "Part Failure",
+          },
         ];
       }
-    } else if (isShift === 'true') {
+    } else if (isShift === "true") {
       if (currentHour === 9) {
         downtimeDetails = [];
       } else if (currentHour === 10) {
@@ -987,35 +1007,35 @@ userController.getDownTime = async (req, res, next) => {
         downtimeDetails = [
           {
             interval: interval1,
-            downTime: '17 mins',
-            message: "No Load"
-          }
+            downTime: "17 mins",
+            message: "No Load",
+          },
         ];
       } else {
         const [interval1, interval2] = getLastTwoFullHoursIntervals();
         downtimeDetails = [
           {
             interval: interval1,
-            downTime: '10 mins',
-            message: "No Load"
+            downTime: "10 mins",
+            message: "No Load",
           },
           {
             interval: interval2,
-            downTime: '12 mins',
-            message: "Operator trainer"
-          }
+            downTime: "12 mins",
+            message: "Operator trainer",
+          },
         ];
       }
     }
 
     res.status(200).json({
       code: 200,
-      data: downtimeDetails
+      data: downtimeDetails,
     });
   } catch (error) {
     res.status(400).json({
       code: 400,
-      data: { status: 'Error', message: 'Something went wrong' }
+      data: { status: "Error", message: "Something went wrong" },
     });
     return next(error);
   }
