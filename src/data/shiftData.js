@@ -46,6 +46,14 @@ const yesterdayGenaralShift = {
   duration: '8hrs',
 };
 
+const yesterdayTwileShift = {
+  shift: 'general',
+  startTime: '21:00:00',
+  endTime: '09:00:00',
+  condition: 'OR',
+  duration: '12hrs',
+};
+
 // const shiftDuration = {};
 const shiftDetails = {
   firstShift: '1st',
@@ -100,4 +108,5 @@ module.exports = {
   secondShiftGeneralTimings,
   firstShift,
   secondShift,
+  yesterdayTwileShift
 };

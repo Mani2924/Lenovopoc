@@ -22,6 +22,7 @@ const {
   todaySecondShift,
   yesterdayFirstShift,
   yesterdayGenaralShift,
+  yesterdayTwileShift,
   yesterdaySecondShift,
   shiftDetails,
   firstShift,
@@ -427,6 +428,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
         (shift === shiftDetails?.firstShift ||
           shift === shiftDetails?.secondShift)
       ) {
+
         startTime =
           shift === shiftDetails?.firstShift
             ? yesterdayFirstShift?.startTime
@@ -444,10 +446,17 @@ userController.previousShiftDate2 = async (req, res, next) => {
             ? currentDate.toISOString().split('T')[0]
             : currentDateString;
       } else {
-        startTime = yesterdayGenaralShift?.startTime;
-        endTime = yesterdayGenaralShift?.endTime;
-        condition = yesterdayGenaralShift?.condition;
-        startDate = currentDate.toISOString().split('T')[0];
+        if(duration === '9hrs'){
+          startTime = yesterdayGenaralShift?.startTime;
+          endTime = yesterdayGenaralShift?.endTime;
+          condition = yesterdayGenaralShift?.condition;
+          startDate = currentDate.toISOString().split('T')[0];
+        }else{
+          startTime = yesterdayTwileShift?.startTime;
+          endTime = yesterdayTwileShift?.endTime;
+          condition = yesterdayTwileShift?.condition;
+          startDate = currentDate.toISOString().split('T')[0];
+        }  
       }
     }
 
