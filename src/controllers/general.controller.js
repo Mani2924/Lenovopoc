@@ -27,6 +27,7 @@ const {
   shiftDetails,
   firstShift,
   secondShift,
+  getCount,
 } = require("../data/shiftData");
 
 const userController = {};
@@ -684,7 +685,6 @@ userController.currentShiftData2 = async (req, res, next) => {
     // updatedData = repeatedXValues.concat(nonRepeatedXValues);
     updatedData = nonRepeatedXValues.concat(repeatedXValues);
 
-
     // console.log('result', result);
 
     if (duration === "6hrs" && shift === "1st") {
@@ -1038,6 +1038,184 @@ userController.getDownTime = async (req, res, next) => {
       data: { status: "Error", message: "Something went wrong" },
     });
     return next(error);
+  }
+};
+
+userController.getEmoji = async (req, res, next) => {
+  try {
+    const date = new Date();
+    const { isShift, dataCount } = req.query;
+
+    const currentTime = date.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+    const databaseDate = new Date(date);
+    databaseDate.setHours(databaseDate.getHours() - 1);
+    databaseDate.setMinutes(0, 0, 0);
+    const databaseTime = databaseDate.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+
+    const formattedDatabaseDate = databaseDate.toISOString().split("T")[0];
+    const minutes = parseInt(currentTime.split(":")[1]);
+
+    let isHappy = false;
+    if (isShift === "false" || !isShift) {
+      const data = await generalService.getPriviousHourCount(
+        formattedDatabaseDate,
+        databaseTime
+      );
+      if (minutes >= 1 && minutes <= 20) {
+        if (data / 4 <= dataCount) {
+          isHappy = true;
+        }
+      } else if (minutes >= 21 && minutes <= 40) {
+        if (data / 3 <= dataCount) {
+          isHappy = true;
+        }
+      } else if (minutes >= 41 && minutes <= 60) {
+        if (data / 2 <= dataCount) {
+          isHappy = true;
+        }
+      } else {
+        isHappy = false;
+      }
+    } else {
+      const count =await previousShiftDate2();
+      const currectShiftCount =await getCurrentShiftCount();
+      if(count <=currectShiftCount){
+        isHappy = true;
+      }
+    }
+
+    res.status(200).json({
+      code: 200,
+      data: {
+        isHappy,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      code: 400,
+      data: { status: "Error", message: "Something went wrong" },
+    });
+    return next(error);
+  }
+};
+
+const previousShiftDate2 = async (req) => {
+  try {
+    const line = "L1";
+    
+    const currentDate = new Date();
+    let currentDateString = currentDate.toISOString().split("T")[0];
+
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    const currentTime = currentDate.toLocaleTimeString("en-GB", options);
+
+    let startTime;
+    let endTime;
+    let condition = "AND";
+    let startDate = currentDateString;
+    let endDate = currentDateString;
+    let condition2 = "start_time < end_time";
+
+    const formatTime = (time) => {
+      const [hours, minutes, seconds] = time.split(":");
+      return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}:${seconds.padStart(2, "0")}`;
+    };
+
+    startTime = formatTime(todayGenaralShift?.startTime);
+    endTime = formatTime(todayGenaralShift?.endTime);
+
+    if (currentTime >= "09:00:00" && currentTime < "21:00:00") {
+      currentDate.setDate(currentDate.getDate() - 1);
+
+      startTime = formatTime(yesterdayTwileShift?.startTime);
+      endTime = formatTime(yesterdayTwileShift?.endTime);
+      condition = yesterdayTwileShift?.condition;
+      startDate = currentDate.toISOString().split("T")[0];
+    }
+ 
+    const totalCount = await generalService.getCount(
+      line,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      condition,
+      condition2
+    );
+
+    return totalCount;
+  } catch (error) {
+    console.error("Error in previousShiftDate2:", error);
+    return 0;
+  }
+};
+
+const getCurrentShiftCount = async (req) => {
+  try {
+    const line = "L1";
+    
+    const currentDate = new Date();
+    let currentDateString = currentDate.toISOString().split("T")[0];
+
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    const currentTime = currentDate.toLocaleTimeString("en-GB", options);
+
+    let startTime = "09:00:00";
+    let endTime = "21:00:00";
+
+    let startDate = currentDateString;
+    let endDate = currentDateString;
+
+    let condition = "AND";
+    let condition2 = "AND start_time < end_time";
+
+    if (currentTime >= "21:00:00" && currentTime < "09:00:00") {
+      startDate = currentDateString;
+
+      currentDate.setDate(currentDate.getDate() + 1);
+      currentDateString = currentDate.toISOString().split("T")[0];
+
+      endDate = currentDateString;
+
+      startTime = "21:00:00";
+      endTime = "09:00:00";
+
+      condition = "OR";
+    }
+ 
+    const totalCount = await generalService.getCount(
+      line,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      condition,
+      condition2
+    );
+
+    return totalCount;
+  } catch (error) {
+    return 0;
   }
 };
 

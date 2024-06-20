@@ -798,4 +798,97 @@ ORDER BY
   return result;
 };
 
+generalService.getPriviousHourCount = async (date,time) =>{
+  const result = await weeklyData1.findOne({ where: { op_date:date,start_time:time } });
+
+  return result !=null ? result.totalcount: 0;
+
+};
+
+generalService.getCount = async (line, startDate, endDate, startTime, endTime) => {
+  try {
+    const result = await weeklyData1.findOne({
+      attributes: [
+        [Sequelize.fn('COALESCE', Sequelize.fn('SUM', Sequelize.col('totalcount')), 0), 'totalcount'],
+      ],
+      where: {
+        line,
+        [Op.or]: [
+          {
+            op_date: startDate,
+            start_time: { [Op.gte]: startTime },
+          },
+          {
+            op_date: endDate,
+            end_time: { [Op.lte]: endTime },
+          },
+        ],
+      },
+    });
+
+    const totalCount = result.dataValues.totalcount || 0 ;
+    return totalCount;
+  } catch (error) {
+    console.error('Error executing Sequelize query:', error);
+    throw error;
+  }
+};
+
+
+
+generalService.getCurrentshiftTotalCount = async (
+  line,
+  startDate,
+  endDate,
+  startTime,
+  endTime,
+  condition,
+  condition2,
+) => {
+  const query = `
+  SELECT
+  id,  
+  CONCAT(start_time, ' - ', end_time) AS x,
+  totalCount AS y,
+  CONCAT(product_id, ' ', target) AS z,
+  product_id,
+  target,
+  comments,
+  op_date,
+  line
+FROM
+  public."weeklyData1"
+WHERE
+  line = :line
+  AND (
+    (start_time >= :startTime AND DATE(op_date) = :startDate) ${condition}
+    (end_time <= :endTime AND DATE(op_date) = :endDate)  ${condition2}
+  )
+GROUP BY
+  id,  -- Add id to the grouped fields
+  start_time, end_time, product_id, target, comments, op_date, line,totalCount
+ORDER BY
+  op_date ASC, start_time ASC;
+`;
+
+  const result = await db.sequelize.query(query, {
+    replacements: {
+      line,
+      startTime,
+      endTime,
+      startDate,
+      endDate,
+      condition,
+    },
+    type: Sequelize.QueryTypes.SELECT,
+  });
+
+  // console.log('result', result);
+
+  return result;
+};
+
+
+
+
 module.exports = generalService;
