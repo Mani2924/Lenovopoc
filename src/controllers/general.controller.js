@@ -684,7 +684,6 @@ userController.currentShiftData2 = async (req, res, next) => {
     // updatedData = repeatedXValues.concat(nonRepeatedXValues);
     updatedData = nonRepeatedXValues.concat(repeatedXValues);
 
-    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~",updatedData);
 
     // console.log('result', result);
 
