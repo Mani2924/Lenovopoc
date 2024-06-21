@@ -808,9 +808,13 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
     if (duration === "6hrs") {
       startTime = firstShift?.startTime;
       endTime = firstShift?.endTime;
-    } else {
+    } else if(duration === "9hrs") {
       startTime = todayGenaralShift?.startTime;
       endTime = todayGenaralShift?.endTime;
+    }else{
+
+      startTime = firstShift?.startTime;
+      endTime = firstShift?.endTime;
     }
 
     let general = await generalService.getShiftRecord3(
@@ -831,10 +835,14 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       startTime = secondShift?.startTime;
       endTime = secondShift?.endTime;
       condition = secondShift?.condition;
-    } else {
+    } else if(duration === "9hrs" ) {
       startTime = yesterdayGenaralShift?.startTime;
       endTime = yesterdayGenaralShift?.endTime;
       condition = yesterdayGenaralShift?.condition;
+    }else{
+      startTime = secondShift?.startTime;
+      endTime = secondShift?.endTime;
+      condition = secondShift?.condition;
     }
 
     let general2 = await generalService.getShiftRecord3(
@@ -853,9 +861,24 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
         const aa = x.split(":");
         const ab = aa[2].split(" - ")[1];
 
-        x = `${aa[0] <= 12 ? (aa[0] === "00" ? "12" : aa[0]) : aa[0] - 12} - ${
-          ab <= 12 ? (ab === "00" ? "12" : ab) : ab - 12
-        } `;
+        const startHour = aa[0].padStart(2, "0");
+        const startFormatted =
+          startHour <= 12
+            ? startHour === "00"
+              ? "12"
+              : startHour
+            : (startHour - 12).toString().padStart(2, "0");
+  
+        const endHour = ab.padStart(2, "0");
+        const endFormatted =
+          endHour <= 12
+            ? endHour === "00"
+              ? "12"
+              : endHour
+            : (endHour - 12).toString().padStart(2, "0");
+  
+        x = `${startFormatted} - ${endFormatted}`;
+  
 
         // x = `${aa[0]} - ${ab} `;
 
@@ -869,8 +892,10 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
         updatedData = data.slice(0, 6);
       } else if (duration === "6hrs" && shift === "2nd") {
         updatedData = data.slice(6, 12);
-      } else {
+      } else if(duration === "9hrs") {
         updatedData = data.slice(0, 9);
+      }else{
+        updatedData = data.slice(0, 12);
       }
 
       return updatedData;
