@@ -558,13 +558,23 @@ userController.previousShiftDate2 = async (req, res, next) => {
   }
 };
 
+// Function to format time to "h:mm A"
+function formatAMPM(date) {
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  let strTime = hours + ":" + minutes + " " + ampm;
+  return strTime;
+}
+
 userController.currentShiftData2 = async (req, res, next) => {
   try {
     const { line, duration, shift } = req.query;
 
     const currentDate = new Date();
-
-    // const redisInstance = new RedisDB();
 
     let currentDateString = currentDate.toISOString().split("T")[0];
 
@@ -585,6 +595,18 @@ userController.currentShiftData2 = async (req, res, next) => {
     let condition = "AND";
     let condition2 = "AND start_time < end_time";
 
+    let shiftStartTime = new Date();
+    let shiftEndTime = new Date();
+
+    shiftStartTime.setHours(9, 0, 0, 0);
+    shiftEndTime.setHours(21, 0, 0, 0);
+
+    // let shiftStartTime = moment().startOf("day");
+    // let shiftEndTime = moment().startOf("day");
+
+    // shiftStartTime.set("hour", "09");
+    // shiftEndTime.set("hour", "21");
+
     if (currentTime >= "21:00:00" && currentTime < "09:00:00") {
       startDate = currentDateString;
 
@@ -597,6 +619,10 @@ userController.currentShiftData2 = async (req, res, next) => {
       endTime = "09:00:00";
 
       condition = "OR";
+      // shiftStartTime.set("hour", "21");
+      // shiftEndTime.set("hour", "09");
+      shiftStartTime.setHours(21, 0, 0, 0);
+      shiftEndTime.setHours(9, 0, 0, 0);
     }
 
     const general = await generalService.getShiftRecord2(
@@ -677,22 +703,21 @@ userController.currentShiftData2 = async (req, res, next) => {
       }
     });
 
-    // console.log('repeatedXValues', repeatedXValues);
-    // console.log('nonRepeatedXValues', nonRepeatedXValues);
-
-    // const result = repeatedXValues.concat(nonRepeatedXValues);
-
     // updatedData = repeatedXValues.concat(nonRepeatedXValues);
     updatedData = nonRepeatedXValues.concat(repeatedXValues);
 
-    // console.log('result', result);
-
     if (duration === "6hrs" && shift === "1st") {
       updatedData = updatedData.slice(0, 6);
+      // shiftEndTime.subtract("6", "hours");
+      shiftEndTime.setHours(shiftEndTime.getHours() - 6);
     } else if (duration === "6hrs" && shift === "2nd") {
       updatedData = updatedData.slice(6, 12);
+      // shiftStartTime.subtract("6", "hours");
+      shiftStartTime.setHours(shiftStartTime.getHours() - 6);
     } else {
       updatedData = updatedData.slice(0, 9);
+      // shiftEndTime.subtract("3", "hours");
+      shiftEndTime.setHours(shiftEndTime.getHours() - 3);
     }
 
     res.response = {
@@ -700,7 +725,14 @@ userController.currentShiftData2 = async (req, res, next) => {
       data: {
         status: "Ok",
         message: rescodes?.success,
-        data: { updatedData, totalCount: updatedData?.length },
+        data: {
+          updatedData,
+          totalCount: updatedData?.length,
+          shiftTiming: `${formatAMPM(shiftStartTime)} - ${formatAMPM(
+            shiftEndTime
+          )}`,
+          // shiftTiming: `${shiftStartTime.format("h:mm A")} - ${shiftEndTime.format("h:mm A")}`,
+        },
       },
     };
 
@@ -805,13 +837,26 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
     let endDate = currentDateString;
     let condition2 = "AND start_time < end_time";
 
+    let shiftAStartTime = new Date();
+    let shiftAEndTime = new Date();
+
+    let shiftBStartTime = new Date();
+    let shiftBEndTime = new Date();
+
+    shiftAStartTime.setHours(9, 0, 0, 0);
+    shiftAEndTime.setHours(21, 0, 0, 0);
+
+    shiftBStartTime.setHours(21, 0, 0, 0);
+    shiftBEndTime.setHours(9, 0, 0, 0);
+
     if (duration === "6hrs") {
       startTime = firstShift?.startTime;
       endTime = firstShift?.endTime;
-    } else if(duration === "9hrs") {
+    } else if (duration === "9hrs") {
       startTime = todayGenaralShift?.startTime;
       endTime = todayGenaralShift?.endTime;
-    }else{
+      shiftAEndTime.setHours(18, 0, 0, 0);
+    } else {
       startTime = firstShift?.startTime;
       endTime = firstShift?.endTime;
     }
@@ -834,11 +879,12 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       startTime = secondShift?.startTime;
       endTime = secondShift?.endTime;
       condition = secondShift?.condition;
-    } else if(duration === "9hrs" ) {
+    } else if (duration === "9hrs") {
       startTime = yesterdayGenaralShift?.startTime;
       endTime = yesterdayGenaralShift?.endTime;
       condition = yesterdayGenaralShift?.condition;
-    }else{
+      shiftBEndTime.setHours(6, 0, 0, 0);
+    } else {
       startTime = secondShift?.startTime;
       endTime = secondShift?.endTime;
       condition = secondShift?.condition;
@@ -867,7 +913,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
               ? "12"
               : startHour
             : (startHour - 12).toString().padStart(2, "0");
-  
+
         const endHour = ab.padStart(2, "0");
         const endFormatted =
           endHour <= 12
@@ -875,9 +921,8 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
               ? "12"
               : endHour
             : (endHour - 12).toString().padStart(2, "0");
-  
+
         x = `${startFormatted} - ${endFormatted}`;
-  
 
         // x = `${aa[0]} - ${ab} `;
 
@@ -891,9 +936,9 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
         updatedData = data.slice(0, 6);
       } else if (duration === "6hrs" && shift === "2nd") {
         updatedData = data.slice(6, 12);
-      } else if(duration === "9hrs") {
+      } else if (duration === "9hrs") {
         updatedData = data.slice(0, 9);
-      }else{
+      } else {
         updatedData = data.slice(0, 12);
       }
 
@@ -1111,9 +1156,9 @@ userController.getEmoji = async (req, res, next) => {
         isHappy = false;
       }
     } else {
-      const count =await previousShiftDate2();
-      const currectShiftCount =await getCurrentShiftCount();
-      if(count <=currectShiftCount){
+      const count = await previousShiftDate2();
+      const currectShiftCount = await getCurrentShiftCount();
+      if (count <= currectShiftCount) {
         isHappy = true;
       }
     }
@@ -1136,7 +1181,7 @@ userController.getEmoji = async (req, res, next) => {
 const previousShiftDate2 = async (req) => {
   try {
     const line = "L1";
-    
+
     const currentDate = new Date();
     let currentDateString = currentDate.toISOString().split("T")[0];
 
@@ -1157,7 +1202,10 @@ const previousShiftDate2 = async (req) => {
 
     const formatTime = (time) => {
       const [hours, minutes, seconds] = time.split(":");
-      return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}:${seconds.padStart(2, "0")}`;
+      return `${hours.padStart(2, "0")}:${minutes.padStart(
+        2,
+        "0"
+      )}:${seconds.padStart(2, "0")}`;
     };
 
     startTime = formatTime(todayGenaralShift?.startTime);
@@ -1171,7 +1219,7 @@ const previousShiftDate2 = async (req) => {
       condition = yesterdayTwileShift?.condition;
       startDate = currentDate.toISOString().split("T")[0];
     }
- 
+
     const totalCount = await generalService.getCount(
       line,
       startDate,
@@ -1192,7 +1240,7 @@ const previousShiftDate2 = async (req) => {
 const getCurrentShiftCount = async (req) => {
   try {
     const line = "L1";
-    
+
     const currentDate = new Date();
     let currentDateString = currentDate.toISOString().split("T")[0];
 
@@ -1226,7 +1274,7 @@ const getCurrentShiftCount = async (req) => {
 
       condition = "OR";
     }
- 
+
     const totalCount = await generalService.getCount(
       line,
       startDate,
@@ -1243,32 +1291,33 @@ const getCurrentShiftCount = async (req) => {
   }
 };
 
-userController.getSystemUPH = async(req,res,next)=>{
-  try{
-  const { isSystem } = req.query;
+userController.getSystemUPH = async (req, res, next) => {
+  try {
+    const { isSystem } = req.query;
 
-  const data =await generalService.getTarget();
+    const data = await generalService.getTarget();
 
-  let target = 0;
+    let target = 0;
 
-  if(isSystem === true || isSystem){
-    target = data.systemTarget
-  }else{
-    target = data.assignedTarget
+    if (isSystem === true || isSystem) {
+      target = data.systemTarget;
+    } else {
+      target = data.assignedTarget;
+    }
+
+    res.status(200).json({
+      code: 200,
+      data: {
+        target: target,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      code: 400,
+      data: { status: "Error", message: "Something went wrong" },
+    });
+    return next(error);
   }
-
-  res.status(200).json({
-    code: 200,
-    data: {
-      target:target}
-  });
-} catch (error) {
-  res.status(400).json({
-    code: 400,
-    data: { status: "Error", message: "Something went wrong" },
-  });
-  return next(error);
-}
-}
+};
 
 module.exports = userController;
