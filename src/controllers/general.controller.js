@@ -812,7 +812,6 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       startTime = todayGenaralShift?.startTime;
       endTime = todayGenaralShift?.endTime;
     }else{
-
       startTime = firstShift?.startTime;
       endTime = firstShift?.endTime;
     }
@@ -1243,5 +1242,33 @@ const getCurrentShiftCount = async (req) => {
     return 0;
   }
 };
+
+userController.getSystemUPH = async(req,res,next)=>{
+  try{
+  const { isSystem } = req.query;
+
+  const data =await generalService.getTarget();
+
+  let target = 0;
+
+  if(isSystem === true || isSystem){
+    target = data.systemTarget
+  }else{
+    target = data.assignedTarget
+  }
+
+  res.status(200).json({
+    code: 200,
+    data: {
+      target:target}
+  });
+} catch (error) {
+  res.status(400).json({
+    code: 400,
+    data: { status: "Error", message: "Something went wrong" },
+  });
+  return next(error);
+}
+}
 
 module.exports = userController;

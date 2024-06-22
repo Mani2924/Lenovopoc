@@ -834,6 +834,18 @@ generalService.getCount = async (line, startDate, endDate, startTime, endTime) =
   }
 };
 
+generalService.getTarget = async () => {
+  try {
+    const data = await uphtarget.findOne({
+      order: Sequelize.literal('RANDOM()')
+    });
+    return data;
+  } catch (error) {
+    console.error('Error executing Sequelize query:', error);
+    throw error;
+  }
+};
+
 
 
 
