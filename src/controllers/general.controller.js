@@ -855,7 +855,6 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
     } else if (duration === "9hrs") {
       startTime = todayGenaralShift?.startTime;
       endTime = todayGenaralShift?.endTime;
-      shiftAEndTime.setHours(18, 0, 0, 0);
     } else {
       startTime = firstShift?.startTime;
       endTime = firstShift?.endTime;
@@ -883,7 +882,6 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       startTime = yesterdayGenaralShift?.startTime;
       endTime = yesterdayGenaralShift?.endTime;
       condition = yesterdayGenaralShift?.condition;
-      shiftBEndTime.setHours(6, 0, 0, 0);
     } else {
       startTime = secondShift?.startTime;
       endTime = secondShift?.endTime;
@@ -899,7 +897,15 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       condition,
       condition2
     );
-    const convert = (general) => {
+    const convert = (general, shifts) => {
+      let shiftStart, shiftEnd;
+      shifts === "shiftA"
+        ? (shiftStart = shiftAStartTime)
+        : (shiftStart = shiftBStartTime);
+      shifts === "shiftA"
+        ? (shiftEnd = shiftAEndTime)
+        : (shiftEnd = shiftBEndTime);
+
       let updatedData;
       const data = general.map((itm) => {
         let { x } = itm;
@@ -934,18 +940,29 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
 
       if (duration === "6hrs" && shift === "1st") {
         updatedData = data.slice(0, 6);
+        shiftEnd.setHours(shiftEnd.getHours() - 6);
       } else if (duration === "6hrs" && shift === "2nd") {
         updatedData = data.slice(6, 12);
+        shiftStart.setHours(shiftStart.getHours() - 6);
       } else if (duration === "9hrs") {
         updatedData = data.slice(0, 9);
+        shiftEnd.setHours(shiftEnd.getHours() - 3);
       } else {
         updatedData = data.slice(0, 12);
       }
 
+      shifts === "shiftA"
+        ? (shiftAStartTime = shiftStart)
+        : (shiftBStartTime = shiftStart);
+      shifts === "shiftA"
+        ? (shiftAEndTime = shiftEnd)
+        : (shiftBEndTime = shiftEnd);
+
       return updatedData;
     };
-    const shiftA = convert(general);
-    const shiftB = convert(general2);
+
+    const shiftA = convert(general, "shiftA");
+    const shiftB = convert(general2, "shiftB");
 
     res.response = {
       code: 200,
@@ -956,6 +973,12 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
           shiftA,
           shiftB,
           totalCount: shiftA?.length + shiftB?.length || 0,
+          shiftATiming: `${formatAMPM(shiftAStartTime)} - ${formatAMPM(
+            shiftAEndTime
+          )}`,
+          shiftBTiming: `${formatAMPM(shiftBStartTime)} - ${formatAMPM(
+            shiftBEndTime
+          )}`,
         },
       },
     };
