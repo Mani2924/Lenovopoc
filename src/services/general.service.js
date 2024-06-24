@@ -834,6 +834,32 @@ generalService.getCount = async (line, startDate, endDate, startTime, endTime) =
   }
 };
 
+generalService.getCurrentShiftCount = async (line, startDate, endDate, startTime, endTime) => {
+  try {
+    const result = await weeklyData1.findOne({
+      attributes: [
+        [Sequelize.fn('COALESCE', Sequelize.fn('SUM', Sequelize.col('totalcount')), 0), 'totalcount'],
+      ],
+      where: {
+        line,
+        [Op.or]: [
+          {
+            op_date: startDate,
+            start_time: { [Op.gte]: startTime },
+            end_time: { [Op.lte]: endTime },
+          },
+        ],
+      },
+    });
+
+    const totalCount = result.dataValues.totalcount || 0 ;
+    return totalCount;
+  } catch (error) {
+    console.error('Error executing Sequelize query:', error);
+    throw error;
+  }
+};
+
 generalService.getTarget = async () => {
   try {
     const data = await uphtarget.findOne({

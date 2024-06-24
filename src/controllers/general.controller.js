@@ -1313,7 +1313,8 @@ const getCurrentShiftCount = async (req) => {
       condition = "OR";
     }
 
-    const totalCount = await generalService.getCount(
+
+    const totalCount = await generalService.getCurrentShiftCount(
       line,
       startDate,
       endDate,
@@ -1357,5 +1358,44 @@ userController.getSystemUPH = async (req, res, next) => {
     return next(error);
   }
 };
+
+userController.getCardValues = async (req, res, next) => {
+  try {
+    const { isShift } = req.query;
+
+    let count = await previousShiftDate2();
+    let currentShiftCount = await getCurrentShiftCount();
+    count = parseInt(count, 10);
+    currentShiftCount = parseInt(currentShiftCount, 10);
+
+    const data = {
+      shiftTarget: count,
+      shiftActual: currentShiftCount,
+      shiftUPH: Math.round(count / 12),
+      downTime : "30"
+    };
+
+      const data2 = {
+        shiftTarget: count * 2,
+        shiftActual: count + currentShiftCount,
+        shiftUPH: Math.round((count + currentShiftCount) / 12),
+        downTime : "45"
+      };
+
+    const responseData = isShift === 'true' ? data : data2;
+
+    res.status(200).json({
+      code: 200,
+      data: responseData,
+    });
+  } catch (error) {
+    res.status(400).json({
+      code: 400,
+      data: { status: "Error", message: "Something went wrong" },
+    });
+    return next(error);
+  }
+};
+
 
 module.exports = userController;
