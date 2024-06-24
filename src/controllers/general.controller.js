@@ -493,9 +493,11 @@ userController.previousShiftDate2 = async (req, res, next) => {
       !shift
         ? `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}`
         : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`,
+        
     );
     if (shiftData) {
       shiftData = JSON.parse(shiftData);
+      shiftData.time = `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(endTime)}`;
       console.log("from redis");
       res.response = {
         code: 200,
@@ -730,9 +732,15 @@ userController.currentShiftData2 = async (req, res, next) => {
       // shiftStartTime.subtract("6", "hours");
       shiftStartTime.setHours(shiftStartTime.getHours() - 6);
     } else {
-      updatedData = updatedData.slice(0, 9);
-      // shiftEndTime.subtract("3", "hours");
-      shiftEndTime.setHours(shiftEndTime.getHours() - 3);
+      if(duration === "9hrs") {
+        updatedData = updatedData.slice(0, 9);
+        // shiftEndTime.subtract("3", "hours");
+        shiftEndTime.setHours(shiftEndTime.getHours() - 3);
+      }else{
+        updatedData = updatedData.slice(0, 12);
+        // shiftEndTime.subtract("3", "hours");
+        shiftEndTime.setHours(shiftEndTime.getHours());
+      }
     }
 
     res.response = {
