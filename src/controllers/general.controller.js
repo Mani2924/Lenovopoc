@@ -28,7 +28,6 @@ const {
   firstShift,
   secondShift,
   getCount,
-  dayShiftCount
 } = require("../data/shiftData");
 
 const userController = {};
