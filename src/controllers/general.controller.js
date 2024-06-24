@@ -28,6 +28,7 @@ const {
   firstShift,
   secondShift,
   getCount,
+  dayShiftCount
 } = require("../data/shiftData");
 
 const userController = {};
@@ -1361,28 +1362,36 @@ userController.getSystemUPH = async (req, res, next) => {
 
 userController.getCardValues = async (req, res, next) => {
   try {
-    const { isShift } = req.query;
+    const { isShift, target, shiftHours, isToday } = req.query;
 
-    let count = await previousShiftDate2();
+    let count = parseInt(target, 10) * parseInt(shiftHours, 10);
+
+    const currentDate = new Date();
+    if (isToday != "true") {
+      currentDate.setDate(currentDate.getDate() - 1);
+    } else {
+      currentDate.setDate(currentDate.getDate());
+    }
+    const formattedDate = currentDate.toISOString().split("T")[0];
     let currentShiftCount = await getCurrentShiftCount();
-    count = parseInt(count, 10);
+    let dayShiftCount = await generalService.dayShiftCount(formattedDate);
     currentShiftCount = parseInt(currentShiftCount, 10);
 
     const data = {
       shiftTarget: count,
-      shiftActual: currentShiftCount,
+      shiftActual: parseInt(currentShiftCount, 10),
       shiftUPH: Math.round(count / 12),
-      downTime : "30"
+      shiftdownTime: 30,
     };
 
-      const data2 = {
-        shiftTarget: count * 2,
-        shiftActual: count + currentShiftCount,
-        shiftUPH: Math.round((count + currentShiftCount) / 12),
-        downTime : "45"
-      };
+    const data2 = {
+      overAllTarget: dayShiftCount * 2,
+      overAllActual: parseInt(dayShiftCount, 10),
+      overAllUPH: Math.round((dayShiftCount) / 24),
+      overAlldownTime: 45,
+    };
 
-    const responseData = isShift === 'true' ? data : data2;
+    const responseData = isShift === "true" ? data : data2;
 
     res.status(200).json({
       code: 200,

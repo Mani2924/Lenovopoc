@@ -873,7 +873,24 @@ generalService.getTarget = async () => {
 };
 
 
+generalService.dayShiftCount = async (date) => {
+  try {
+    const result = await weeklyData1.findOne({
+      attributes: [
+        [Sequelize.fn('COALESCE', Sequelize.fn('SUM', Sequelize.col('totalcount')), 0), 'totalcount'],
+      ],
+      where: {
+            op_date: date
+ 
+      },
+    });
 
-
+    const totalCount = result.dataValues.totalcount || 0 ;
+    return totalCount;
+  } catch (error) {
+    console.error('Error executing Sequelize query:', error);
+    throw error;
+  }
+};
 
 module.exports = generalService;
