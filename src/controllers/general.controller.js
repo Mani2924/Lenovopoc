@@ -110,7 +110,7 @@ userController.shiftData = async (req, res, next) => {
     }
 
     let shiftData = await redisInstance.getValueFromRedis(
-      `${line}-${startDate}-${endDate}-${startTime}-${endTime}`
+      `${line}-${startDate}-${endDate}-${startTime}-${endTime}`,
     );
     if (shiftData) {
       shiftData = JSON.parse(shiftData);
@@ -128,7 +128,7 @@ userController.shiftData = async (req, res, next) => {
       endDate,
       startTime,
       endTime,
-      condition
+      condition,
     );
 
     // storing data in redis
@@ -136,7 +136,7 @@ userController.shiftData = async (req, res, next) => {
       let appData = JSON.stringify(general);
       redisInstance.setValueInRedis(
         `${line}-${startDate}-${endDate}-${startTime}-${endTime}`,
-        appData
+        appData,
       );
     }
 
@@ -202,7 +202,7 @@ userController.currentShiftData = async (req, res, next) => {
       endDate,
       startTime,
       endTime,
-      condition
+      condition,
     );
     const convertTimeToRange = (time) => {
       const [hour] = time.split(":");
@@ -265,7 +265,7 @@ userController.updateCurrentShiftData = async (req, res, next) => {
       email?.trim(),
       "Production Down time Alert",
       templateFilePath,
-      templateData
+      templateData,
     );
 
     await generalService.update(id, comments);
@@ -375,6 +375,27 @@ userController.fileUpload = async (req, res, next) => {
   }
 };
 
+// Function to format time to "h:mm A"
+function formatAMPM(date) {
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  let strTime = hours + ":" + minutes + " " + ampm;
+  return strTime;
+}
+
+function formatTimeAMPM(date) {
+  let [hours, minutes] = date.split(":");
+  let ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  let strTime = hours + ":" + minutes + " " + ampm;
+  return strTime;
+}
+
 userController.previousShiftDate2 = async (req, res, next) => {
   try {
     // duration 6hrs or 8hrs
@@ -407,7 +428,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
       const [hours, minutes, seconds] = time.split(":");
       return `${hours.padStart(2, "0")}:${minutes.padStart(
         2,
-        "0"
+        "0",
       )}:${seconds.padStart(2, "0")}`;
     };
 
@@ -471,7 +492,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
     let shiftData = await redisInstance.getValueFromRedis(
       !shift
         ? `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}`
-        : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`
+        : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`,
     );
     if (shiftData) {
       shiftData = JSON.parse(shiftData);
@@ -490,7 +511,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
       startTime,
       endTime,
       condition,
-      condition2
+      condition2,
     );
 
     general = general.map((itm) => {
@@ -534,7 +555,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
         !shift
           ? `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}`
           : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`,
-        appData
+        appData,
       );
     }
 
@@ -543,7 +564,13 @@ userController.previousShiftDate2 = async (req, res, next) => {
       data: {
         status: "Ok",
         message: rescodes?.success,
-        data: { data: general, totalCount: general?.length || 0 },
+        data: {
+          data: general,
+          totalCount: general?.length || 0,
+          shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
+            endTime,
+          )}`,
+        },
       },
     };
 
@@ -557,18 +584,6 @@ userController.previousShiftDate2 = async (req, res, next) => {
     return next();
   }
 };
-
-// Function to format time to "h:mm A"
-function formatAMPM(date) {
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let ampm = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
-  minutes = minutes < 10 ? "0" + minutes : minutes;
-  let strTime = hours + ":" + minutes + " " + ampm;
-  return strTime;
-}
 
 userController.currentShiftData2 = async (req, res, next) => {
   try {
@@ -632,7 +647,7 @@ userController.currentShiftData2 = async (req, res, next) => {
       startTime,
       endTime,
       condition,
-      condition2
+      condition2,
     );
 
     const convertTimeToRange = (time) => {
@@ -682,7 +697,7 @@ userController.currentShiftData2 = async (req, res, next) => {
         //   0,
         // );
         const combinedTarget = Math.min(
-          ...repeatedItems.map((val) => val.target)
+          ...repeatedItems.map((val) => val.target),
         );
         const newItem = {
           ...item,
@@ -729,7 +744,7 @@ userController.currentShiftData2 = async (req, res, next) => {
           updatedData,
           totalCount: updatedData?.length,
           shiftTiming: `${formatAMPM(shiftStartTime)} - ${formatAMPM(
-            shiftEndTime
+            shiftEndTime,
           )}`,
           // shiftTiming: `${shiftStartTime.format("h:mm A")} - ${shiftEndTime.format("h:mm A")}`,
         },
@@ -760,7 +775,7 @@ userController.targetCalculation = async (req, res, next) => {
     }
 
     const storeTargetValue = await generalService.createTargetValue(
-      eachDayTargetByModel
+      eachDayTargetByModel,
     );
 
     res.response = {
@@ -867,7 +882,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       startTime,
       endTime,
       condition,
-      condition2
+      condition2,
     );
 
     currentDate.setDate(currentDate.getDate() + 1);
@@ -895,7 +910,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       startTime,
       endTime,
       condition,
-      condition2
+      condition2,
     );
     const convert = (general, shifts) => {
       let shiftStart, shiftEnd;
@@ -974,10 +989,10 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
           shiftB,
           totalCount: shiftA?.length + shiftB?.length || 0,
           shiftATiming: `${formatAMPM(shiftAStartTime)} - ${formatAMPM(
-            shiftAEndTime
+            shiftAEndTime,
           )}`,
           shiftBTiming: `${formatAMPM(shiftBStartTime)} - ${formatAMPM(
-            shiftBEndTime
+            shiftBEndTime,
           )}`,
         },
       },
@@ -1161,7 +1176,7 @@ userController.getEmoji = async (req, res, next) => {
     if (isShift === "false" || !isShift) {
       const data = await generalService.getPriviousHourCount(
         formattedDatabaseDate,
-        databaseTime
+        databaseTime,
       );
       if (minutes >= 1 && minutes <= 20) {
         if (data / 4 <= dataCount) {
@@ -1227,7 +1242,7 @@ const previousShiftDate2 = async (req) => {
       const [hours, minutes, seconds] = time.split(":");
       return `${hours.padStart(2, "0")}:${minutes.padStart(
         2,
-        "0"
+        "0",
       )}:${seconds.padStart(2, "0")}`;
     };
 
@@ -1250,7 +1265,7 @@ const previousShiftDate2 = async (req) => {
       startTime,
       endTime,
       condition,
-      condition2
+      condition2,
     );
 
     return totalCount;
@@ -1305,7 +1320,7 @@ const getCurrentShiftCount = async (req) => {
       startTime,
       endTime,
       condition,
-      condition2
+      condition2,
     );
 
     return totalCount;
