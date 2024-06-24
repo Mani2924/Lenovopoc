@@ -499,6 +499,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
         ? `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}`
         : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`
     );
+  
     if (shiftData) {
       shiftData = JSON.parse(shiftData);
       shiftData.time = `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
@@ -564,7 +565,8 @@ userController.previousShiftDate2 = async (req, res, next) => {
         data: general,
         shiftUPH: overallUph,
         shiftdownTime: downTime,
-        target: targetModel * parseInt(duration.split("")[0]),
+        shiftActual:actualModel,
+        shiftTarget: targetModel * parseInt(duration.split("")[0]),
         totalCount: general?.length,
       });
       redisInstance.setValueInRedis(
@@ -582,7 +584,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
         message: rescodes?.success,
         data: {
           data: general,
-          target: targetModel * parseInt(duration.split("")[0]),
+          shiftTarget: targetModel * parseInt(duration.split("")[0]),
           shiftActual: actualModel,
           shiftUPH: overallUph,
           shiftdownTime: downTime,
