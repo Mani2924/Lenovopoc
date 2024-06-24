@@ -1034,7 +1034,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
           overAllDetails: {
             overAllTarget: parseInt(target, 10) * extractNumber(duration) * 2,
             overAllActual: shiftActualA+shiftActualB,
-            overAllUPH: (Math.round(shiftActualA / shiftA.length) + Math.round(shiftActualB / shiftB.length))/2,
+            overAllUPH: Math.round((Math.round(shiftActualA / shiftA.length) + Math.round(shiftActualB / shiftB.length))/2),
             overAlldownTime: 52,
           },
           totalCount: shiftA?.length + shiftB?.length || 0,
