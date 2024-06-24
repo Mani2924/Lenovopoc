@@ -615,6 +615,11 @@ userController.currentShiftData2 = async (req, res, next) => {
     let shiftStartTime = new Date();
     let shiftEndTime = new Date();
 
+    let targetModel = 0;
+    let actualModel = 0;
+    let downTime = 52;
+    let overallUph = 0;
+
     shiftStartTime.setHours(9, 0, 0, 0);
     shiftEndTime.setHours(21, 0, 0, 0);
 
@@ -674,6 +679,8 @@ userController.currentShiftData2 = async (req, res, next) => {
 
     // Update the 'x' field in each object
     let updatedData = general.map((item) => {
+      // targetModel += item.target,
+      // actualModel += item.y
       return {
         ...item,
         x: convertTimeToRange(item.x),
@@ -743,6 +750,13 @@ userController.currentShiftData2 = async (req, res, next) => {
       }
     }
 
+    updatedData.forEach(item => {
+      actualModel += item.y;
+      targetModel += item.target;
+    });
+
+    overallUph = Math.round(actualModel/updatedData.length)
+
     res.response = {
       code: 200,
       data: {
@@ -750,6 +764,10 @@ userController.currentShiftData2 = async (req, res, next) => {
         message: rescodes?.success,
         data: {
           updatedData,
+          target : targetModel,
+          actual : actualModel,
+          overallUph,
+          downTime,
           totalCount: updatedData?.length,
           shiftTiming: `${formatAMPM(shiftStartTime)} - ${formatAMPM(
             shiftEndTime,
