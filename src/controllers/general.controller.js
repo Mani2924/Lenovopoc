@@ -778,7 +778,7 @@ userController.currentShiftData2 = async (req, res, next) => {
         message: rescodes?.success,
         data: {
           updatedData,
-          shiftTartget:parseInt(target, 10)* extractNumber(duration),
+          shiftTarget:parseInt(target, 10)* extractNumber(duration),
           shiftActual,
           shiftUPH:Math.round(shiftActual/updatedData?.length),
           shiftdownTime:52,
@@ -1029,22 +1029,22 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
         data: {
           shiftA,
           shiftB,
-          shiftADetails:[
+          shiftADetails:
             {
-              shiftTartget:parseInt(target, 10)* extractNumber(duration),
+              shiftTarget:parseInt(target, 10)* extractNumber(duration),
               shiftActual: shiftActualA,
               shiftUPH:Math.round(shiftActualA/shiftA.length),
               shiftdownTime: 52
             }
-          ],
-          shiftBDetails:[
+          ,
+          shiftBDetails:
             {
-              shiftTartget:parseInt(target, 10)* extractNumber(duration),
+              shiftTarget:parseInt(target, 10)* extractNumber(duration),
               shiftActual: shiftActualB,
               shiftUPH:Math.round(shiftActualB/shiftB.length),
               shiftdownTime: 52
             }
-          ],
+          ,
           totalCount: shiftA?.length + shiftB?.length || 0,
           shiftATiming: `${formatAMPM(shiftAStartTime)} - ${formatAMPM(
             shiftAEndTime,
