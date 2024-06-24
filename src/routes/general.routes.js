@@ -12,7 +12,8 @@ const {
   displayPreviousTwoShiftsData,
   getDownTime,
   getEmoji,
-  getSystemUPH
+  getSystemUPH,
+  getCardValues
 } = require('../controllers/general.controller');
 const multer = require('multer');
 
@@ -32,6 +33,7 @@ router.get('/', shiftDataBasedOnDate);
 router.get('/getDownTime', getDownTime);
 router.get('/getEmoji', getEmoji);
 router.get('/getTarget',getSystemUPH);
+router.get('/getCardValue',getCardValues);
 
 router.get('/displayprevioustwoshiftsdata', displayPreviousTwoShiftsData);
 
