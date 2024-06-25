@@ -110,7 +110,7 @@ userController.shiftData = async (req, res, next) => {
     }
 
     let shiftData = await redisInstance.getValueFromRedis(
-      `${line}-${startDate}-${endDate}-${startTime}-${endTime}`
+      `${line}-${startDate}-${endDate}-${startTime}-${endTime}`,
     );
     if (shiftData) {
       shiftData = JSON.parse(shiftData);
@@ -128,7 +128,7 @@ userController.shiftData = async (req, res, next) => {
       endDate,
       startTime,
       endTime,
-      condition
+      condition,
     );
 
     // storing data in redis
@@ -136,7 +136,7 @@ userController.shiftData = async (req, res, next) => {
       let appData = JSON.stringify(general);
       redisInstance.setValueInRedis(
         `${line}-${startDate}-${endDate}-${startTime}-${endTime}`,
-        appData
+        appData,
       );
     }
 
@@ -202,7 +202,7 @@ userController.currentShiftData = async (req, res, next) => {
       endDate,
       startTime,
       endTime,
-      condition
+      condition,
     );
     const convertTimeToRange = (time) => {
       const [hour] = time.split(":");
@@ -265,7 +265,7 @@ userController.updateCurrentShiftData = async (req, res, next) => {
       email?.trim(),
       "Production Down time Alert",
       templateFilePath,
-      templateData
+      templateData,
     );
 
     await generalService.update(id, comments);
@@ -434,7 +434,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
       const [hours, minutes, seconds] = time.split(":");
       return `${hours.padStart(2, "0")}:${minutes.padStart(
         2,
-        "0"
+        "0",
       )}:${seconds.padStart(2, "0")}`;
     };
 
@@ -498,13 +498,13 @@ userController.previousShiftDate2 = async (req, res, next) => {
     let shiftData = await redisInstance.getValueFromRedis(
       !shift
         ? `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}`
-        : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`
+        : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`,
     );
-  
+
     if (shiftData) {
       shiftData = JSON.parse(shiftData);
       shiftData.shiftTime = `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
-        endTime
+        endTime,
       )}`;
       console.log("from redis");
       res.response = {
@@ -521,7 +521,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
       startTime,
       endTime,
       condition,
-      condition2
+      condition2,
     );
 
     general = general.map((itm) => {
@@ -560,15 +560,13 @@ userController.previousShiftDate2 = async (req, res, next) => {
 
     overallUph = Math.round(actualModel / general.length);
 
-
-
     // storing data in redis
     if (general?.length) {
       let appData = JSON.stringify({
         data: general,
         shiftUPH: overallUph,
         shiftdownTime: downTime,
-        shiftActual:actualModel,
+        shiftActual: actualModel,
         shiftTarget: targetModel,
         totalCount: general?.length,
       });
@@ -576,7 +574,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
         !shift
           ? `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}`
           : `${line}-${startDate}-${endDate}-${startTime}-${endTime}${duration}${shift}`,
-        appData
+        appData,
       );
     }
 
@@ -587,13 +585,13 @@ userController.previousShiftDate2 = async (req, res, next) => {
         message: rescodes?.success,
         data: {
           data: general,
-          shiftTarget: targetModel * parseInt(duration.split("")[0]),
+          shiftTarget: targetModel,
           shiftActual: actualModel,
           shiftUPH: overallUph,
           shiftdownTime: downTime,
           totalCount: general?.length || 0,
           shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
-            endTime
+            endTime,
           )}`,
         },
       },
@@ -672,7 +670,7 @@ userController.currentShiftData2 = async (req, res, next) => {
       startTime,
       endTime,
       condition,
-      condition2
+      condition2,
     );
 
     const convertTimeToRange = (time) => {
@@ -722,7 +720,7 @@ userController.currentShiftData2 = async (req, res, next) => {
         //   0,
         // );
         const combinedTarget = Math.min(
-          ...repeatedItems.map((val) => val.target)
+          ...repeatedItems.map((val) => val.target),
         );
         const newItem = {
           ...item,
@@ -780,7 +778,7 @@ userController.currentShiftData2 = async (req, res, next) => {
           shiftdownTime: 52,
           totalCount: updatedData?.length,
           shiftTiming: `${formatAMPM(shiftStartTime)} - ${formatAMPM(
-            shiftEndTime
+            shiftEndTime,
           )}`,
           // shiftTiming: `${shiftStartTime.format("h:mm A")} - ${shiftEndTime.format("h:mm A")}`,
         },
@@ -811,7 +809,7 @@ userController.targetCalculation = async (req, res, next) => {
     }
 
     const storeTargetValue = await generalService.createTargetValue(
-      eachDayTargetByModel
+      eachDayTargetByModel,
     );
 
     res.response = {
@@ -918,7 +916,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       startTime,
       endTime,
       condition,
-      condition2
+      condition2,
     );
 
     currentDate.setDate(currentDate.getDate() + 1);
@@ -946,7 +944,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       startTime,
       endTime,
       condition,
-      condition2
+      condition2,
     );
     const convert = (general, shifts) => {
       let shiftStart, shiftEnd;
@@ -1038,16 +1036,20 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
           },
           overAllDetails: {
             overAllTarget: parseInt(target, 10) * extractNumber(duration) * 2,
-            overAllActual: shiftActualA+shiftActualB,
-            overAllUPH: Math.round((Math.round(shiftActualA / shiftA.length) + Math.round(shiftActualB / shiftB.length))/2),
+            overAllActual: shiftActualA + shiftActualB,
+            overAllUPH: Math.round(
+              (Math.round(shiftActualA / shiftA.length) +
+                Math.round(shiftActualB / shiftB.length)) /
+                2,
+            ),
             overAlldownTime: 52,
           },
           totalCount: shiftA?.length + shiftB?.length || 0,
           shiftATiming: `${formatAMPM(shiftAStartTime)} - ${formatAMPM(
-            shiftAEndTime
+            shiftAEndTime,
           )}`,
           shiftBTiming: `${formatAMPM(shiftBStartTime)} - ${formatAMPM(
-            shiftBEndTime
+            shiftBEndTime,
           )}`,
         },
       },
@@ -1231,7 +1233,7 @@ userController.getEmoji = async (req, res, next) => {
     if (isShift === "false" || !isShift) {
       const data = await generalService.getPriviousHourCount(
         formattedDatabaseDate,
-        databaseTime
+        databaseTime,
       );
       if (minutes >= 1 && minutes <= 20) {
         if (data / 4 <= dataCount) {
@@ -1297,7 +1299,7 @@ const previousShiftDate2 = async (req) => {
       const [hours, minutes, seconds] = time.split(":");
       return `${hours.padStart(2, "0")}:${minutes.padStart(
         2,
-        "0"
+        "0",
       )}:${seconds.padStart(2, "0")}`;
     };
 
@@ -1320,7 +1322,7 @@ const previousShiftDate2 = async (req) => {
       startTime,
       endTime,
       condition,
-      condition2
+      condition2,
     );
 
     return totalCount;
@@ -1375,7 +1377,7 @@ const getCurrentShiftCount = async (req) => {
       startTime,
       endTime,
       condition,
-      condition2
+      condition2,
     );
 
     return totalCount;
@@ -1392,8 +1394,7 @@ userController.getSystemUPH = async (req, res, next) => {
 
     let target = 0;
 
-
-    if (isSystem == 'true') {
+    if (isSystem == "true") {
       target = data.systemTarget;
     } else {
       target = data.assignedTarget;
