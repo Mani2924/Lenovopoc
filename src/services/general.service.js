@@ -590,12 +590,6 @@ generalService.hourlyData2 = async () => {
       group: ['product_id', 'line'],
     });
 
-    // console.log('formattedPreviousHourStart', formattedPreviousHourStart);
-    // console.log('formattedPreviousHourEnd', formattedPreviousHourEnd);
-
-    console.log('hourlyData count', result?.length);
-    // console.log('hourlyData count', result);
-
     const target = [
       { '12JDS0AW00': 2 },
       { '12JDS0AX00': 4 },

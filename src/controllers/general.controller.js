@@ -1389,12 +1389,12 @@ userController.getSystemUPH = async (req, res, next) => {
 
     let target = 0;
 
-    if (isSystem === true || isSystem) {
+
+    if (isSystem == 'true') {
       target = data.systemTarget;
     } else {
       target = data.assignedTarget;
     }
-
     res.status(200).json({
       code: 200,
       data: {
