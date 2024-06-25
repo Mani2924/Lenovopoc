@@ -424,7 +424,8 @@ userController.previousShiftDate2 = async (req, res, next) => {
     let endDate = currentDateString;
     let condition2 = "AND start_time < end_time";
 
-    let targetModel = parseInt(target);
+    let targetModel = parseInt(target) * extractNumber(duration);
+
     let actualModel = 0;
     let downTime = 52;
     let overallUph = 0;
@@ -559,6 +560,8 @@ userController.previousShiftDate2 = async (req, res, next) => {
 
     overallUph = Math.round(actualModel / general.length);
 
+
+
     // storing data in redis
     if (general?.length) {
       let appData = JSON.stringify({
@@ -566,7 +569,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
         shiftUPH: overallUph,
         shiftdownTime: downTime,
         shiftActual:actualModel,
-        shiftTarget: targetModel * parseInt(duration.split("")[0]),
+        shiftTarget: targetModel,
         totalCount: general?.length,
       });
       redisInstance.setValueInRedis(
