@@ -78,7 +78,7 @@ cron.schedule('*/15 * * * * *', async () => {
   // await generalService.create(newSampleData);
   // console.log(`Inserting General Data ..........${currentTime}............`);
   // await generalService.hourlyData();
-  // await generalService.hourlyData2();
+  await generalService.hourlyData2();
 
   // await generalService.currentShiftToRedis();
   // await generalService.sampleDateCountHourlyToWeeklyData();
