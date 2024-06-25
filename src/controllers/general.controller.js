@@ -502,7 +502,7 @@ userController.previousShiftDate2 = async (req, res, next) => {
   
     if (shiftData) {
       shiftData = JSON.parse(shiftData);
-      shiftData.time = `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
+      shiftData.shiftTime = `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
         endTime
       )}`;
       console.log("from redis");

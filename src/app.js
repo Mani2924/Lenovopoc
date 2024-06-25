@@ -143,7 +143,7 @@ function insertDataAndUpdateTime() {
     dest_Operation: rowData['Dest Operation'],
     Associate_Id: rowData['Associate Id'],
     Mfg_Order_Id: rowData['Mfg Order Id'],
-    product_id: rowData['Product Id'],
+    product_id: '21JKS14D00',
     Serial_Num: rowData['Serial Num'],
     Operation_Id: rowData['Operation Id'],
     Work_Position_Id: rowData['Work Position Id'],
