@@ -15,6 +15,7 @@ const {
   getSystemUPH,
   getCardValues,
   todayFirstShift,
+  todaySecondShift,
 } = require('../controllers/general.controller');
 const multer = require('multer');
 
@@ -44,5 +45,6 @@ router.route('/importExcel').post(upload.single('file'), fileUpload);
 router.post('/insertTarget', targetCalculation);
 
 router.get('/todayfirstshift', todayFirstShift);
+router.get('/todaySecondShift', todaySecondShift);
 
 module.exports = router;

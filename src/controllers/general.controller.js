@@ -948,8 +948,8 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       condition,
       condition2,
     );
-    const shiftAdowntimeDetails = await generalService.getDownTime('1');
-    const shiftBdowntimeDetails = await generalService.getDownTime('2');
+    const shiftAdowntimeDetails = await generalService.getDownTime("1");
+    const shiftBdowntimeDetails = await generalService.getDownTime("2");
 
     const convert = (general, shifts) => {
       let shiftStart, shiftEnd, downtimeDetails;
@@ -1515,6 +1515,85 @@ userController.todayFirstShift = async (req, res, next) => {
     if (duration === "9hrs") {
       endTime = "18:00:00";
       shiftEndTime.setHours(18, 0, 0, 0);
+    }
+
+    let general = await generalService.getShiftRecord2(
+      line,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      condition,
+      condition2,
+    );
+
+    general = general.map((val, index) => {
+      shiftActual += val.y;
+      return {
+        ...val,
+        x: convertTimeToRange(val.x),
+        downtime: "-",
+        message: "-",
+      };
+    });
+
+    const result = {
+      general,
+      totalCount: general?.length,
+      shiftTarget: targetModel,
+      shiftActual,
+      shiftUPH: Math.round(shiftActual / general?.length),
+      shiftdownTime: downTime,
+      shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(endTime)}`,
+    };
+
+    res.response = {
+      code: 200,
+      data: {
+        status: "Ok",
+        message: rescodes?.success,
+        data: result,
+      },
+    };
+
+    return next();
+  } catch (error) {
+    logger.error(error);
+    res.response = {
+      code: 400,
+      data: { status: "Error", message: rescodes?.wentWrong },
+    };
+    return next();
+  }
+};
+
+userController.todaySecondShift = async (req, res, next) => {
+  try {
+    const { line, duration, target } = req.query;
+
+    const currentDate = new Date();
+
+    let startTime = "21:00:00";
+    let endTime = "09:00:00";
+    let startDate = currentDate.toISOString().split("T")[0];
+    currentDate.setDate(currentDate.getDate() + 1);
+    let endDate = currentDate.toISOString().split("T")[0];
+    let condition = "OR";
+    let condition2 = "AND start_time < end_time";
+
+    let shiftStartTime = currentDate;
+    let shiftEndTime = currentDate;
+    shiftStartTime.setHours(21, 0, 0, 0);
+    shiftEndTime.setHours(9, 0, 0, 0);
+
+    let targetModel =
+      duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
+    let shiftActual = 0;
+    let downTime = 52;
+
+    if (duration === "9hrs") {
+      endTime = "06:00:00";
+      shiftEndTime.setHours(6, 0, 0, 0);
     }
 
     let general = await generalService.getShiftRecord2(
