@@ -16,6 +16,9 @@ const { sampleData, oldData } = require("../../models/index");
 
 const { convertTimeToRange } = require("../utility/shiftUtility");
 
+// const productionDownTime = require("../data/downTime");
+const downTimeService = require("../services/downTime.service");
+
 const moment = require("moment");
 
 const {
@@ -1527,13 +1530,20 @@ userController.todayFirstShift = async (req, res, next) => {
       condition2,
     );
 
+    const downTimeDatas = await downTimeService.getAll();
+
     general = general.map((val, index) => {
       shiftActual += val.y;
+      const downTimeData =
+        index % 2 === 0 ? "-" : downTimeDatas[index]?.downTime || "-";
+      const downTimeMessage =
+        index % 2 === 0 ? "-" : downTimeDatas[index]?.message || "-";
+
       return {
         ...val,
         x: convertTimeToRange(val.x),
-        downtime: "-",
-        message: "-",
+        downtime: downTimeData,
+        message: downTimeMessage,
       };
     });
 
@@ -1606,13 +1616,20 @@ userController.todaySecondShift = async (req, res, next) => {
       condition2,
     );
 
+    const downTimeDatas = await downTimeService.getAll();
+
     general = general.map((val, index) => {
       shiftActual += val.y;
+      const downTimeData =
+        index % 2 === 0 ? "-" : downTimeDatas[index]?.downTime || "-";
+      const downTimeMessage =
+        index % 2 === 0 ? "-" : downTimeDatas[index]?.message || "-";
+
       return {
         ...val,
         x: convertTimeToRange(val.x),
-        downtime: "-",
-        message: "-",
+        downtime: downTimeData,
+        message: downTimeMessage,
       };
     });
 
