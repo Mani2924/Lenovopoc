@@ -946,14 +946,53 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       condition,
       condition2,
     );
+    const shiftAdowntimeDetails = [
+      {
+        interval: "12 - 01",
+        downTime: "10",
+        message: "Conveyor is stopped",
+      },
+      {
+        interval: "03 - 04",
+        downTime: "20",
+        message: "Part Failure",
+      },
+      {
+        interval: "04 - 05",
+        downTime: "15",
+        message: "No Load",
+      },
+      {
+        interval: "07 - 08",
+        downTime: "10",
+        message: "Operator trainer",
+      },
+    ];
+
+    const shiftBdowntimeDetails = [
+      {
+        interval: "04 - 05",
+        downTime: "15",
+        message: "No Load",
+      },
+      {
+        interval: "07 - 08",
+        downTime: "10",
+        message: "Operator trainer",
+      },
+    ];
+
     const convert = (general, shifts) => {
-      let shiftStart, shiftEnd;
-      shifts === "shiftA"
-        ? (shiftStart = shiftAStartTime)
-        : (shiftStart = shiftBStartTime);
-      shifts === "shiftA"
-        ? (shiftEnd = shiftAEndTime)
-        : (shiftEnd = shiftBEndTime);
+      let shiftStart, shiftEnd, downtimeDetails;
+      if (shifts === "shiftA") {
+        shiftStart = shiftAStartTime;
+        shiftEnd = shiftAEndTime;
+        downtimeDetails = shiftAdowntimeDetails;
+      } else {
+        shiftStart = shiftBStartTime;
+        shiftEnd = shiftBEndTime;
+        downtimeDetails = shiftBdowntimeDetails;
+      }
 
       let updatedData;
       const data = general.map((itm) => {
@@ -979,11 +1018,15 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
 
         x = `${startFormatted} - ${endFormatted}`;
 
-        // x = `${aa[0]} - ${ab} `;
+        let downtime = downtimeDetails.find(
+          (detail) => detail.interval === x
+        );
 
         return {
           ...itm,
           x,
+          downtime: downtime ? downtime.downTime : "-",
+          message: downtime ? downtime.message : "",
         };
       });
 
@@ -1014,6 +1057,10 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
     const shiftB = convert(general2, "shiftB");
     const shiftActualA = shiftA.reduce((total, item) => total + item.y, 0);
     const shiftActualB = shiftB.reduce((total, item) => total + item.y, 0);
+    const totalShiftADowntime = shiftAdowntimeDetails.reduce((total, item) => total + parseInt(item.downTime), 0);
+    const totalShiftBDowntime = shiftBdowntimeDetails.reduce((total, item) => total + parseInt(item.downTime), 0);
+    const totalOverallDowntime = totalShiftADowntime + totalShiftBDowntime;
+
     res.response = {
       code: 200,
       data: {
@@ -1022,17 +1069,19 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
         data: {
           shiftA,
           shiftB,
+          shiftAdowntimeDetails,
+          shiftBdowntimeDetails,
           shiftADetails: {
             shiftTarget: parseInt(target, 10) * extractNumber(duration),
             shiftActual: shiftActualA,
             shiftUPH: Math.round(shiftActualA / shiftA.length),
-            shiftdownTime: 52,
+            shiftdownTime: totalShiftADowntime,
           },
           shiftBDetails: {
             shiftTarget: parseInt(target, 10) * extractNumber(duration),
             shiftActual: shiftActualB,
             shiftUPH: Math.round(shiftActualB / shiftB.length),
-            shiftdownTime: 52,
+            shiftdownTime: totalShiftBDowntime,
           },
           overAllDetails: {
             overAllTarget: parseInt(target, 10) * extractNumber(duration) * 2,
@@ -1042,7 +1091,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
                 Math.round(shiftActualB / shiftB.length)) /
                 2,
             ),
-            overAlldownTime: 52,
+            overAlldownTime: totalOverallDowntime,
           },
           totalCount: shiftA?.length + shiftB?.length || 0,
           shiftATiming: `${formatAMPM(shiftAStartTime)} - ${formatAMPM(
