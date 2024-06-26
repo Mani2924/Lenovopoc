@@ -8,6 +8,7 @@ const {
   uphtarget,
   weeklyData1,
   sampleData,
+  downtime,
   oldData,
   modelTarget,
 } = require('../../models/index');
@@ -886,5 +887,28 @@ generalService.dayShiftCount = async (date) => {
     throw error;
   }
 };
+
+generalService.getDownTime = async (shift) => {
+  try {
+    const result = await downtime.findAll({
+      attributes: ['interval','downTime','message'],
+      where: {
+        shift
+      },
+    });
+    const formattedResult = result.map(item => ({
+      interval: item.interval,
+      downTime: item.downTime,
+      message: item.message,
+    }));
+
+    return formattedResult;
+  } catch (error) {
+    console.error('Error executing Sequelize query:', error);
+    throw error;
+  }
+};
+
+
 
 module.exports = generalService;

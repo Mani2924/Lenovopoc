@@ -948,41 +948,8 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
       condition,
       condition2,
     );
-    const shiftAdowntimeDetails = [
-      {
-        interval: "12 - 01",
-        downTime: "10",
-        message: "Conveyor is stopped",
-      },
-      {
-        interval: "03 - 04",
-        downTime: "20",
-        message: "Part Failure",
-      },
-      {
-        interval: "04 - 05",
-        downTime: "15",
-        message: "No Load",
-      },
-      {
-        interval: "07 - 08",
-        downTime: "10",
-        message: "Operator trainer",
-      },
-    ];
-
-    const shiftBdowntimeDetails = [
-      {
-        interval: "04 - 05",
-        downTime: "15",
-        message: "No Load",
-      },
-      {
-        interval: "07 - 08",
-        downTime: "10",
-        message: "Operator trainer",
-      },
-    ];
+    const shiftAdowntimeDetails = await generalService.getDownTime('1');
+    const shiftBdowntimeDetails = await generalService.getDownTime('2');
 
     const convert = (general, shifts) => {
       let shiftStart, shiftEnd, downtimeDetails;
