@@ -14,6 +14,8 @@ const path = require("path");
 const xlsx = require("xlsx");
 const { sampleData, oldData } = require("../../models/index");
 
+const { convertTimeToRange } = require("../utility/shiftUtility");
+
 const moment = require("moment");
 
 const {
@@ -1018,9 +1020,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
 
         x = `${startFormatted} - ${endFormatted}`;
 
-        let downtime = downtimeDetails.find(
-          (detail) => detail.interval === x
-        );
+        let downtime = downtimeDetails.find((detail) => detail.interval === x);
 
         return {
           ...itm,
@@ -1057,8 +1057,14 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
     const shiftB = convert(general2, "shiftB");
     const shiftActualA = shiftA.reduce((total, item) => total + item.y, 0);
     const shiftActualB = shiftB.reduce((total, item) => total + item.y, 0);
-    const totalShiftADowntime = shiftAdowntimeDetails.reduce((total, item) => total + parseInt(item.downTime), 0);
-    const totalShiftBDowntime = shiftBdowntimeDetails.reduce((total, item) => total + parseInt(item.downTime), 0);
+    const totalShiftADowntime = shiftAdowntimeDetails.reduce(
+      (total, item) => total + parseInt(item.downTime),
+      0,
+    );
+    const totalShiftBDowntime = shiftBdowntimeDetails.reduce(
+      (total, item) => total + parseInt(item.downTime),
+      0,
+    );
     const totalOverallDowntime = totalShiftADowntime + totalShiftBDowntime;
 
     res.response = {
@@ -1512,6 +1518,86 @@ userController.getCardValues = async (req, res, next) => {
 const extractNumber = (str) => {
   const match = str.match(/\d+/);
   return match ? parseInt(match[0], 10) : null;
+};
+
+userController.todayFirstShift = async (req, res, next) => {
+  try {
+    const { line, duration, target } = req.query;
+
+    const currentDate = new Date();
+
+    let currentDateString = currentDate.toISOString().split("T")[0];
+
+    let startTime = "09:00:00";
+    let endTime = "21:00:00";
+    let startDate = currentDateString;
+    let endDate = currentDateString;
+    let condition = "AND";
+    let condition2 = "AND start_time < end_time";
+
+    let shiftStartTime = currentDate;
+    let shiftEndTime = currentDate;
+    shiftStartTime.setHours(9, 0, 0, 0);
+    shiftEndTime.setHours(21, 0, 0, 0);
+
+    let targetModel =
+      duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
+    let shiftActual = 0;
+    let downTime = 52;
+
+    if (duration === "9hrs") {
+      endTime = "18:00:00";
+      shiftEndTime.setHours(18, 0, 0, 0);
+    }
+
+    let general = await generalService.getShiftRecord2(
+      line,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      condition,
+      condition2,
+    );
+
+    general = general.map((val, index) => {
+      shiftActual += val.y;
+      return {
+        ...val,
+        x: convertTimeToRange(val.x),
+        downtime: "-",
+        message: "-",
+      };
+    });
+
+    const result = {
+      general,
+      totalCount: general?.length,
+      shiftTarget: targetModel,
+      shiftActual,
+      shiftUPH: Math.round(shiftActual / general?.length),
+      shiftdownTime: downTime,
+      shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(endTime)}`,
+    };
+
+    res.response = {
+      code: 200,
+      data: {
+        status: "Ok",
+        message: rescodes?.success,
+        data: result,
+      },
+    };
+
+    return next();
+  } catch (error) {
+    logger.error(error);
+    res.response = {
+      code: 400,
+      data: { status: "Error", message: rescodes?.wentWrong },
+    };
+    return next();
+  }
 };
 
 module.exports = userController;

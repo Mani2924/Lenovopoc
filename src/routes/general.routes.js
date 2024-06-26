@@ -13,7 +13,8 @@ const {
   getDownTime,
   getEmoji,
   getSystemUPH,
-  getCardValues
+  getCardValues,
+  todayFirstShift,
 } = require('../controllers/general.controller');
 const multer = require('multer');
 
@@ -32,8 +33,8 @@ router.get('/shift2', currentShiftData2);
 router.get('/', shiftDataBasedOnDate);
 router.get('/getDownTime', getDownTime);
 router.get('/getEmoji', getEmoji);
-router.get('/getTarget',getSystemUPH);
-router.get('/getCardValue',getCardValues);
+router.get('/getTarget', getSystemUPH);
+router.get('/getCardValue', getCardValues);
 
 router.get('/displayprevioustwoshiftsdata', displayPreviousTwoShiftsData);
 
@@ -41,5 +42,7 @@ router.put('/:id', updateCurrentShiftData);
 router.route('/importExcel').post(upload.single('file'), fileUpload);
 
 router.post('/insertTarget', targetCalculation);
+
+router.get('/todayfirstshift', todayFirstShift);
 
 module.exports = router;
