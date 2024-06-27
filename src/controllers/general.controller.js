@@ -1513,7 +1513,7 @@ userController.todayFirstShift = async (req, res, next) => {
     let targetModel =
       duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
     let shiftActual = 0;
-    let downTime = 52;
+    let downTime = 0;
 
     if (duration === "9hrs") {
       endTime = "18:00:00";
@@ -1535,9 +1535,13 @@ userController.todayFirstShift = async (req, res, next) => {
     general = general.map((val, index) => {
       shiftActual += val.y;
       const downTimeData =
-        index % 2 === 0 ? "-" : downTimeDatas[index]?.downTime || "-";
+        index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
       const downTimeMessage =
-        index % 2 === 0 ? "-" : downTimeDatas[index]?.message || "-";
+        index % 2 !== 0 ? "-" : downTimeDatas[index]?.message || "-";
+
+      downTime = downTimeData.includes("mins")
+        ? parseInt(downTimeData.split(" ")[0]) + downTime
+        : downTime;
 
       return {
         ...val,
@@ -1599,7 +1603,7 @@ userController.todaySecondShift = async (req, res, next) => {
     let targetModel =
       duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
     let shiftActual = 0;
-    let downTime = 52;
+    let downTime = 0;
 
     if (duration === "9hrs") {
       endTime = "06:00:00";
@@ -1624,6 +1628,9 @@ userController.todaySecondShift = async (req, res, next) => {
         index % 2 === 0 ? "-" : downTimeDatas[index]?.downTime || "-";
       const downTimeMessage =
         index % 2 === 0 ? "-" : downTimeDatas[index]?.message || "-";
+      downTime = downTimeData.includes("mins")
+        ? parseInt(downTimeData.split(" ")[0]) + downTime
+        : downTime;
 
       return {
         ...val,
