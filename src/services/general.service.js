@@ -493,6 +493,7 @@ generalService.getShiftRecord2 = async (
   totalCount AS y,
   CONCAT(product_id, ' ', target) AS z,
   product_id,
+  ordercount,
   target,
   comments,
   op_date,
@@ -581,6 +582,10 @@ generalService.hourlyData2 = async () => {
         'line',
         [fn('MAX', col('Op_Finish_Time')), 'max_d'],
         [fn('COUNT', col('*')), 'total_count'],
+        [
+          fn('COUNT', fn('DISTINCT', col('Mfg_Order_Id'))),
+          'distinct_order_count',
+        ],
       ],
       where: {
         Op_Finish_Time: {
@@ -654,6 +659,7 @@ generalService.hourlyData2 = async () => {
           line,
           totalcount: +totalCount,
           target,
+          ordercount: item.dataValues.distinct_order_count,
           comments:
             +totalCount >= target ? 'Target Completed' : 'Target Not Completed',
         };
@@ -793,18 +799,32 @@ ORDER BY
   return result;
 };
 
-generalService.getPriviousHourCount = async (date,time) =>{
-  const result = await weeklyData1.findOne({ where: { op_date:date,start_time:time } });
+generalService.getPriviousHourCount = async (date, time) => {
+  const result = await weeklyData1.findOne({
+    where: { op_date: date, start_time: time },
+  });
 
-  return result !=null ? result.totalcount: 0;
-
+  return result != null ? result.totalcount : 0;
 };
 
-generalService.getCount = async (line, startDate, endDate, startTime, endTime) => {
+generalService.getCount = async (
+  line,
+  startDate,
+  endDate,
+  startTime,
+  endTime,
+) => {
   try {
     const result = await weeklyData1.findOne({
       attributes: [
-        [Sequelize.fn('COALESCE', Sequelize.fn('SUM', Sequelize.col('totalcount')), 0), 'totalcount'],
+        [
+          Sequelize.fn(
+            'COALESCE',
+            Sequelize.fn('SUM', Sequelize.col('totalcount')),
+            0,
+          ),
+          'totalcount',
+        ],
       ],
       where: {
         line,
@@ -821,7 +841,7 @@ generalService.getCount = async (line, startDate, endDate, startTime, endTime) =
       },
     });
 
-    const totalCount = result.dataValues.totalcount || 0 ;
+    const totalCount = result.dataValues.totalcount || 0;
     return totalCount;
   } catch (error) {
     console.error('Error executing Sequelize query:', error);
@@ -829,11 +849,24 @@ generalService.getCount = async (line, startDate, endDate, startTime, endTime) =
   }
 };
 
-generalService.getCurrentShiftCount = async (line, startDate, endDate, startTime, endTime) => {
+generalService.getCurrentShiftCount = async (
+  line,
+  startDate,
+  endDate,
+  startTime,
+  endTime,
+) => {
   try {
     const result = await weeklyData1.findOne({
       attributes: [
-        [Sequelize.fn('COALESCE', Sequelize.fn('SUM', Sequelize.col('totalcount')), 0), 'totalcount'],
+        [
+          Sequelize.fn(
+            'COALESCE',
+            Sequelize.fn('SUM', Sequelize.col('totalcount')),
+            0,
+          ),
+          'totalcount',
+        ],
       ],
       where: {
         line,
@@ -847,7 +880,7 @@ generalService.getCurrentShiftCount = async (line, startDate, endDate, startTime
       },
     });
 
-    const totalCount = result.dataValues.totalcount || 0 ;
+    const totalCount = result.dataValues.totalcount || 0;
     return totalCount;
   } catch (error) {
     console.error('Error executing Sequelize query:', error);
@@ -858,7 +891,7 @@ generalService.getCurrentShiftCount = async (line, startDate, endDate, startTime
 generalService.getTarget = async () => {
   try {
     const data = await uphtarget.findOne({
-      order: Sequelize.literal('RANDOM()')
+      order: Sequelize.literal('RANDOM()'),
     });
     return data;
   } catch (error) {
@@ -867,20 +900,25 @@ generalService.getTarget = async () => {
   }
 };
 
-
 generalService.dayShiftCount = async (date) => {
   try {
     const result = await weeklyData1.findOne({
       attributes: [
-        [Sequelize.fn('COALESCE', Sequelize.fn('SUM', Sequelize.col('totalcount')), 0), 'totalcount'],
+        [
+          Sequelize.fn(
+            'COALESCE',
+            Sequelize.fn('SUM', Sequelize.col('totalcount')),
+            0,
+          ),
+          'totalcount',
+        ],
       ],
       where: {
-            op_date: date
- 
+        op_date: date,
       },
     });
 
-    const totalCount = result.dataValues.totalcount || 0 ;
+    const totalCount = result.dataValues.totalcount || 0;
     return totalCount;
   } catch (error) {
     console.error('Error executing Sequelize query:', error);
@@ -891,12 +929,12 @@ generalService.dayShiftCount = async (date) => {
 generalService.getDownTime = async (shift) => {
   try {
     const result = await downtime.findAll({
-      attributes: ['interval','downTime','message'],
+      attributes: ['interval', 'downTime', 'message'],
       where: {
-        shift
+        shift,
       },
     });
-    const formattedResult = result.map(item => ({
+    const formattedResult = result.map((item) => ({
       interval: item.interval,
       downTime: item.downTime,
       message: item.message,
@@ -908,7 +946,5 @@ generalService.getDownTime = async (shift) => {
     throw error;
   }
 };
-
-
 
 module.exports = generalService;
