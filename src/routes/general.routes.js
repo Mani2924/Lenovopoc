@@ -16,6 +16,7 @@ const {
   getCardValues,
   todayFirstShift,
   todaySecondShift,
+  productionData,
 } = require('../controllers/general.controller');
 const multer = require('multer');
 
@@ -46,5 +47,6 @@ router.post('/insertTarget', targetCalculation);
 
 router.get('/todayfirstshift', todayFirstShift);
 router.get('/todaySecondShift', todaySecondShift);
+router.get('/productiondata', productionData);
 
 module.exports = router;

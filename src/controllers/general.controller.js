@@ -1670,4 +1670,264 @@ userController.todaySecondShift = async (req, res, next) => {
   }
 };
 
+const productionDataFirstShift = async ({ line, duration, target, date }) => {
+  try {
+    const currentDate = new Date(date);
+
+    let currentDateString = currentDate.toISOString().split("T")[0];
+
+    let startTime = "09:00:00";
+    let endTime = "21:00:00";
+    let startDate = currentDateString;
+    let endDate = currentDateString;
+    let condition = "AND";
+    let condition2 = "AND start_time < end_time";
+
+    let shiftStartTime = currentDate;
+    let shiftEndTime = currentDate;
+    shiftStartTime.setHours(9, 0, 0, 0);
+    shiftEndTime.setHours(21, 0, 0, 0);
+
+    let targetModel =
+      duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
+    let shiftActual = 0;
+    let downTime = 0;
+
+    if (duration === "9hrs") {
+      endTime = "18:00:00";
+      shiftEndTime.setHours(18, 0, 0, 0);
+    }
+
+    let general = await generalService.getShiftRecord2(
+      line,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      condition,
+      condition2,
+    );
+
+    const downTimeDatas = await downTimeService.getAll();
+
+    const shiftADowntimeDetails = [];
+
+    general = general.map((val, index) => {
+      shiftActual += val.y;
+
+      const downTimeData =
+        index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
+      const downTimeMessage =
+        index % 2 !== 0 ? "-" : downTimeDatas[index]?.message || "-";
+
+      if (downTimeData.includes("mins")) {
+        downTime = parseInt(downTimeData.split(" ")[0]) + downTime;
+
+        const [shiftAStart, shiftAEnd] = val.x.split(" - ");
+
+        shiftADowntimeDetails.push({
+          interval: `${formatTimeAMPM(shiftAStart)} - ${formatTimeAMPM(
+            shiftAEnd,
+          )}`,
+          downTime: downTimeData,
+          message: downTimeMessage,
+        });
+      }
+
+      // downTime = downTimeData.includes('mins')
+      //   ? parseInt(downTimeData.split(' ')[0]) + downTime
+      //   : downTime;
+
+      return {
+        ...val,
+        x: convertTimeToRange(val.x),
+        downtime: downTimeData,
+        message: downTimeMessage,
+      };
+    });
+
+    const result = {
+      general,
+      shiftADetails: {
+        shiftTarget: targetModel,
+        shiftActual,
+        shiftUPH: Math.round(shiftActual / general?.length),
+        shiftdownTime: downTime,
+        shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
+          endTime,
+        )}`,
+      },
+      shiftADowntimeDetails,
+    };
+
+    return result;
+  } catch (error) {
+    logger.error(error);
+    res.response = {
+      code: 400,
+      data: { status: "Error", message: rescodes?.wentWrong },
+    };
+    return next();
+  }
+};
+
+const productionDataSecondShift = async ({ line, duration, target, date }) => {
+  try {
+    const currentDate = new Date(date);
+
+    let startTime = "21:00:00";
+    let endTime = "09:00:00";
+    let startDate = currentDate.toISOString().split("T")[0];
+    currentDate.setDate(currentDate.getDate() + 1);
+    let endDate = currentDate.toISOString().split("T")[0];
+    let condition = "OR";
+    let condition2 = "AND start_time < end_time";
+
+    let shiftStartTime = currentDate;
+    let shiftEndTime = currentDate;
+    shiftStartTime.setHours(21, 0, 0, 0);
+    shiftEndTime.setHours(9, 0, 0, 0);
+
+    let targetModel =
+      duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
+    let shiftActual = 0;
+    let downTime = 0;
+
+    if (duration === "9hrs") {
+      endTime = "06:00:00";
+      shiftEndTime.setHours(6, 0, 0, 0);
+    }
+
+    let general = await generalService.getShiftRecord2(
+      line,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      condition,
+      condition2,
+    );
+
+    const downTimeDatas = await downTimeService.getAll();
+
+    const shiftBDowntimeDetails = [];
+
+    general = general.map((val, index) => {
+      shiftActual += val.y;
+
+      const downTimeData =
+        index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
+      const downTimeMessage =
+        index % 2 !== 0 ? "-" : downTimeDatas[index]?.message || "-";
+
+      if (downTimeData.includes("mins")) {
+        downTime = parseInt(downTimeData.split(" ")[0]) + downTime;
+
+        const [shiftAStart, shiftAEnd] = val.x.split(" - ");
+
+        shiftBDowntimeDetails.push({
+          interval: `${formatTimeAMPM(shiftAStart)} - ${formatTimeAMPM(
+            shiftAEnd,
+          )}`,
+          downTime: downTimeData,
+          message: downTimeMessage,
+        });
+      }
+
+      return {
+        ...val,
+        x: convertTimeToRange(val.x),
+        downtime: downTimeData,
+        message: downTimeMessage,
+      };
+    });
+
+    const result = {
+      general,
+      shiftBDetails: {
+        shiftTarget: targetModel,
+        shiftActual,
+        shiftUPH: Math.round(shiftActual / general?.length),
+        shiftdownTime: downTime,
+        shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
+          endTime,
+        )}`,
+      },
+      shiftBDowntimeDetails,
+    };
+
+    return result;
+  } catch (error) {
+    logger.error(error);
+    res.response = {
+      code: 400,
+      data: { status: "Error", message: rescodes?.wentWrong },
+    };
+    return next();
+  }
+};
+
+userController.productionData = async (req, res, next) => {
+  try {
+    const { line, duration, target, date } = req.query;
+
+    const {
+      general: shiftA,
+      shiftADetails,
+      shiftADowntimeDetails,
+    } = await productionDataFirstShift({
+      line,
+      duration,
+      target,
+      date,
+    });
+
+    const {
+      general: shiftB,
+      shiftBDetails,
+      shiftBDowntimeDetails,
+    } = await productionDataSecondShift({
+      line,
+      duration,
+      target,
+      date,
+    });
+
+    const overAllDetails = {
+      overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
+      overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
+      overAllUPH: shiftADetails?.shiftUPH + shiftBDetails?.shiftUPH,
+      overAlldownTime:
+        shiftADetails?.shiftdownTime + shiftBDetails?.shiftdownTime,
+    };
+
+    res.response = {
+      code: 200,
+      data: {
+        status: "Ok",
+        message: rescodes?.success,
+        data: {
+          shiftA,
+          shiftADetails,
+          shiftADowntimeDetails,
+          shiftB,
+          shiftBDetails,
+          shiftBDowntimeDetails,
+          totalCount: shiftA?.length + shiftB?.length,
+          overAllDetails,
+        },
+      },
+    };
+
+    return next();
+  } catch (error) {
+    logger.error(error);
+    res.response = {
+      code: 400,
+      data: { status: "Error", message: rescodes?.wentWrong },
+    };
+    return next();
+  }
+};
+
 module.exports = userController;
