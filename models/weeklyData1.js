@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       target: DataTypes.INTEGER,
       totalcount: DataTypes.INTEGER,
       comments: DataTypes.STRING,
+      ordercount: DataTypes.INTEGER,
       isActive: DataTypes.BOOLEAN,
       deletedAt: DataTypes.DATE,
     },
