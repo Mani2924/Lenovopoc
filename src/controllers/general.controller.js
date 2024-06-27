@@ -1893,14 +1893,6 @@ userController.productionData = async (req, res, next) => {
       date,
     });
 
-    // const shiftBDetails = {
-    //   shiftTarget: targetModel,
-    //   shiftActual,
-    //   shiftUPH: Math.round(shiftActual / shiftB?.length),
-    //   shiftdownTime: downTime,
-    //   shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(endTime)}`,
-    // };
-
     const overAllDetails = {
       overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
       overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
@@ -1908,12 +1900,6 @@ userController.productionData = async (req, res, next) => {
       overAlldownTime:
         shiftADetails?.shiftdownTime + shiftBDetails?.shiftdownTime,
     };
-
-    // const result = {
-    //   general,
-    //   totalCount: general?.length,
-
-    // };
 
     res.response = {
       code: 200,
