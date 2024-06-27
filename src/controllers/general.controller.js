@@ -1893,6 +1893,14 @@ userController.productionData = async (req, res, next) => {
       date,
     });
 
+    const recievedDate = new Date(date);
+    const currentDate = new Date();
+
+    const isSameDay =
+      recievedDate.getFullYear() === currentDate.getFullYear() &&
+      recievedDate.getMonth() === currentDate.getMonth() &&
+      recievedDate.getDate() === currentDate.getDate();
+
     const overAllDetails = {
       overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
       overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
@@ -1901,21 +1909,30 @@ userController.productionData = async (req, res, next) => {
         shiftADetails?.shiftdownTime + shiftBDetails?.shiftdownTime,
     };
 
+    const result = {
+      shiftA,
+      shiftADetails,
+      shiftADowntimeDetails,
+      shiftB,
+      shiftBDetails,
+      shiftBDowntimeDetails,
+      totalCount: shiftA?.length + shiftB?.length,
+      overAllDetails,
+    };
+
+    if (isSameDay) {
+      result.currenyShift =
+        currentDate.getHours() >= "9" && currentDate.getHours() < "21"
+          ? "A"
+          : "B";
+    }
+
     res.response = {
       code: 200,
       data: {
         status: "Ok",
         message: rescodes?.success,
-        data: {
-          shiftA,
-          shiftADetails,
-          shiftADowntimeDetails,
-          shiftB,
-          shiftBDetails,
-          shiftBDowntimeDetails,
-          totalCount: shiftA?.length + shiftB?.length,
-          overAllDetails,
-        },
+        data: result,
       },
     };
 
