@@ -1725,9 +1725,11 @@ const productionDataFirstShift = async ({
     const downTimeDatas = await downTimeService.getAll();
 
     const shiftADowntimeDetails = [];
+    let orderCount = 0;
 
     general = general.map((val, index) => {
       shiftActual += val.y;
+      orderCount += val.ordercount;
 
       const downTimeData =
         index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
@@ -1771,6 +1773,7 @@ const productionDataFirstShift = async ({
           endTime,
         )}`,
       },
+      orderCount: orderCount || 0,
       shiftADowntimeDetails,
     };
 
@@ -1841,9 +1844,11 @@ const productionDataSecondShift = async ({
     const downTimeDatas = await downTimeService.getAll();
 
     const shiftBDowntimeDetails = [];
+    let orderCount = 0;
 
     general = general.map((val, index) => {
       shiftActual += val.y;
+      orderCount += val.ordercount;
 
       const downTimeData =
         index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
@@ -1883,6 +1888,7 @@ const productionDataSecondShift = async ({
           endTime,
         )}`,
       },
+      orderCount: orderCount || 0,
       shiftBDowntimeDetails,
     };
 
@@ -1905,6 +1911,7 @@ userController.productionData = async (req, res, next) => {
       general: shiftA,
       shiftADetails,
       shiftADowntimeDetails,
+      orderCount: shiftAOrderCount,
     } = await productionDataFirstShift({
       line,
       duration,
@@ -1917,6 +1924,7 @@ userController.productionData = async (req, res, next) => {
       general: shiftB,
       shiftBDetails,
       shiftBDowntimeDetails,
+      orderCount: shiftBOrderCount,
     } = await productionDataSecondShift({
       line,
       duration,
@@ -1939,6 +1947,7 @@ userController.productionData = async (req, res, next) => {
       overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
       overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
       overAllUPH: shiftADetails?.shiftUPH + shiftBDetails?.shiftUPH || 0,
+      overAllOrdercount: shiftAOrderCount + shiftBOrderCount,
       overAlldownTime:
         shiftADetails?.shiftdownTime + shiftBDetails?.shiftdownTime,
     };
