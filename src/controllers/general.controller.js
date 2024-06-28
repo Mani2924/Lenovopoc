@@ -1670,7 +1670,13 @@ userController.todaySecondShift = async (req, res, next) => {
   }
 };
 
-const productionDataFirstShift = async ({ line, duration, target, date }) => {
+const productionDataFirstShift = async ({
+  line,
+  duration,
+  target,
+  date,
+  shift,
+}) => {
   try {
     const currentDate = new Date(date);
 
@@ -1696,6 +1702,14 @@ const productionDataFirstShift = async ({ line, duration, target, date }) => {
     if (duration === "9hrs") {
       endTime = "18:00:00";
       shiftEndTime.setHours(18, 0, 0, 0);
+    } else if (duration === "6hrs") {
+      if (shift === "1st") {
+        endTime = "15:00:00";
+        shiftEndTime.setHours(15, 0, 0, 0);
+      } else if (shift === "2nd") {
+        startTime = "15:00:00";
+        shiftStartTime.setHours(15, 0, 0, 0);
+      }
     }
 
     let general = await generalService.getShiftRecord2(
@@ -1711,9 +1725,11 @@ const productionDataFirstShift = async ({ line, duration, target, date }) => {
     const downTimeDatas = await downTimeService.getAll();
 
     const shiftADowntimeDetails = [];
+    let orderCount = 0;
 
     general = general.map((val, index) => {
       shiftActual += val.y;
+      orderCount += val.ordercount;
 
       const downTimeData =
         index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
@@ -1751,8 +1767,9 @@ const productionDataFirstShift = async ({ line, duration, target, date }) => {
       shiftADetails: {
         shiftTarget: targetModel,
         shiftActual,
-        shiftUPH: Math.round(shiftActual / general?.length),
+        shiftUPH: Math.round(shiftActual / general?.length) || 0,
         shiftdownTime: downTime,
+        mfgOrderCount: orderCount || 0,
         shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
           endTime,
         )}`,
@@ -1771,7 +1788,13 @@ const productionDataFirstShift = async ({ line, duration, target, date }) => {
   }
 };
 
-const productionDataSecondShift = async ({ line, duration, target, date }) => {
+const productionDataSecondShift = async ({
+  line,
+  duration,
+  target,
+  date,
+  shift,
+}) => {
   try {
     const currentDate = new Date(date);
 
@@ -1796,6 +1819,16 @@ const productionDataSecondShift = async ({ line, duration, target, date }) => {
     if (duration === "9hrs") {
       endTime = "06:00:00";
       shiftEndTime.setHours(6, 0, 0, 0);
+    } else if (duration === "6hrs") {
+      if (shift === "1st") {
+        endTime = "03:00:00";
+        shiftEndTime.setHours(3, 0, 0, 0);
+      } else if (shift === "2nd") {
+        startTime = "03:00:00";
+        shiftStartTime.setHours(3, 0, 0, 0);
+        condition = "AND";
+        startDate = endDate;
+      }
     }
 
     let general = await generalService.getShiftRecord2(
@@ -1811,9 +1844,11 @@ const productionDataSecondShift = async ({ line, duration, target, date }) => {
     const downTimeDatas = await downTimeService.getAll();
 
     const shiftBDowntimeDetails = [];
+    let orderCount = 0;
 
     general = general.map((val, index) => {
       shiftActual += val.y;
+      orderCount += val.ordercount;
 
       const downTimeData =
         index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
@@ -1847,12 +1882,14 @@ const productionDataSecondShift = async ({ line, duration, target, date }) => {
       shiftBDetails: {
         shiftTarget: targetModel,
         shiftActual,
-        shiftUPH: Math.round(shiftActual / general?.length),
+        shiftUPH: Math.round(shiftActual / general?.length) || 0,
         shiftdownTime: downTime,
+        mfgOrderCount: orderCount || 0,
         shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
           endTime,
         )}`,
       },
+      // orderCount: orderCount || 0,
       shiftBDowntimeDetails,
     };
 
@@ -1869,7 +1906,7 @@ const productionDataSecondShift = async ({ line, duration, target, date }) => {
 
 userController.productionData = async (req, res, next) => {
   try {
-    const { line, duration, target, date } = req.query;
+    const { line, duration, target, date, shift } = req.query;
 
     const {
       general: shiftA,
@@ -1880,6 +1917,7 @@ userController.productionData = async (req, res, next) => {
       duration,
       target,
       date,
+      shift,
     });
 
     const {
@@ -1891,9 +1929,12 @@ userController.productionData = async (req, res, next) => {
       duration,
       target,
       date,
+      shift,
     });
 
-    const recievedDate = new Date(date);
+    let recievedDate = new Date(date);
+    // recievedDate = new Date(recievedDate.getTime() + recievedDate.getTimezoneOffset() * 60000);
+
     const currentDate = new Date();
 
     const isSameDay =
@@ -1904,7 +1945,9 @@ userController.productionData = async (req, res, next) => {
     const overAllDetails = {
       overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
       overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
-      overAllUPH: shiftADetails?.shiftUPH + shiftBDetails?.shiftUPH,
+      overAllUPH: shiftADetails?.shiftUPH + shiftBDetails?.shiftUPH || 0,
+      overAllOrdercount:
+        shiftADetails?.mfgOrderCount + shiftBDetails?.mfgOrderCount,
       overAlldownTime:
         shiftADetails?.shiftdownTime + shiftBDetails?.shiftdownTime,
     };
@@ -1920,11 +1963,13 @@ userController.productionData = async (req, res, next) => {
       overAllDetails,
     };
 
+    // console.log('isSameDay',isSameDay);
+
     if (isSameDay) {
-      result.currenyShift =
+      result.currentShift =
         currentDate.getHours() >= "9" && currentDate.getHours() < "21"
-          ? "ShiftA"
-          : "ShiftB";
+          ? "shiftA"
+          : "shiftB";
     }
 
     res.response = {
