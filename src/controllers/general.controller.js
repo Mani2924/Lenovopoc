@@ -1065,7 +1065,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
             overAllUPH: Math.round(
               (Math.round(shiftActualA / shiftA.length) +
                 Math.round(shiftActualB / shiftB.length)) /
-              2,
+                2,
             ),
             overAlldownTime: totalOverallDowntime,
           },
@@ -1670,7 +1670,13 @@ userController.todaySecondShift = async (req, res, next) => {
   }
 };
 
-const productionDataFirstShift = async ({ line, duration, target, date, shift }) => {
+const productionDataFirstShift = async ({
+  line,
+  duration,
+  target,
+  date,
+  shift,
+}) => {
   try {
     const currentDate = new Date(date);
 
@@ -1697,12 +1703,12 @@ const productionDataFirstShift = async ({ line, duration, target, date, shift })
       endTime = "18:00:00";
       shiftEndTime.setHours(18, 0, 0, 0);
     } else if (duration === "6hrs") {
-      if (shift === '1st') {
-        endTime = "15:00:00"
+      if (shift === "1st") {
+        endTime = "15:00:00";
         shiftEndTime.setHours(15, 0, 0, 0);
-      } else if (shift === '2nd') {
-        startTime = "15:00:00"
-        shiftStartTime.setHours(15, 0, 0, 0)
+      } else if (shift === "2nd") {
+        startTime = "15:00:00";
+        shiftStartTime.setHours(15, 0, 0, 0);
       }
     }
 
@@ -1779,7 +1785,13 @@ const productionDataFirstShift = async ({ line, duration, target, date, shift })
   }
 };
 
-const productionDataSecondShift = async ({ line, duration, target, date, shift }) => {
+const productionDataSecondShift = async ({
+  line,
+  duration,
+  target,
+  date,
+  shift,
+}) => {
   try {
     const currentDate = new Date(date);
 
@@ -1805,14 +1817,14 @@ const productionDataSecondShift = async ({ line, duration, target, date, shift }
       endTime = "06:00:00";
       shiftEndTime.setHours(6, 0, 0, 0);
     } else if (duration === "6hrs") {
-      if (shift === '1st') {
-        endTime = "03:00:00"
+      if (shift === "1st") {
+        endTime = "03:00:00";
         shiftEndTime.setHours(3, 0, 0, 0);
-      } else if (shift === '2nd') {
-        startTime = "03:00:00"
-        shiftStartTime.setHours(3, 0, 0, 0)
-        condition = 'AND'
-        startDate = endDate
+      } else if (shift === "2nd") {
+        startTime = "03:00:00";
+        shiftStartTime.setHours(3, 0, 0, 0);
+        condition = "AND";
+        startDate = endDate;
       }
     }
 
@@ -1898,7 +1910,7 @@ userController.productionData = async (req, res, next) => {
       duration,
       target,
       date,
-      shift
+      shift,
     });
 
     const {
@@ -1910,7 +1922,7 @@ userController.productionData = async (req, res, next) => {
       duration,
       target,
       date,
-      shift
+      shift,
     });
 
     let recievedDate = new Date(date);
@@ -1945,10 +1957,10 @@ userController.productionData = async (req, res, next) => {
     // console.log('isSameDay',isSameDay);
 
     if (isSameDay) {
-      result.currenyShift =
+      result.currentShift =
         currentDate.getHours() >= "9" && currentDate.getHours() < "21"
-          ? "A"
-          : "B";
+          ? "shiftA"
+          : "shiftB";
     }
 
     res.response = {
