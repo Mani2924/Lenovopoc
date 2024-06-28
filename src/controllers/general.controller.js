@@ -1769,6 +1769,7 @@ const productionDataFirstShift = async ({
         shiftActual,
         shiftUPH: Math.round(shiftActual / general?.length) || 0,
         shiftdownTime: downTime,
+        mfgOrderCount: orderCount || 0,
         shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
           endTime,
         )}`,
@@ -1884,6 +1885,7 @@ const productionDataSecondShift = async ({
         shiftActual,
         shiftUPH: Math.round(shiftActual / general?.length) || 0,
         shiftdownTime: downTime,
+        mfgOrderCount: orderCount || 0,
         shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
           endTime,
         )}`,
