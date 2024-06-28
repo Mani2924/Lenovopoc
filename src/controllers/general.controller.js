@@ -1923,8 +1923,8 @@ userController.productionData = async (req, res, next) => {
     if (isSameDay) {
       result.currenyShift =
         currentDate.getHours() >= "9" && currentDate.getHours() < "21"
-          ? "A"
-          : "B";
+          ? "ShiftA"
+          : "ShiftB";
     }
 
     res.response = {
