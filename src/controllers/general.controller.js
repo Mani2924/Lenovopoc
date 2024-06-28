@@ -1774,7 +1774,6 @@ const productionDataFirstShift = async ({
           endTime,
         )}`,
       },
-      orderCount: orderCount || 0,
       shiftADowntimeDetails,
     };
 
@@ -1890,7 +1889,7 @@ const productionDataSecondShift = async ({
           endTime,
         )}`,
       },
-      orderCount: orderCount || 0,
+      // orderCount: orderCount || 0,
       shiftBDowntimeDetails,
     };
 
@@ -1913,7 +1912,6 @@ userController.productionData = async (req, res, next) => {
       general: shiftA,
       shiftADetails,
       shiftADowntimeDetails,
-      orderCount: shiftAOrderCount,
     } = await productionDataFirstShift({
       line,
       duration,
@@ -1926,7 +1924,6 @@ userController.productionData = async (req, res, next) => {
       general: shiftB,
       shiftBDetails,
       shiftBDowntimeDetails,
-      orderCount: shiftBOrderCount,
     } = await productionDataSecondShift({
       line,
       duration,
@@ -1949,7 +1946,8 @@ userController.productionData = async (req, res, next) => {
       overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
       overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
       overAllUPH: shiftADetails?.shiftUPH + shiftBDetails?.shiftUPH || 0,
-      overAllOrdercount: shiftAOrderCount + shiftBOrderCount,
+      overAllOrdercount:
+        shiftADetails?.mfgOrderCount + shiftBDetails?.mfgOrderCount,
       overAlldownTime:
         shiftADetails?.shiftdownTime + shiftBDetails?.shiftdownTime,
     };
