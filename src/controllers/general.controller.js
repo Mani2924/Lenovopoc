@@ -1670,12 +1670,25 @@ userController.todaySecondShift = async (req, res, next) => {
   }
 };
 
+const getDataFromRedis = async (data) => {
+  const redisInstance = new RedisDB();
+  let shiftData = await redisInstance.getValueFromRedis(data);
+  return shiftData;
+};
+
+const storeDataInRedis = async (data, key) => {
+  const redisInstance = new RedisDB();
+  let appData = JSON.stringify(data);
+  await redisInstance.setValueInRedis(key, appData);
+};
+
 const productionDataFirstShift = async ({
   line,
   duration,
   target,
   date,
   shift,
+  isSameDay,
 }) => {
   try {
     const currentDate = new Date(date);
@@ -1712,6 +1725,19 @@ const productionDataFirstShift = async ({
       }
     }
 
+    if (!isSameDay) {
+      let shiftData = await getDataFromRedis(
+        !shift && duration !== "6hrs"
+          ? `${line}-${date}-${startTime}-${endTime}${duration}`
+          : `${line}-${date}-${startTime}-${endTime}${duration}${shift}`,
+      );
+      if (shiftData) {
+        shiftData = JSON.parse(shiftData);
+        console.log("from redis");
+        return shiftData;
+      }
+    }
+
     let general = await generalService.getShiftRecord2(
       line,
       startDate,
@@ -1745,7 +1771,7 @@ const productionDataFirstShift = async ({
           interval: `${formatTimeAMPM(shiftAStart)} - ${formatTimeAMPM(
             shiftAEnd,
           )}`,
-          downTime: downTimeData,
+          downTime: downTimeData.split(" ")[0],
           message: downTimeMessage,
         });
       }
@@ -1778,6 +1804,16 @@ const productionDataFirstShift = async ({
       shiftADowntimeDetails,
     };
 
+    // storing data in redis
+    if (!isSameDay && general?.length) {
+      let key =
+        !shift && duration !== "6hrs"
+          ? `${line}-${date}-${startTime}-${endTime}${duration}`
+          : `${line}-${date}-${startTime}-${endTime}${duration}${shift}`;
+      await storeDataInRedis(result, key);
+      console.log("stored data in redis");
+    }
+
     return result;
   } catch (error) {
     logger.error(error);
@@ -1795,6 +1831,7 @@ const productionDataSecondShift = async ({
   target,
   date,
   shift,
+  isSameDay,
 }) => {
   try {
     const currentDate = new Date(date);
@@ -1832,6 +1869,19 @@ const productionDataSecondShift = async ({
       }
     }
 
+    if (!isSameDay) {
+      let shiftData = await getDataFromRedis(
+        !shift && duration !== "6hrs"
+          ? `${line}-${date}-${startTime}-${endTime}${duration}`
+          : `${line}-${date}-${startTime}-${endTime}${duration}${shift}`,
+      );
+      if (shiftData) {
+        shiftData = JSON.parse(shiftData);
+        console.log("from redis");
+        return shiftData;
+      }
+    }
+
     let general = await generalService.getShiftRecord2(
       line,
       startDate,
@@ -1865,7 +1915,8 @@ const productionDataSecondShift = async ({
           interval: `${formatTimeAMPM(shiftAStart)} - ${formatTimeAMPM(
             shiftAEnd,
           )}`,
-          downTime: downTimeData,
+          // downTime: downTimeData,
+          downTime: downTimeData.split(" ")[0],
           message: downTimeMessage,
         });
       }
@@ -1894,6 +1945,17 @@ const productionDataSecondShift = async ({
       // orderCount: orderCount || 0,
       shiftBDowntimeDetails,
     };
+    console.log("!shift", !shift);
+    console.log('!duration !== "6hrs"', duration !== "6hrs");
+
+    if (!isSameDay && general?.length) {
+      let key =
+        !shift && duration !== "6hrs"
+          ? `${line}-${date}-${startTime}-${endTime}${duration}`
+          : `${line}-${date}-${startTime}-${endTime}${duration}${shift}`;
+      await storeDataInRedis(result, key);
+      console.log("stored data in redis");
+    }
 
     return result;
   } catch (error) {
@@ -1910,6 +1972,16 @@ userController.productionData = async (req, res, next) => {
   try {
     const { line, duration, target, date, shift } = req.query;
 
+    let recievedDate = new Date(date);
+    // recievedDate = new Date(recievedDate.getTime() + recievedDate.getTimezoneOffset() * 60000);
+
+    const currentDate = new Date();
+
+    const isSameDay =
+      recievedDate.getFullYear() === currentDate.getFullYear() &&
+      recievedDate.getMonth() === currentDate.getMonth() &&
+      recievedDate.getDate() === currentDate.getDate();
+
     const {
       general: shiftA,
       shiftADetails,
@@ -1920,6 +1992,7 @@ userController.productionData = async (req, res, next) => {
       target,
       date,
       shift,
+      isSameDay,
     });
 
     const {
@@ -1932,17 +2005,8 @@ userController.productionData = async (req, res, next) => {
       target,
       date,
       shift,
+      isSameDay,
     });
-
-    let recievedDate = new Date(date);
-    // recievedDate = new Date(recievedDate.getTime() + recievedDate.getTimezoneOffset() * 60000);
-
-    const currentDate = new Date();
-
-    const isSameDay =
-      recievedDate.getFullYear() === currentDate.getFullYear() &&
-      recievedDate.getMonth() === currentDate.getMonth() &&
-      recievedDate.getDate() === currentDate.getDate();
 
     const overAllDetails = {
       overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
@@ -1964,8 +2028,6 @@ userController.productionData = async (req, res, next) => {
       totalCount: shiftA?.length + shiftB?.length,
       overAllDetails,
     };
-
-    // console.log('isSameDay',isSameDay);
 
     if (isSameDay) {
       result.currentShift =
