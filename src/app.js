@@ -14,7 +14,6 @@ const logger = require('./config/logger');
 const routes = require('./routes');
 const response = require('./utility/response');
 const rescodes = require('./utility/rescodes');
-// const sampleData = require('../src/data/generalDate');
 
 const generalService = require('./services/general.service');
 const { getFilteredData } = require('./services/generalSocket.service');

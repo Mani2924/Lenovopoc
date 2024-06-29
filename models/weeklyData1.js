@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
         unique: true,
-        defaultValue: () => generateCustomId(), // Use custom ID generation function
+        autoIncrement: true,
       },
       product_id: DataTypes.STRING,
       line: DataTypes.STRING,
@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       start_time: DataTypes.TIME,
       end_time: DataTypes.TIME,
       target: DataTypes.INTEGER,
+      product_count: DataTypes.INTEGER,
       totalcount: DataTypes.INTEGER,
       comments: DataTypes.STRING,
       ordercount: DataTypes.INTEGER,

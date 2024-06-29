@@ -189,91 +189,6 @@ generalService.hourlyData = async () => {
   }
 };
 
-
-const presentShiftData = async (line) => {
-  // const currentDate = new Date();
-
-  // Get the current date
-  let currentDate = new Date();
-
-  // Set minutes and seconds to zero to round to the nearest hour
-  currentDate.setMinutes(0, 0, 0);
-
-  // Format the date to 'YYYY-MM-DD'
-  let currentDateString = currentDate.toISOString().split('T')[0];
-
-  // Options for formatting the time
-  const options = {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  };
-
-  // Format the time to 'HH:MM:SS'
-  const currentTime = currentDate.toLocaleTimeString('en-GB', options);
-
-  console.log(currentDateString); // Outputs the current date in 'YYYY-MM-DD' format
-  // console.log(currentTime); // Outputs the rounded time in 'HH:00:00' format
-
-  console.log('currentTime', currentTime);
-
-  // let startTime = '09:00:00';
-  // let endTime = '21:00:00';
-
-  // let startDate = currentDateString;
-  // let endDate = currentDateString;
-
-  // let condition = 'AND';
-
-  // if (currentTime >= '21:00:00' && currentTime < '09:00:00') {
-  //   startDate = currentDateString;
-
-  //   currentDate.setDate(currentDate.getDate() + 1);
-  //   currentDateString = currentDate.toISOString().split('T')[0];
-
-  //   endDate = currentDateString;
-
-  //   startTime = '21:00:00';
-  //   endTime = '09:00:00';
-
-  //   condition = 'OR';
-  // }
-
-  // const general = await generalService.getShiftRecord(
-  //   line,
-  //   startDate,
-  //   endDate,
-  //   startTime,
-  //   endTime,
-  //   condition,
-  // );
-  // const convertTimeToRange = (time) => {
-  //   const [hour] = time.split(':');
-  //   let currentHour = parseInt(hour);
-
-  //   // Handle the case where the input hour is "24"
-  //   if (currentHour === 24) {
-  //     currentHour = 0;
-  //   }
-  //   let nextHour = (currentHour + 1) % 24; // Ensures the hour wraps around at 23
-  //   nextHour = nextHour.toString().padStart(2, '0');
-
-  //   return `${currentHour.toString().padStart(2, '0')} - ${nextHour}`;
-  // };
-
-  // // Update the 'x' field in each object
-  // const updatedData = general.map((item) => {
-  //   return {
-  //     ...item,
-  //     x: convertTimeToRange(item.x),
-  //   };
-  // });
-
-  // return { data: updatedData, startDate, endDate, line };
-  return 'Hello';
-};
-
 generalService.currentShiftToRedis = async (data) => {
   try {
     const uniqueLines = await weeklyData.findAll({
@@ -528,23 +443,7 @@ generalService.hourlyData2 = async () => {
       group: ['product_id', 'line'],
     });
 
-    const target = [
-      { '12JDS0AW00': 2 },
-      { '12JDS0AX00': 4 },
-      { '12LMS15K00': 13 },
-      { '11T5S30S00': 30 },
-      { '11SYS2D600': 82 },
-      { '21JKS14D00': 33 },
-      { '12LM002QIH': 1 },
-      { '11SYS2JF00': 6 },
-      { '11SYS2JT00': 8 },
-      { '82TSA0FVIH': 67 },
-      { '12JES2CQ00': 1 },
-      { '11T5S0H10N': 9 },
-      { '11SFS0G800': 1 },
-      { '82TTA0AAIN': 83 },
-    ];
-
+   
     const targetLookup = {};
 
     target.forEach((item) => {
@@ -592,6 +491,7 @@ generalService.hourlyData2 = async () => {
           totalcount: +totalCount,
           target,
           mfg_order_count: item.dataValues.mfg_prder_count,
+          product_count:item.dataValues.mfg_prder_count,
           comments:
             +totalCount >= target ? 'Target Completed' : 'Target Not Completed',
         };
