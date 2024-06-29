@@ -5,10 +5,6 @@ const rescodes = require("../utility/rescodes");
 const logger = require("../config/logger");
 
 const RedisDB = require("../config/redis");
-// const DateFormat = require('../utility/dateFormat');
-const XLSX = require("xlsx");
-
-const emailService = require("../config/emailConfig");
 const path = require("path");
 
 const xlsx = require("xlsx");
@@ -292,90 +288,6 @@ userController.updateCurrentShiftData = async (req, res, next) => {
       code: 400,
       data: { status: "Error", message: rescodes?.wentWrong },
     };
-    return next();
-  }
-};
-
-userController.fileUpload = async (req, res, next) => {
-  try {
-    const fileData = req.file.buffer;
-    const workbook = XLSX.read(fileData, { type: "buffer" });
-
-    const sheetNames = ["Line 1", "Line 2", "Line 3"];
-    const lineDetails = {
-      "Line 1": "L1",
-      "Line 2": "L2",
-      "Line 3": "L3",
-    };
-
-    let allData = [];
-
-    //     // Convert the Excel serial number to JavaScript Date object
-    // const date = new Date((excelDate - (25567 + 1)) * 86400 * 1000); // Convert from Excel epoch to Unix epoch
-
-    // // Format the date using moment
-    // const formattedDate = moment(date).format('MM/DD/YYYY hh:mm:ss A');
-
-    // const a = (itm) => {
-    //   let parsedDate = moment(itm, 'MM/DD/YY hh:mm A').utcOffset(0);
-    //   parsedDate.date(11).month(5);
-    //   return parsedDate.format('MM/DD/YY hh:mm A');
-    // };
-
-    const a = (itm) => {
-      let parsedDate = moment(itm, "MM/DD/YY hh:mm A");
-      parsedDate.date(12).month(5); // Setting date to 11th and month to June (index 5 represents June)
-      return parsedDate.format("MM/DD/YY hh:mm A");
-    };
-    sheetNames.forEach((sheetName) => {
-      if (workbook.SheetNames.includes(sheetName)) {
-        const sheet = workbook.Sheets[sheetName];
-        const rawData = XLSX.utils.sheet_to_json(sheet);
-        const data = rawData.map((row) => ({
-          // Op_Finish_Time: row['Op Finish Time'],
-          Op_Finish_Time: a(row["Op Finish Time"]),
-
-          // Op_Finish_Time: moment(
-          //   new Date((row['Op Finish Time'] - (25567 + 2)) * 86400 * 1000),
-          // )
-          //   .utc()
-          //   .format('YYYY-MM-DD HH:mm:ssZ'),
-          dest_Operation: row["Dest Operation"],
-          Associate_Id: row["Associate Id"],
-          Mfg_Order_Id: row["Mfg Order Id"],
-          product_id: row["Product Id"],
-          Serial_Num: row["Serial Num"],
-          Operation_Id: row["Operation Id"],
-          Work_Position_Id: row["Work Position Id"],
-          line: lineDetails[sheetName],
-          isActive: true,
-          deletedAt: null,
-        }));
-        allData = allData.concat(data);
-      }
-    });
-
-    // console.log('allData', allData[0]);
-
-    // if (allData.length > 0) {
-    //   await sampleData.bulkCreate(allData, {
-    //     ignoreDuplicates: true,
-    //   });
-    // }
-
-    if (allData.length > 0) {
-      await oldData.bulkCreate(allData, {
-        ignoreDuplicates: true,
-      });
-    }
-
-    res.send("Data inserted successfully");
-  } catch (error) {
-    logger.error(error);
-    res.status(400).json({
-      status: "Error",
-      message: "Something went wrong",
-    });
     return next();
   }
 };
@@ -1065,7 +977,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
             overAllUPH: Math.round(
               (Math.round(shiftActualA / shiftA.length) +
                 Math.round(shiftActualB / shiftB.length)) /
-                2,
+              2,
             ),
             overAlldownTime: totalOverallDowntime,
           },
@@ -1439,127 +1351,70 @@ userController.getSystemUPH = async (req, res, next) => {
   }
 };
 
-userController.getCardValues = async (req, res, next) => {
+
+userController.productionData = async (req, res, next) => {
   try {
-    const { isShift, target, shiftHours, isToday } = req.query;
+    const { line, duration, target, date, shift } = req.query;
 
-    let count = parseInt(target, 10) * parseInt(shiftHours, 10);
-
-    const currentDate = new Date();
-    if (isToday != "true") {
-      currentDate.setDate(currentDate.getDate() - 1);
-    } else {
-      currentDate.setDate(currentDate.getDate());
-    }
-    const formattedDate = currentDate.toISOString().split("T")[0];
-    let currentShiftCount = await getCurrentShiftCount();
-    let dayShiftCount = await generalService.dayShiftCount(formattedDate);
-    currentShiftCount = parseInt(currentShiftCount, 10);
-
-    const data = {
-      shiftTarget: count,
-      shiftActual: parseInt(currentShiftCount, 10),
-      shiftUPH: Math.round(count / 12),
-      shiftdownTime: 30,
-    };
-
-    const data2 = {
-      overAllTarget: dayShiftCount * 2,
-      overAllActual: parseInt(dayShiftCount, 10),
-      overAllUPH: Math.round(dayShiftCount / 24),
-      overAlldownTime: 45,
-    };
-
-    const responseData = isShift === "true" ? data : data2;
-
-    res.status(200).json({
-      code: 200,
-      data: responseData,
-    });
-  } catch (error) {
-    res.status(400).json({
-      code: 400,
-      data: { status: "Error", message: "Something went wrong" },
-    });
-    return next(error);
-  }
-};
-
-const extractNumber = (str) => {
-  const match = str.match(/\d+/);
-  return match ? parseInt(match[0], 10) : null;
-};
-
-userController.todayFirstShift = async (req, res, next) => {
-  try {
-    const { line, duration, target } = req.query;
-
-    const currentDate = new Date();
-
-    let currentDateString = currentDate.toISOString().split("T")[0];
-
-    let startTime = "09:00:00";
-    let endTime = "21:00:00";
-    let startDate = currentDateString;
-    let endDate = currentDateString;
-    let condition = "AND";
-    let condition2 = "AND start_time < end_time";
-
-    let shiftStartTime = currentDate;
-    let shiftEndTime = currentDate;
-    shiftStartTime.setHours(9, 0, 0, 0);
-    shiftEndTime.setHours(21, 0, 0, 0);
-
-    let targetModel =
-      duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
-    let shiftActual = 0;
-    let downTime = 0;
-
-    if (duration === "9hrs") {
-      endTime = "18:00:00";
-      shiftEndTime.setHours(18, 0, 0, 0);
-    }
-
-    let general = await generalService.getShiftRecord2(
+    const {
+      general: shiftA,
+      shiftADetails,
+      shiftADowntimeDetails,
+    } = await productionDataFirstShift({
       line,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-      condition,
-      condition2,
-    );
-
-    const downTimeDatas = await downTimeService.getAll();
-
-    general = general.map((val, index) => {
-      shiftActual += val.y;
-      const downTimeData =
-        index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
-      const downTimeMessage =
-        index % 2 !== 0 ? "-" : downTimeDatas[index]?.message || "-";
-
-      downTime = downTimeData.includes("mins")
-        ? parseInt(downTimeData.split(" ")[0]) + downTime
-        : downTime;
-
-      return {
-        ...val,
-        x: convertTimeToRange(val.x),
-        downtime: downTimeData,
-        message: downTimeMessage,
-      };
+      duration,
+      target,
+      date,
+      shift,
     });
+
+    const {
+      general: shiftB,
+      shiftBDetails,
+      shiftBDowntimeDetails,
+    } = await productionDataSecondShift({
+      line,
+      duration,
+      target,
+      date,
+      shift,
+    });
+
+    let recievedDate = new Date(date);
+    const currentDate = new Date();
+
+    const isSameDay =
+      recievedDate.getFullYear() === currentDate.getFullYear() &&
+      recievedDate.getMonth() === currentDate.getMonth() &&
+      recievedDate.getDate() === currentDate.getDate();
+
+    const overAllDetails = {
+      overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
+      overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
+      overAllUPH: Math.round(shiftADetails?.shiftUPH + shiftBDetails?.shiftUPH / (shiftA.length + shiftB.length)) || 0,
+      overAllOrdercount: shiftADetails?.mfgOrderCount + shiftBDetails?.mfgOrderCount,
+      overAlldownTime: shiftADetails?.shiftdownTime + shiftBDetails?.shiftdownTime,
+    };
 
     const result = {
-      general,
-      totalCount: general?.length,
-      shiftTarget: targetModel,
-      shiftActual,
-      shiftUPH: Math.round(shiftActual / general?.length),
-      shiftdownTime: downTime,
-      shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(endTime)}`,
+      shiftA,
+      shiftADetails,
+      shiftADowntimeDetails,
+      shiftB,
+      shiftBDetails,
+      shiftBDowntimeDetails,
+      totalCount: shiftA?.length + shiftB?.length,
+      overAllDetails,
     };
+
+    // console.log('isSameDay',isSameDay);
+
+    if (isSameDay) {
+      result.currentShift =
+        currentDate.getHours() >= "9" && currentDate.getHours() < "21"
+          ? "shiftA"
+          : "shiftB";
+    }
 
     res.response = {
       code: 200,
@@ -1581,11 +1436,16 @@ userController.todayFirstShift = async (req, res, next) => {
   }
 };
 
-userController.todaySecondShift = async (req, res, next) => {
-  try {
-    const { line, duration, target } = req.query;
 
-    const currentDate = new Date();
+const productionDataSecondShift = async ({
+  line,
+  duration,
+  target,
+  date,
+  shift,
+}) => {
+  try {
+    const currentDate = new Date(date);
 
     let startTime = "21:00:00";
     let endTime = "09:00:00";
@@ -1608,6 +1468,16 @@ userController.todaySecondShift = async (req, res, next) => {
     if (duration === "9hrs") {
       endTime = "06:00:00";
       shiftEndTime.setHours(6, 0, 0, 0);
+    } else if (duration === "6hrs") {
+      if (shift === "1st") {
+        endTime = "03:00:00";
+        shiftEndTime.setHours(3, 0, 0, 0);
+      } else if (shift === "2nd") {
+        startTime = "03:00:00";
+        shiftStartTime.setHours(3, 0, 0, 0);
+        condition = "AND";
+        startDate = endDate;
+      }
     }
 
     let general = await generalService.getShiftRecord2(
@@ -1622,15 +1492,35 @@ userController.todaySecondShift = async (req, res, next) => {
 
     const downTimeDatas = await downTimeService.getAll();
 
+    const shiftBDowntimeDetails = [];
+    let orderCount = 0;
+
     general = general.map((val, index) => {
       shiftActual += val.y;
+      orderCount += val.ordercount;
+      let min = 24;
+      let max = 26;
+      let randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
+      val.headcount = randomValue;
+      val.upph =(val.y/randomValue).toFixed(1);
       const downTimeData =
-        index % 2 === 0 ? "-" : downTimeDatas[index]?.downTime || "-";
+        index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
       const downTimeMessage =
-        index % 2 === 0 ? "-" : downTimeDatas[index]?.message || "-";
-      downTime = downTimeData.includes("mins")
-        ? parseInt(downTimeData.split(" ")[0]) + downTime
-        : downTime;
+        index % 2 !== 0 ? "-" : downTimeDatas[index]?.message || "-";
+
+      if (downTimeData.includes("mins")) {
+        downTime = parseInt(downTimeData.split(" ")[0]) + downTime;
+
+        const [shiftAStart, shiftAEnd] = val.x.split(" - ");
+
+        shiftBDowntimeDetails.push({
+          interval: `${formatTimeAMPM(shiftAStart)} - ${formatTimeAMPM(
+            shiftAEnd,
+          )}`,
+          downTime: downTimeData,
+          message: downTimeMessage,
+        });
+      }
 
       return {
         ...val,
@@ -1642,24 +1532,22 @@ userController.todaySecondShift = async (req, res, next) => {
 
     const result = {
       general,
-      totalCount: general?.length,
-      shiftTarget: targetModel,
-      shiftActual,
-      shiftUPH: Math.round(shiftActual / general?.length),
-      shiftdownTime: downTime,
-      shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(endTime)}`,
-    };
-
-    res.response = {
-      code: 200,
-      data: {
-        status: "Ok",
-        message: rescodes?.success,
-        data: result,
+      shiftBDetails: {
+        shiftTarget: targetModel,
+        shiftActual,
+        shiftUPH: Math.round(shiftActual / general?.length) || 0,
+        shiftdownTime: downTime,
+        mfgOrderCount: orderCount || 0,
+        mfgProductCount: 1,
+        shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
+          endTime,
+        )}`,
       },
+      // orderCount: orderCount || 0,
+      shiftBDowntimeDetails,
     };
 
-    return next();
+    return result;
   } catch (error) {
     logger.error(error);
     res.response = {
@@ -1730,6 +1618,11 @@ const productionDataFirstShift = async ({
     general = general.map((val, index) => {
       shiftActual += val.y;
       orderCount += val.ordercount;
+      let min = 24;
+      let max = 26;
+      let randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
+      val.headcount = randomValue;
+      val.upph =(val.y/randomValue).toFixed(1);
 
       const downTimeData =
         index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
@@ -1749,10 +1642,6 @@ const productionDataFirstShift = async ({
           message: downTimeMessage,
         });
       }
-
-      // downTime = downTimeData.includes('mins')
-      //   ? parseInt(downTimeData.split(' ')[0]) + downTime
-      //   : downTime;
 
       return {
         ...val,
@@ -1789,209 +1678,10 @@ const productionDataFirstShift = async ({
   }
 };
 
-const productionDataSecondShift = async ({
-  line,
-  duration,
-  target,
-  date,
-  shift,
-}) => {
-  try {
-    const currentDate = new Date(date);
 
-    let startTime = "21:00:00";
-    let endTime = "09:00:00";
-    let startDate = currentDate.toISOString().split("T")[0];
-    currentDate.setDate(currentDate.getDate() + 1);
-    let endDate = currentDate.toISOString().split("T")[0];
-    let condition = "OR";
-    let condition2 = "AND start_time < end_time";
-
-    let shiftStartTime = currentDate;
-    let shiftEndTime = currentDate;
-    shiftStartTime.setHours(21, 0, 0, 0);
-    shiftEndTime.setHours(9, 0, 0, 0);
-
-    let targetModel =
-      duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
-    let shiftActual = 0;
-    let downTime = 0;
-
-    if (duration === "9hrs") {
-      endTime = "06:00:00";
-      shiftEndTime.setHours(6, 0, 0, 0);
-    } else if (duration === "6hrs") {
-      if (shift === "1st") {
-        endTime = "03:00:00";
-        shiftEndTime.setHours(3, 0, 0, 0);
-      } else if (shift === "2nd") {
-        startTime = "03:00:00";
-        shiftStartTime.setHours(3, 0, 0, 0);
-        condition = "AND";
-        startDate = endDate;
-      }
-    }
-
-    let general = await generalService.getShiftRecord2(
-      line,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-      condition,
-      condition2,
-    );
-
-    const downTimeDatas = await downTimeService.getAll();
-
-    const shiftBDowntimeDetails = [];
-    let orderCount = 0;
-
-    general = general.map((val, index) => {
-      shiftActual += val.y;
-      orderCount += val.ordercount;
-
-      const downTimeData =
-        index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
-      const downTimeMessage =
-        index % 2 !== 0 ? "-" : downTimeDatas[index]?.message || "-";
-
-      if (downTimeData.includes("mins")) {
-        downTime = parseInt(downTimeData.split(" ")[0]) + downTime;
-
-        const [shiftAStart, shiftAEnd] = val.x.split(" - ");
-
-        shiftBDowntimeDetails.push({
-          interval: `${formatTimeAMPM(shiftAStart)} - ${formatTimeAMPM(
-            shiftAEnd,
-          )}`,
-          downTime: downTimeData,
-          message: downTimeMessage,
-        });
-      }
-
-      return {
-        ...val,
-        x: convertTimeToRange(val.x),
-        downtime: downTimeData,
-        message: downTimeMessage,
-      };
-    });
-
-    const result = {
-      general,
-      shiftBDetails: {
-        shiftTarget: targetModel,
-        shiftActual,
-        shiftUPH: Math.round(shiftActual / general?.length) || 0,
-        shiftdownTime: downTime,
-        mfgOrderCount: orderCount || 0,
-        mfgProductCount: 1,
-        shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
-          endTime,
-        )}`,
-      },
-      // orderCount: orderCount || 0,
-      shiftBDowntimeDetails,
-    };
-
-    return result;
-  } catch (error) {
-    logger.error(error);
-    res.response = {
-      code: 400,
-      data: { status: "Error", message: rescodes?.wentWrong },
-    };
-    return next();
-  }
-};
-
-userController.productionData = async (req, res, next) => {
-  try {
-    const { line, duration, target, date, shift } = req.query;
-
-    const {
-      general: shiftA,
-      shiftADetails,
-      shiftADowntimeDetails,
-    } = await productionDataFirstShift({
-      line,
-      duration,
-      target,
-      date,
-      shift,
-    });
-
-    const {
-      general: shiftB,
-      shiftBDetails,
-      shiftBDowntimeDetails,
-    } = await productionDataSecondShift({
-      line,
-      duration,
-      target,
-      date,
-      shift,
-    });
-
-    let recievedDate = new Date(date);
-    // recievedDate = new Date(recievedDate.getTime() + recievedDate.getTimezoneOffset() * 60000);
-
-    const currentDate = new Date();
-
-    const isSameDay =
-      recievedDate.getFullYear() === currentDate.getFullYear() &&
-      recievedDate.getMonth() === currentDate.getMonth() &&
-      recievedDate.getDate() === currentDate.getDate();
-
-    const overAllDetails = {
-      overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
-      overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
-      overAllUPH: shiftADetails?.shiftUPH + shiftBDetails?.shiftUPH || 0,
-      overAllOrdercount:
-        shiftADetails?.mfgOrderCount + shiftBDetails?.mfgOrderCount,
-      overAlldownTime:
-        shiftADetails?.shiftdownTime + shiftBDetails?.shiftdownTime,
-    };
-
-    const result = {
-      shiftA,
-      shiftADetails,
-      shiftADowntimeDetails,
-      shiftB,
-      shiftBDetails,
-      shiftBDowntimeDetails,
-      totalCount: shiftA?.length + shiftB?.length,
-      overAllDetails,
-    };
-
-    // console.log('isSameDay',isSameDay);
-
-    if (isSameDay) {
-      result.currentShift =
-        currentDate.getHours() >= "9" && currentDate.getHours() < "21"
-          ? "shiftA"
-          : "shiftB";
-    }
-
-    res.response = {
-      code: 200,
-      data: {
-        status: "Ok",
-        message: rescodes?.success,
-        data: result,
-      },
-    };
-
-    return next();
-  } catch (error) {
-    logger.error(error);
-    res.response = {
-      code: 400,
-      data: { status: "Error", message: rescodes?.wentWrong },
-    };
-    return next();
-  }
-};
+const extractNumber = (str) => {
+  const match = str.match(/\d+/);
+  return match ? parseInt(match[0], 10) : null;
+}
 
 module.exports = userController;

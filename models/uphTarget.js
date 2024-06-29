@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
       systemTarget: DataTypes.INTEGER,
       isActive: DataTypes.BOOLEAN,
       deletedAt: DataTypes.DATE,
-      productOwnerEmail: DataTypes.STRING,
     },
     {
       sequelize,

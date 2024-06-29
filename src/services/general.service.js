@@ -189,54 +189,6 @@ generalService.hourlyData = async () => {
   }
 };
 
-// generalService.getShiftRecord = async (
-//   line,
-//   startDate,
-//   endDate,
-//   startTime,
-//   endTime,
-//   condition,
-// ) => {
-//   const query = `
-//   SELECT
-//   id,  -- Add id to the selected fields
-//   time AS x,
-//   totalCount AS y,
-//   CONCAT(mt, ' ', target) AS z,
-//   mt,
-//   target,
-//   comments,
-//   date,
-//   line
-// FROM
-//   public."weeklyData"
-// WHERE
-//   line = :line
-//   AND (
-//     (time >= :startTime AND DATE(date) = :endDate) ${condition}
-//     (time < :endTime AND DATE(date) = :startDate)
-//   )
-// GROUP BY
-//   id,  -- Add id to the grouped fields
-//   time, mt, target, comments, date, line,totalCount
-// ORDER BY
-//   date ASC, time ASC;
-// `;
-
-//   const result = await db.sequelize.query(query, {
-//     replacements: {
-//       line,
-//       startTime,
-//       endTime,
-//       startDate,
-//       endDate,
-//       condition,
-//     },
-//     type: Sequelize.QueryTypes.SELECT,
-//   });
-
-//   return result;
-// };
 
 const presentShiftData = async (line) => {
   // const currentDate = new Date();
@@ -513,30 +465,6 @@ ORDER BY
   op_date ASC, start_time ASC;
 `;
 
-  // SELECT
-  // id,
-  // CONCAT(start_time, ' - ', end_time) AS x,
-  // totalCount AS y,
-  // CONCAT(product_id, ' ', target) AS z,
-  // product_id,
-  // target,
-  // comments,
-  // op_date,
-  // line
-  // FROM
-  // public."weeklyData1"
-  // WHERE
-  // line = 'L2'
-  // AND (
-  //   (start_time >= '01:00:00' AND DATE(op_date) = '2024-06-10') AND
-  //   (end_time <= '23:00:00' AND DATE(op_date) = '2024-06-10')
-  // )
-  // GROUP BY
-  // id,
-  // start_time, end_time, product_id, target, comments, op_date, line, totalCount
-  // ORDER BY
-  // op_date ASC, start_time ASC;
-
   const result = await db.sequelize.query(query, {
     replacements: {
       line,
@@ -584,7 +512,11 @@ generalService.hourlyData2 = async () => {
         [fn('COUNT', col('*')), 'total_count'],
         [
           fn('COUNT', fn('DISTINCT', col('Mfg_Order_Id'))),
-          'distinct_order_count',
+          'mfg_prder_count',
+        ],
+        [
+          fn('COUNT', fn('DISTINCT', col('product_id'))),
+          'product_count',
         ],
       ],
       where: {
@@ -659,7 +591,7 @@ generalService.hourlyData2 = async () => {
           line,
           totalcount: +totalCount,
           target,
-          ordercount: item.dataValues.distinct_order_count,
+          mfg_order_count: item.dataValues.mfg_prder_count,
           comments:
             +totalCount >= target ? 'Target Completed' : 'Target Not Completed',
         };

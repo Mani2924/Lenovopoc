@@ -72,24 +72,10 @@ const createSchema = async function () {
 };
 createSchema();
 
-// cron.schedule('*/ * * * * *', async () => {
-//   const currentTime = new Date().toLocaleTimeString();
-//   // const newSampleData = sampleData();
-//   // await generalService.create(newSampleData);
-//   // console.log(`Inserting General Data ..........${currentTime}............`);
-//   // await generalService.hourlyData();
-//   await generalService.hourlyData2();
-
-//   // await generalService.currentShiftToRedis();
-//   // await generalService.sampleDateCountHourlyToWeeklyData();
-// });
 
 cron.schedule('1 * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
-  // console.log(`Inserting Hourly Data ..........${currentTime}............`);
   await generalService.hourlyData2();
-
-  // await generalService.hourlyData();
 });
 
 const httpServer = createServer(app);
