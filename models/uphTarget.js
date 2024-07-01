@@ -1,26 +1,41 @@
-/* eslint-disable no-unused-vars */
-const { Model } = require("sequelize");
+const { Model, DataTypes } = require("sequelize");
 const config = require("../src/config/vars");
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize) => {
   class uphtarget extends Model {}
   uphtarget.init(
     {
-      machineType: DataTypes.STRING,
-      assignedTarget: DataTypes.INTEGER,
-      systemTarget: DataTypes.INTEGER,
-      isActive: DataTypes.BOOLEAN,
-      deletedAt: DataTypes.DATE,
+      assignedTarget: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      systemTarget: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
+      deletedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     },
     {
       sequelize,
       modelName: "uphtarget",
+      tableName: "uphtarget",
       schema: config.db.schema,
-      freezeTableName: true,
       paranoid: true,
+      timestamps: true,
     }
   );
 
-  uphtarget.associate = function (models) {};
+  uphtarget.associate = function (models) {
+    // Define associations here if needed
+  };
+
   return uphtarget;
 };
