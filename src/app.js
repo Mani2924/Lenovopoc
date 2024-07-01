@@ -77,10 +77,7 @@ cron.schedule('1 * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
   await generalService.hourlyData2();
 });
-// cron.schedule('* * * * * *', async () => {
-//   await generalService.hourlyData2();
- 
-//   });
+
 
 const httpServer = createServer(app);
 
@@ -105,54 +102,6 @@ cron.schedule('** * * * * *', async () => {
   } catch (error) {
     console.error('Error while emitting data:', error);
   }
-});
-
-// connect database
-
-// const filePath = 'C:\\Users\\Manikandan\\Downloads\\sampleData.xlsx';
-const filePath = path.join(__dirname, '../src/data/sampleData.xlsx');
-const workbook = xlsx.readFile(filePath);
-const sheetName = workbook.SheetNames[0];
-const sheet = workbook.Sheets[sheetName];
-const data = xlsx.utils.sheet_to_json(sheet);
-
-let rowIndex = 0;
-
-// Function to insert data and update "Op Finish Time"
-function insertDataAndUpdateTime() {
-  if (rowIndex >= data.length) {
-    console.log('All data inserted.');
-    return;
-  }
-
-  const rowData = data[rowIndex];
-
-  // Assuming row data is in the correct format
-  const newRow = {
-    dest_Operation: rowData['Dest Operation'],
-    Associate_Id: rowData['Associate Id'],
-    Mfg_Order_Id: rowData['Mfg Order Id'],
-    product_id: '21JKS14D00',
-    Serial_Num: rowData['Serial Num'],
-    Operation_Id: rowData['Operation Id'],
-    Work_Position_Id: rowData['Work Position Id'],
-    line: 'L1', // Assuming lineDetails is defined somewhere
-    isActive: true,
-    deletedAt: null,
-  };
-  sampleData
-    .create(newRow)
-    .then(() => {
-      rowIndex++;
-    })
-    .catch((error) => {
-      console.error('Error inserting row:', error);
-    });
-}
-
-// Schedule the insertion of data every 14 seconds
-cron.schedule('*/30 * * * * *', () => {
-  insertDataAndUpdateTime();
 });
 
 sequelize
