@@ -1374,8 +1374,7 @@ userController.productionData = async (req, res, next) => {
     const { line, duration, target, date, shift } = req.query;
 
     let recievedDate = new Date(date);
-    // recievedDate = new Date(recievedDate.getTime() + recievedDate.getTimezoneOffset() * 60000);
-
+   
     const currentDate = new Date();
 
     const isSameDay =
@@ -1544,7 +1543,7 @@ const productionDataSecondShift = async ({
       val.headcount = randomValue;
       val.upph = (val.y / randomValue).toFixed(1);
       const downTimeData =
-        index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
+      index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime.replace(' mins', '') || "-";
       const downTimeMessage =
         index % 2 !== 0 ? "-" : downTimeDatas[index]?.message || "-";
 
@@ -1695,7 +1694,7 @@ const productionDataFirstShift = async ({
       val.upph = (val.y / randomValue).toFixed(1);
 
       const downTimeData =
-        index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
+      index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime.replace(' mins', '') || "-";
       const downTimeMessage =
         index % 2 !== 0 ? "-" : downTimeDatas[index]?.message || "-";
 
