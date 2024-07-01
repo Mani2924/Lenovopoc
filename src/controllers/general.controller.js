@@ -977,7 +977,7 @@ userController.displayPreviousTwoShiftsData = async (req, res, next) => {
             overAllUPH: Math.round(
               (Math.round(shiftActualA / shiftA.length) +
                 Math.round(shiftActualB / shiftB.length)) /
-              2,
+                2,
             ),
             overAlldownTime: totalOverallDowntime,
           },
@@ -1351,10 +1351,19 @@ userController.getSystemUPH = async (req, res, next) => {
   }
 };
 
-
 userController.productionData = async (req, res, next) => {
   try {
     const { line, duration, target, date, shift } = req.query;
+
+    let recievedDate = new Date(date);
+    // recievedDate = new Date(recievedDate.getTime() + recievedDate.getTimezoneOffset() * 60000);
+
+    const currentDate = new Date();
+
+    const isSameDay =
+      recievedDate.getFullYear() === currentDate.getFullYear() &&
+      recievedDate.getMonth() === currentDate.getMonth() &&
+      recievedDate.getDate() === currentDate.getDate();
 
     const {
       general: shiftA,
@@ -1366,6 +1375,7 @@ userController.productionData = async (req, res, next) => {
       target,
       date,
       shift,
+      isSameDay,
     });
 
     const {
@@ -1378,22 +1388,21 @@ userController.productionData = async (req, res, next) => {
       target,
       date,
       shift,
+      isSameDay,
     });
-
-    let recievedDate = new Date(date);
-    const currentDate = new Date();
-
-    const isSameDay =
-      recievedDate.getFullYear() === currentDate.getFullYear() &&
-      recievedDate.getMonth() === currentDate.getMonth() &&
-      recievedDate.getDate() === currentDate.getDate();
 
     const overAllDetails = {
       overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
       overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
-      overAllUPH: Math.round(shiftADetails?.shiftUPH + shiftBDetails?.shiftUPH / (shiftA.length + shiftB.length)) || 0,
-      overAllOrdercount: shiftADetails?.mfgOrderCount + shiftBDetails?.mfgOrderCount,
-      overAlldownTime: shiftADetails?.shiftdownTime + shiftBDetails?.shiftdownTime,
+      overAllUPH:
+        Math.round(
+          shiftADetails?.shiftUPH +
+            shiftBDetails?.shiftUPH / (shiftA.length + shiftB.length),
+        ) || 0,
+      overAllOrdercount:
+        shiftADetails?.mfgOrderCount + shiftBDetails?.mfgOrderCount,
+      overAlldownTime:
+        shiftADetails?.shiftdownTime + shiftBDetails?.shiftdownTime,
     };
 
     const result = {
@@ -1434,13 +1443,13 @@ userController.productionData = async (req, res, next) => {
   }
 };
 
-
 const productionDataSecondShift = async ({
   line,
   duration,
   target,
   date,
   shift,
+  isSameDay,
 }) => {
   try {
     const currentDate = new Date(date);
@@ -1478,6 +1487,20 @@ const productionDataSecondShift = async ({
       }
     }
 
+    if (!isSameDay) {
+      let shiftData = await getDataFromRedis(
+        shift && duration === "6hrs"
+          ? `${line}-${date}-${startTime}-${endTime}-${duration}-${shift}`
+          : `${line}-${date}-${startTime}-${endTime}-${duration}`,
+      );
+
+      if (shiftData) {
+        shiftData = JSON.parse(shiftData);
+        console.log("from redis");
+        return shiftData;
+      }
+    }
+
     let general = await generalService.getShiftRecord2(
       line,
       startDate,
@@ -1496,12 +1519,12 @@ const productionDataSecondShift = async ({
     general = general.map((val, index) => {
       shiftActual += val.y;
       orderCount += val.ordercount;
-      product_count += val.product_count
+      product_count += val.product_count;
       let min = 24;
       let max = 26;
       let randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
       val.headcount = randomValue;
-      val.upph =(val.y/randomValue).toFixed(1);
+      val.upph = (val.y / randomValue).toFixed(1);
       const downTimeData =
         index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
       const downTimeMessage =
@@ -1545,10 +1568,31 @@ const productionDataSecondShift = async ({
       shiftBDowntimeDetails,
     };
 
+    if (!isSameDay && general?.length) {
+      let key =
+        shift && duration === "6hrs"
+          ? `${line}-${date}-${startTime}-${endTime}-${duration}-${shift}`
+          : `${line}-${date}-${startTime}-${endTime}-${duration}`;
+      await storeDataInRedis(result, key);
+      // console.log("stored data in redis");
+    }
+
     return result;
   } catch (error) {
     throw error;
   }
+};
+
+const getDataFromRedis = async (data) => {
+  const redisInstance = new RedisDB();
+  let shiftData = await redisInstance.getValueFromRedis(data);
+  return shiftData;
+};
+
+const storeDataInRedis = async (data, key) => {
+  const redisInstance = new RedisDB();
+  let appData = JSON.stringify(data);
+  await redisInstance.setValueInRedis(key, appData);
 };
 
 const productionDataFirstShift = async ({
@@ -1557,6 +1601,7 @@ const productionDataFirstShift = async ({
   target,
   date,
   shift,
+  isSameDay,
 }) => {
   try {
     const currentDate = new Date(date);
@@ -1593,6 +1638,19 @@ const productionDataFirstShift = async ({
       }
     }
 
+    if (!isSameDay) {
+      let shiftData = await getDataFromRedis(
+        shift && duration === "6hrs"
+          ? `${line}-${date}-${startTime}-${endTime}-${duration}-${shift}`
+          : `${line}-${date}-${startTime}-${endTime}-${duration}`,
+      );
+      if (shiftData) {
+        shiftData = JSON.parse(shiftData);
+        console.log("from redis");
+        return shiftData;
+      }
+    }
+
     let general = await generalService.getShiftRecord2(
       line,
       startDate,
@@ -1616,7 +1674,7 @@ const productionDataFirstShift = async ({
       let max = 26;
       let randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
       val.headcount = randomValue;
-      val.upph =(val.y/randomValue).toFixed(1);
+      val.upph = (val.y / randomValue).toFixed(1);
 
       const downTimeData =
         index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime || "-";
@@ -1661,16 +1719,25 @@ const productionDataFirstShift = async ({
       shiftADowntimeDetails,
     };
 
+    // storing data in redis
+    if (!isSameDay && general?.length) {
+      let key =
+        shift && duration === "6hrs"
+          ? `${line}-${date}-${startTime}-${endTime}-${duration}-${shift}`
+          : `${line}-${date}-${startTime}-${endTime}-${duration}`;
+      await storeDataInRedis(result, key);
+      // console.log("stored data in redis");
+    }
+
     return result;
   } catch (error) {
     throw error;
   }
 };
 
-
 const extractNumber = (str) => {
   const match = str.match(/\d+/);
   return match ? parseInt(match[0], 10) : null;
-}
+};
 
 module.exports = userController;

@@ -10,7 +10,6 @@ const {
 const multer = require('multer');
 const router = express.Router();
 
-
 router.get('/getDownTime', getDownTime);
 router.get('/getEmoji', getEmoji);
 router.get('/getTarget', getSystemUPH);
