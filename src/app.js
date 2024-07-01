@@ -72,18 +72,6 @@ const createSchema = async function () {
 };
 createSchema();
 
-// cron.schedule('*/ * * * * *', async () => {
-//   const currentTime = new Date().toLocaleTimeString();
-//   // const newSampleData = sampleData();
-//   // await generalService.create(newSampleData);
-//   // console.log(`Inserting General Data ..........${currentTime}............`);
-//   // await generalService.hourlyData();
-//   await generalService.hourlyData2();
-
-//   // await generalService.currentShiftToRedis();
-//   // await generalService.sampleDateCountHourlyToWeeklyData();
-// });
-
 cron.schedule('1 * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
   // console.log(`Inserting Hourly Data ..........${currentTime}............`);
@@ -94,17 +82,21 @@ cron.schedule('1 * * * *', async () => {
 
 const httpServer = createServer(app);
 
-const io = new Server(httpServer, {
-  cors: {
-    origin: '*',
-  },
-});
+// const io = new Server(httpServer, {
+//   cors: {
+//     origin: '*',
+//   },
+// });
+
+const io = require('socket.io')(httpServer);
+
+
 
 io.on('connection', (socket) => {
   socket.on('disconnect', () => {});
 });
 
-// Cron job to emit data every 15 seconds
+
 cron.schedule('** * * * * *', async () => {
   try {
     const data = await getFilteredData();
@@ -117,9 +109,6 @@ cron.schedule('** * * * * *', async () => {
   }
 });
 
-// connect database
-
-// const filePath = 'C:\\Users\\Manikandan\\Downloads\\sampleData.xlsx';
 const filePath = path.join(__dirname, '../src/data/sampleData.xlsx');
 const workbook = xlsx.readFile(filePath);
 const sheetName = workbook.SheetNames[0];
@@ -171,7 +160,7 @@ sequelize
   .then(() => {
     logger.info('DB Connection Successful');
 
-    httpServer.listen(config.app.port, () => {
+    httpServer.listen(config.app.port,'0.0.0.0', () => {
       logger.info(`Listening to port ${config.app.port}`);
     });
   })
