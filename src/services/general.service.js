@@ -739,9 +739,7 @@ generalService.getCurrentShiftCount = async (
 
 generalService.getTarget = async () => {
   try {
-    const data = await uphtarget.findOne({
-      order: Sequelize.literal('RANDOM()'),
-    });
+    const data = await uphtarget.findAll();
     return data;
   } catch (error) {
     console.error('Error executing Sequelize query:', error);

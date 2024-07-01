@@ -1326,21 +1326,17 @@ const getCurrentShiftCount = async (req) => {
 userController.getSystemUPH = async (req, res, next) => {
   try {
     const { isSystem } = req.query;
+    const results = await generalService.getTarget();
 
-    const data = await generalService.getTarget();
+    const responseData = results.map(data => ({
+      target: isSystem === "true" ? data.systemTarget : data.assignedTarget,
+      model: data.model,
+      time: data.time
+    }));
 
-    let target = 0;
-
-    if (isSystem == "true") {
-      target = data.systemTarget;
-    } else {
-      target = data.assignedTarget;
-    }
     res.status(200).json({
       code: 200,
-      data: {
-        target: target,
-      },
+      data: responseData
     });
   } catch (error) {
     res.status(400).json({

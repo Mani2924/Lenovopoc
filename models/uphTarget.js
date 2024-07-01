@@ -5,6 +5,14 @@ module.exports = (sequelize) => {
   class uphtarget extends Model {}
   uphtarget.init(
     {
+      model:{
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      time: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       assignedTarget: {
         type: DataTypes.INTEGER,
         allowNull: false,
