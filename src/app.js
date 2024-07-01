@@ -73,7 +73,7 @@ const createSchema = async function () {
 createSchema();
 
 
-cron.schedule('* * * * * *', async () => {
+cron.schedule('1 * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
   await generalService.hourlyData2();
 });
