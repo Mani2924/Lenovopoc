@@ -82,13 +82,13 @@ cron.schedule('1 * * * *', async () => {
 
 const httpServer = createServer(app);
 
-// const io = new Server(httpServer, {
-//   cors: {
-//     origin: '*',
-//   },
-// });
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+  },
+});
 
-const io = require('socket.io')(httpServer);
+// const io = require('socket.io')(httpServer);
 
 
 
