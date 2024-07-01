@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       Op_Finish_Time: {
         type: DataTypes.DATE,
         allowNull: false,
+        defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
       },
       dest_Operation: {
         type: DataTypes.STRING,

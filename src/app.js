@@ -126,11 +126,9 @@ function insertDataAndUpdateTime() {
   }
 
   const rowData = data[rowIndex];
-  const currentIST = moment.utc().tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss');
 
   // Assuming row data is in the correct format
   const newRow = {
-    Op_Finish_Time: currentIST,
     dest_Operation: rowData['Dest Operation'],
     Associate_Id: rowData['Associate Id'],
     Mfg_Order_Id: rowData['Mfg Order Id'],
