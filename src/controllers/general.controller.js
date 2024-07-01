@@ -1687,7 +1687,7 @@ const productionDataFirstShift = async ({
   duration,
   target,
   date,
-  shift,
+  shift = "1st",
   isSameDay,
 }) => {
   try {
@@ -1727,13 +1727,13 @@ const productionDataFirstShift = async ({
 
     if (!isSameDay) {
       let shiftData = await getDataFromRedis(
-        !shift && duration !== "6hrs"
-          ? `${line}-${date}-${startTime}-${endTime}${duration}`
-          : `${line}-${date}-${startTime}-${endTime}${duration}${shift}`,
+        shift && duration === "6hrs"
+          ? `${line}-${date}-${startTime}-${endTime}-${duration}-${shift}`
+          : `${line}-${date}-${startTime}-${endTime}-${duration}`,
       );
       if (shiftData) {
         shiftData = JSON.parse(shiftData);
-        console.log("from redis");
+        // console.log("from redis");
         return shiftData;
       }
     }
@@ -1807,11 +1807,11 @@ const productionDataFirstShift = async ({
     // storing data in redis
     if (!isSameDay && general?.length) {
       let key =
-        !shift && duration !== "6hrs"
-          ? `${line}-${date}-${startTime}-${endTime}${duration}`
-          : `${line}-${date}-${startTime}-${endTime}${duration}${shift}`;
+        shift && duration === "6hrs"
+          ? `${line}-${date}-${startTime}-${endTime}-${duration}-${shift}`
+          : `${line}-${date}-${startTime}-${endTime}-${duration}`;
       await storeDataInRedis(result, key);
-      console.log("stored data in redis");
+      // console.log("stored data in redis");
     }
 
     return result;
@@ -1830,7 +1830,7 @@ const productionDataSecondShift = async ({
   duration,
   target,
   date,
-  shift,
+  shift = "1st",
   isSameDay,
 }) => {
   try {
@@ -1871,13 +1871,14 @@ const productionDataSecondShift = async ({
 
     if (!isSameDay) {
       let shiftData = await getDataFromRedis(
-        !shift && duration !== "6hrs"
-          ? `${line}-${date}-${startTime}-${endTime}${duration}`
-          : `${line}-${date}-${startTime}-${endTime}${duration}${shift}`,
+        shift && duration === "6hrs"
+          ? `${line}-${date}-${startTime}-${endTime}-${duration}-${shift}`
+          : `${line}-${date}-${startTime}-${endTime}-${duration}`,
       );
+
       if (shiftData) {
         shiftData = JSON.parse(shiftData);
-        console.log("from redis");
+        // console.log("from redis");
         return shiftData;
       }
     }
@@ -1945,16 +1946,14 @@ const productionDataSecondShift = async ({
       // orderCount: orderCount || 0,
       shiftBDowntimeDetails,
     };
-    console.log("!shift", !shift);
-    console.log('!duration !== "6hrs"', duration !== "6hrs");
 
     if (!isSameDay && general?.length) {
       let key =
-        !shift && duration !== "6hrs"
-          ? `${line}-${date}-${startTime}-${endTime}${duration}`
-          : `${line}-${date}-${startTime}-${endTime}${duration}${shift}`;
+        shift && duration === "6hrs"
+          ? `${line}-${date}-${startTime}-${endTime}-${duration}-${shift}`
+          : `${line}-${date}-${startTime}-${endTime}-${duration}`;
       await storeDataInRedis(result, key);
-      console.log("stored data in redis");
+      // console.log("stored data in redis");
     }
 
     return result;
