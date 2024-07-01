@@ -1407,8 +1407,6 @@ userController.productionData = async (req, res, next) => {
       overAllDetails,
     };
 
-    // console.log('isSameDay',isSameDay);
-
     if (isSameDay) {
       result.currentShift =
         currentDate.getHours() >= "9" && currentDate.getHours() < "21"
@@ -1494,10 +1492,11 @@ const productionDataSecondShift = async ({
 
     const shiftBDowntimeDetails = [];
     let orderCount = 0;
-
+    let product_count = 0;
     general = general.map((val, index) => {
       shiftActual += val.y;
       orderCount += val.ordercount;
+      product_count += val.product_count
       let min = 24;
       let max = 26;
       let randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -1538,23 +1537,17 @@ const productionDataSecondShift = async ({
         shiftUPH: Math.round(shiftActual / general?.length) || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
-        mfgProductCount: 1,
+        mfgProductCount: product_count || 0,
         shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
           endTime,
         )}`,
       },
-      // orderCount: orderCount || 0,
       shiftBDowntimeDetails,
     };
 
     return result;
   } catch (error) {
-    logger.error(error);
-    res.response = {
-      code: 400,
-      data: { status: "Error", message: rescodes?.wentWrong },
-    };
-    return next();
+    throw error;
   }
 };
 
@@ -1614,10 +1607,11 @@ const productionDataFirstShift = async ({
 
     const shiftADowntimeDetails = [];
     let orderCount = 0;
-
+    let product_count = 0;
     general = general.map((val, index) => {
       shiftActual += val.y;
       orderCount += val.ordercount;
+      product_count += val.product_count;
       let min = 24;
       let max = 26;
       let randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -1659,7 +1653,7 @@ const productionDataFirstShift = async ({
         shiftUPH: Math.round(shiftActual / general?.length) || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
-        mfgProductCount: 1,
+        mfgProductCount: product_count || 0,
         shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
           endTime,
         )}`,
@@ -1669,12 +1663,7 @@ const productionDataFirstShift = async ({
 
     return result;
   } catch (error) {
-    logger.error(error);
-    res.response = {
-      code: 400,
-      data: { status: "Error", message: rescodes?.wentWrong },
-    };
-    return next();
+    throw error;
   }
 };
 

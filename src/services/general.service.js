@@ -361,6 +361,7 @@ generalService.getShiftRecord2 = async (
   CONCAT(product_id, ' ', target) AS z,
   product_id,
   ordercount,
+  product_count,
   target,
   comments,
   op_date,
@@ -427,7 +428,7 @@ generalService.hourlyData2 = async () => {
         [fn('COUNT', col('*')), 'total_count'],
         [
           fn('COUNT', fn('DISTINCT', col('Mfg_Order_Id'))),
-          'mfg_prder_count',
+          'mfg_order_count',
         ],
         [
           fn('COUNT', fn('DISTINCT', col('product_id'))),
@@ -443,7 +444,23 @@ generalService.hourlyData2 = async () => {
       group: ['product_id', 'line'],
     });
 
-   
+    const target = [
+      { '12JDS0AW00': 2 },
+      { '12JDS0AX00': 4 },
+      { '12LMS15K00': 13 },
+      { '11T5S30S00': 30 },
+      { '11SYS2D600': 82 },
+      { '21JKS14D00': 65 },
+      { '12LM002QIH': 1 },
+      { '11SYS2JF00': 6 },
+      { '11SYS2JT00': 8 },
+      { '82TSA0FVIH': 67 },
+      { '12JES2CQ00': 1 },
+      { '11T5S0H10N': 9 },
+      { '11SFS0G800': 1 },
+      { '82TTA0AAIN': 83 },
+    ];
+
     const targetLookup = {};
 
     target.forEach((item) => {
@@ -490,8 +507,8 @@ generalService.hourlyData2 = async () => {
           line,
           totalcount: +totalCount,
           target,
-          mfg_order_count: item.dataValues.mfg_prder_count,
-          product_count:item.dataValues.mfg_prder_count,
+          ordercount: item.dataValues.mfg_order_count,
+          product_count:item.dataValues.product_count,
           comments:
             +totalCount >= target ? 'Target Completed' : 'Target Not Completed',
         };

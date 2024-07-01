@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const cron = require('node-cron');
+const moment = require('moment-timezone');
 
 // Custom Requires
 const { sequelize } = require('../models');
@@ -76,6 +77,10 @@ cron.schedule('1 * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
   await generalService.hourlyData2();
 });
+// cron.schedule('* * * * * *', async () => {
+//   await generalService.hourlyData2();
+ 
+//   });
 
 const httpServer = createServer(app);
 
@@ -121,10 +126,11 @@ function insertDataAndUpdateTime() {
   }
 
   const rowData = data[rowIndex];
+  const currentIST = moment.utc().tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss');
 
   // Assuming row data is in the correct format
   const newRow = {
-    Op_Finish_Time: new Date(),
+    Op_Finish_Time: currentIST,
     dest_Operation: rowData['Dest Operation'],
     Associate_Id: rowData['Associate Id'],
     Mfg_Order_Id: rowData['Mfg Order Id'],
