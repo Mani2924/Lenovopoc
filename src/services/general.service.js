@@ -426,14 +426,8 @@ generalService.hourlyData2 = async () => {
         'line',
         [fn('MAX', col('Op_Finish_Time')), 'max_d'],
         [fn('COUNT', col('*')), 'total_count'],
-        [
-          fn('COUNT', fn('DISTINCT', col('Mfg_Order_Id'))),
-          'mfg_order_count',
-        ],
-        [
-          fn('COUNT', fn('DISTINCT', col('product_id'))),
-          'product_count',
-        ],
+        [fn('COUNT', fn('DISTINCT', col('Mfg_Order_Id'))), 'mfg_order_count'],
+        [fn('COUNT', fn('DISTINCT', col('product_id'))), 'product_count'],
       ],
       where: {
         Op_Finish_Time: {
@@ -508,7 +502,7 @@ generalService.hourlyData2 = async () => {
           totalcount: +totalCount,
           target,
           ordercount: item.dataValues.mfg_order_count,
-          product_count:item.dataValues.product_count,
+          product_count: item.dataValues.product_count,
           comments:
             +totalCount >= target ? 'Target Completed' : 'Target Not Completed',
         };
@@ -745,6 +739,11 @@ generalService.getTarget = async () => {
     console.error('Error executing Sequelize query:', error);
     throw error;
   }
+};
+
+generalService.getTargetById = async (condition) => {
+  const data = await uphtarget.findAll({ where: condition });
+  return data;
 };
 
 generalService.dayShiftCount = async (date) => {

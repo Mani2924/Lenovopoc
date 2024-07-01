@@ -1,11 +1,11 @@
-const { Model, DataTypes } = require("sequelize");
-const config = require("../src/config/vars");
+const { Model, DataTypes } = require('sequelize');
+const config = require('../src/config/vars');
 
 module.exports = (sequelize) => {
   class uphtarget extends Model {}
   uphtarget.init(
     {
-      model:{
+      model: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -21,6 +21,14 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      shift: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      isToday: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
       isActive: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -33,12 +41,12 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      modelName: "uphtarget",
-      tableName: "uphtarget",
+      modelName: 'uphtarget',
+      tableName: 'uphtarget',
       schema: config.db.schema,
       paranoid: true,
       timestamps: true,
-    }
+    },
   );
 
   uphtarget.associate = function (models) {

@@ -1325,18 +1325,40 @@ const getCurrentShiftCount = async (req) => {
 
 userController.getSystemUPH = async (req, res, next) => {
   try {
-    const { isSystem } = req.query;
-    const results = await generalService.getTarget();
+    const { isSystem, date } = req.query;
 
-    const responseData = results.map(data => ({
+    let recievedDate = new Date(date);
+    const currentDate = new Date();
+
+    const isSameDay =
+      recievedDate.getFullYear() === currentDate.getFullYear() &&
+      recievedDate.getMonth() === currentDate.getMonth() &&
+      recievedDate.getDate() === currentDate.getDate();
+
+    currentDate.setHours(currentDate.getHours() - 10);
+
+    let isToday = isSameDay;
+    let shift =
+      currentDate.getHours() >= "9" && currentDate.getHours() < "21"
+        ? "1st"
+        : "2nd";
+
+    const condition = {
+      isToday,
+      shift,
+    };
+
+    const results = await generalService.getTargetById(condition);
+
+    const responseData = results.map((data) => ({
       target: isSystem === "true" ? data.systemTarget : data.assignedTarget,
       model: data.model,
-      time: data.time
+      time: data.time,
     }));
 
     res.status(200).json({
       code: 200,
-      data: responseData
+      data: responseData,
     });
   } catch (error) {
     res.status(400).json({
