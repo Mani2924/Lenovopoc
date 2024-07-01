@@ -20,6 +20,7 @@ const generalService = require('./services/general.service');
 const { getFilteredData } = require('./services/generalSocket.service');
 const xlsx = require('xlsx');
 const { sampleData } = require('../models/index');
+const moment = require('moment-timezone');
 
 // app express
 const app = express();
@@ -136,10 +137,11 @@ function insertDataAndUpdateTime() {
   }
 
   const rowData = data[rowIndex];
+  const currentIST = moment.utc().tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss');
 
   // Assuming row data is in the correct format
   const newRow = {
-    Op_Finish_Time: new Date(),
+    Op_Finish_Time: currentIST,
     dest_Operation: rowData['Dest Operation'],
     Associate_Id: rowData['Associate Id'],
     Mfg_Order_Id: rowData['Mfg Order Id'],
