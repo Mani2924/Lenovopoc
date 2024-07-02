@@ -14,8 +14,7 @@ const { convertTimeToRange } = require("../utility/shiftUtility");
 
 // const productionDownTime = require("../data/downTime");
 const downTimeService = require("../services/downTime.service");
-const { getFilteredData } = require('../services/generalSocket.service');
-
+const { getFilteredData } = require("../services/generalSocket.service");
 
 const moment = require("moment");
 
@@ -1376,9 +1375,9 @@ userController.productionData = async (req, res, next) => {
     const { line, duration, target, date, shift } = req.query;
 
     let recievedDate = new Date(date);
-   
-    const currentDate = new Date();
+    // recievedDate = new Date(recievedDate.getTime() + recievedDate.getTimezoneOffset() * 60000);
 
+    const currentDate = new Date();
 
     const isSameDay =
       recievedDate.getFullYear() === currentDate.getFullYear() &&
@@ -1411,19 +1410,20 @@ userController.productionData = async (req, res, next) => {
       isSameDay,
     });
 
-   let currectShiftCount = 0 
+    let currectShiftCount = 0;
 
-    if(isSameDay){
-      currectShiftCount = 1
+    if (isSameDay) {
+      currectShiftCount = 1;
     }
-
-
-  
 
     const overAllDetails = {
       overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
       overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
-      overAllUPH:Math.round((shiftADetails?.shiftActual + shiftBDetails?.shiftActual) / ((shiftA.length + shiftB.length) + currectShiftCount )) || 0,
+      overAllUPH:
+        Math.round(
+          (shiftADetails?.shiftActual + shiftBDetails?.shiftActual) /
+            (shiftA.length + shiftB.length + currectShiftCount),
+        ) || 0,
       overAllOrdercount:
         shiftADetails?.mfgOrderCount + shiftBDetails?.mfgOrderCount,
       overAlldownTime:
@@ -1541,6 +1541,8 @@ const productionDataSecondShift = async ({
     const shiftBDowntimeDetails = [];
     let orderCount = 0;
     let product_count = 0;
+    let overTime = "0";
+
     general = general.map((val, index) => {
       shiftActual += val.y;
       orderCount += val.ordercount;
@@ -1551,7 +1553,9 @@ const productionDataSecondShift = async ({
       val.headcount = randomValue;
       val.upph = (val.y / randomValue).toFixed(1);
       const downTimeData =
-      index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime.replace(' mins', '') || "-";
+        index % 2 !== 0
+          ? "-"
+          : downTimeDatas[index]?.downTime.replace(" mins", "") || "-";
       const downTimeMessage =
         index % 2 !== 0 ? "-" : downTimeDatas[index]?.message || "-";
 
@@ -1569,6 +1573,11 @@ const productionDataSecondShift = async ({
         });
       }
 
+      // over Time calculation
+      let [startTime, endTime] = val?.x.split(" - ");
+      overTime =
+        endTime > "07:00:00" && endTime <= "09:00:00" ? endTime : overTime;
+
       return {
         ...val,
         x: convertTimeToRange(val.x),
@@ -1576,9 +1585,9 @@ const productionDataSecondShift = async ({
         message: downTimeMessage,
       };
     });
-    let currentHour = 0 
-    if(shiftStartTime != startTime) {
-      currentHour = 1
+    let currentHour = 0;
+    if (shiftStartTime != startTime) {
+      currentHour = 1;
     }
 
     const result = {
@@ -1586,13 +1595,15 @@ const productionDataSecondShift = async ({
       shiftBDetails: {
         shiftTarget: targetModel,
         shiftActual,
-        shiftUPH: Math.round(shiftActual / (general?.length + currentHour)) || 0,
+        shiftUPH:
+          Math.round(shiftActual / (general?.length + currentHour)) || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
         mfgProductCount: product_count || 0,
         shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
           endTime,
         )}`,
+        overTime: overTime,
       },
       shiftBDowntimeDetails,
     };
@@ -1690,14 +1701,16 @@ const productionDataFirstShift = async ({
       condition2,
     );
 
+    let overTime = "0";
+
     const downTimeDatas = await downTimeService.getAll();
 
-
-   const data =await  getFilteredData();
+    const data = await getFilteredData();
     const shiftADowntimeDetails = [];
     let orderCount = 0;
     let product_count = 0;
-      general = general.map((val, index) => {
+
+    general = general.map((val, index) => {
       shiftActual += val.y + data.totalCount;
       orderCount += val.ordercount;
       product_count += val.product_count;
@@ -1708,7 +1721,9 @@ const productionDataFirstShift = async ({
       val.upph = (val.y / randomValue).toFixed(1);
 
       const downTimeData =
-      index % 2 !== 0 ? "-" : downTimeDatas[index]?.downTime.replace(' mins', '') || "-";
+        index % 2 !== 0
+          ? "-"
+          : downTimeDatas[index]?.downTime.replace(" mins", "") || "-";
       const downTimeMessage =
         index % 2 !== 0 ? "-" : downTimeDatas[index]?.message || "-";
 
@@ -1726,6 +1741,10 @@ const productionDataFirstShift = async ({
         });
       }
 
+      // over Time calculation
+      let [startTime, endTime] = val?.x.split(" - ");
+      overTime = endTime > "18:00:00" ? endTime : overTime;
+
       return {
         ...val,
         x: convertTimeToRange(val.x),
@@ -1734,9 +1753,9 @@ const productionDataFirstShift = async ({
       };
     });
 
-    let currentHour = 0 
-    if(shiftStartTime != startTime) {
-      currentHour = 1
+    let currentHour = 0;
+    if (shiftStartTime != startTime) {
+      currentHour = 1;
     }
 
     const result = {
@@ -1744,13 +1763,15 @@ const productionDataFirstShift = async ({
       shiftADetails: {
         shiftTarget: targetModel,
         shiftActual,
-        shiftUPH: Math.round(shiftActual / (general?.length + currentHour) ) || 0,
+        shiftUPH:
+          Math.round(shiftActual / (general?.length + currentHour)) || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
         mfgProductCount: product_count || 0,
         shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
           endTime,
         )}`,
+        overTime: overTime !== "0" ? formatTimeAMPM(overTime) : overTime,
       },
       shiftADowntimeDetails,
     };
