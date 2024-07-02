@@ -1710,8 +1710,17 @@ const productionDataFirstShift = async ({
     let orderCount = 0;
     let product_count = 0;
 
+    if(general.length === 0){
+      shiftActual = data.totalCount
+    }
+
     general = general.map((val, index) => {
-      shiftActual += val.y + data.totalCount;
+      let totalCountAdded = false;
+      shiftActual += val.y ;
+      if (!totalCountAdded) {
+        shiftActual += data.totalCount;
+        totalCountAdded = true;
+      }
       orderCount += val.ordercount;
       product_count += val.product_count;
       let min = 24;
