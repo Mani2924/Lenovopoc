@@ -1495,16 +1495,16 @@ const productionDataSecondShift = async ({
     let targetModel = 0
     if(isSystem == 'true'){
       if(isSameDay){
-        targetModel = (126 * 4) + (130 * 8);
+        targetModel = (118 * 4) + (110 * 8);
       }else{
-        targetModel = (115 * 4) + (105 * 8);
+        targetModel = (112 * 4) + (105 * 8);
       }
     }else{
       if(isSameDay){
 
-        targetModel = (140 * 4) + (160 * 8);
+        targetModel = (130 * 4) + (126 * 8);
       }else{
-        targetModel = (136 * 4) + (125 * 8);
+        targetModel = (120 * 4) + (125 * 8);
       }
     }
 
@@ -1684,16 +1684,16 @@ const productionDataFirstShift = async ({
    
     if(isSystem == 'true'){
       if(isSameDay){
-        targetModel = (126 * 4) + (130 * 8);
+        targetModel = (118 * 4) + (110 * 8);
       }else{
-        targetModel = (115 * 4) + (105 * 8);
+        targetModel = (112 * 4) + (105 * 8);
       }
     }else{
       if(isSameDay){
 
-        targetModel = (140 * 4) + (160 * 8);
+        targetModel = (130 * 4) + (126 * 8);
       }else{
-        targetModel = (136 * 4) + (125 * 8);
+        targetModel = (120 * 4) + (125 * 8);
       }
     }
     // targetModel =  duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
