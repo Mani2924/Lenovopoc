@@ -1567,13 +1567,17 @@ const productionDataSecondShift = async ({
         message: downTimeMessage,
       };
     });
+    let currentHour = 0 
+    if(shiftStartTime != startTime) {
+      currentHour = 1
+    }
 
     const result = {
       general,
       shiftBDetails: {
         shiftTarget: targetModel,
         shiftActual,
-        shiftUPH: Math.round(shiftActual / general?.length) || 0,
+        shiftUPH: Math.round(shiftActual / general?.length + currentHour) || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
         mfgProductCount: product_count || 0,
@@ -1721,12 +1725,17 @@ const productionDataFirstShift = async ({
       };
     });
 
+    let currentHour = 0 
+    if(shiftStartTime != startTime) {
+      currentHour = 1
+    }
+
     const result = {
       general,
       shiftADetails: {
         shiftTarget: targetModel,
         shiftActual,
-        shiftUPH: Math.round(shiftActual / general?.length) || 0,
+        shiftUPH: Math.round(shiftActual / general?.length + currentHour ) || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
         mfgProductCount: product_count || 0,
