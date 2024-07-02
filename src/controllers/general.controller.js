@@ -1372,7 +1372,7 @@ userController.getSystemUPH = async (req, res, next) => {
 
 userController.productionData = async (req, res, next) => {
   try {
-    const { line, duration, target, date, shift } = req.query;
+    const { line, duration, target, date, shift,isSystem } = req.query;
 
     let recievedDate = new Date(date);
     // recievedDate = new Date(recievedDate.getTime() + recievedDate.getTimezoneOffset() * 60000);
@@ -1395,6 +1395,7 @@ userController.productionData = async (req, res, next) => {
       date,
       shift,
       isSameDay,
+      isSystem
     });
 
     const {
@@ -1408,6 +1409,7 @@ userController.productionData = async (req, res, next) => {
       date,
       shift,
       isSameDay,
+      isSystem
     });
 
     let currectShiftCount = 0;
@@ -1475,6 +1477,7 @@ const productionDataSecondShift = async ({
   date,
   shift,
   isSameDay,
+  isSystem
 }) => {
   try {
     const currentDate = new Date(date);
@@ -1491,9 +1494,23 @@ const productionDataSecondShift = async ({
     let shiftEndTime = currentDate;
     shiftStartTime.setHours(21, 0, 0, 0);
     shiftEndTime.setHours(9, 0, 0, 0);
+    let targetModel = 0
+    if(isSystem ){
+      if(isSameDay){
+        targetModel = (100 * 3) + (111 * 9);
+      }else{
+        targetModel = (90 * 3) + (116 * 9);
+      } 
+    }else{
+      if(isSameDay){
+        targetModel = (150 * 3) + (120 * 9);
+      }else{
+        targetModel = (120 * 3) + (134 * 9);
+      }
+     
+    }
 
-    let targetModel =
-      duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
+    // let targetModel = duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
     let shiftActual = 0;
     let downTime = 0;
 
@@ -1642,6 +1659,7 @@ const productionDataFirstShift = async ({
   date,
   shift,
   isSameDay,
+  isSystem
 }) => {
   try {
     const currentDate = new Date(date);
@@ -1659,9 +1677,23 @@ const productionDataFirstShift = async ({
     let shiftEndTime = currentDate;
     shiftStartTime.setHours(9, 0, 0, 0);
     shiftEndTime.setHours(21, 0, 0, 0);
+    let targetModel = 0
+   
+    if(isSystem == 'true'){
+      if(isSameDay){
+        targetModel = (126 * 3) + (130 * 9);
+      }else{
+        targetModel = (115 * 3) + (105 * 9);
+      } 
+    }else{
+      if(isSameDay){
 
-    let targetModel =
-      duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
+        targetModel = (140 * 3) + (160 * 9);
+      }else{
+        targetModel = (136 * 3) + (125 * 9);
+      }
+    }
+    // targetModel =  duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
     let shiftActual = 0;
     let downTime = 0;
 
