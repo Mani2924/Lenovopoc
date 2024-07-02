@@ -1603,7 +1603,7 @@ const productionDataSecondShift = async ({
         shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
           endTime
         )}`,
-        overTime: overTime,
+      overTime: overTime !== "0" ? formatTimeAMPM(overTime) : overTime,
       },
       shiftBDowntimeDetails,
     };
