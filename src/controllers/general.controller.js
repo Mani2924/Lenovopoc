@@ -1336,13 +1336,11 @@ userController.getSystemUPH = async (req, res, next) => {
       recievedDate.getMonth() === currentDate.getMonth() &&
       recievedDate.getDate() === currentDate.getDate();
 
-    currentDate.setHours(currentDate.getHours() - 10);
-
     let isToday = isSameDay;
-    let shift =
-      currentDate.getHours() >= "9" && currentDate.getHours() < "21"
-        ? "1st"
-        : "2nd";
+    let shift = "1st"
+      // currentDate.getHours() >= "9" && currentDate.getHours() < "21"
+      //   ? "1st"
+      //   : "2nd";
 
     const condition = {
       isToday,
@@ -1495,19 +1493,19 @@ const productionDataSecondShift = async ({
     shiftStartTime.setHours(21, 0, 0, 0);
     shiftEndTime.setHours(9, 0, 0, 0);
     let targetModel = 0
-    if(isSystem ){
+    if(isSystem == 'true'){
       if(isSameDay){
-        targetModel = (100 * 4) + (111 * 8);
+        targetModel = (126 * 4) + (130 * 8);
       }else{
-        targetModel = (90 * 4) + (116 * 8);
-      } 
+        targetModel = (115 * 4) + (105 * 8);
+      }
     }else{
       if(isSameDay){
-        targetModel = (150 * 4) + (120 * 8);
+
+        targetModel = (140 * 4) + (160 * 8);
       }else{
-        targetModel = (120 * 4) + (134 * 8);
+        targetModel = (136 * 4) + (125 * 8);
       }
-     
     }
 
     // let targetModel = duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
@@ -1529,19 +1527,19 @@ const productionDataSecondShift = async ({
       }
     }
 
-    if (!isSameDay) {
-      let shiftData = await getDataFromRedis(
-        shift && duration === "6hrs"
-          ? `${line}-${date}-${startTime}-${endTime}-${duration}-${shift}`
-          : `${line}-${date}-${startTime}-${endTime}-${duration}`
-      );
+    // if (!isSameDay) {
+    //   let shiftData = await getDataFromRedis(
+    //     shift && duration === "6hrs"
+    //       ? `${line}-${date}-${startTime}-${endTime}-${duration}-${shift}`
+    //       : `${line}-${date}-${startTime}-${endTime}-${duration}`
+    //   );
 
-      if (shiftData) {
-        shiftData = JSON.parse(shiftData);
-        console.log("from redis");
-        return shiftData;
-      }
-    }
+    //   if (shiftData) {
+    //     shiftData = JSON.parse(shiftData);
+    //     console.log("from redis");
+    //     return shiftData;
+    //   }
+    // }
 
     let general = await generalService.getShiftRecord2(
       line,
@@ -1684,7 +1682,7 @@ const productionDataFirstShift = async ({
         targetModel = (126 * 4) + (130 * 8);
       }else{
         targetModel = (115 * 4) + (105 * 8);
-      } 
+      }
     }else{
       if(isSameDay){
 
@@ -1710,18 +1708,18 @@ const productionDataFirstShift = async ({
       }
     }
 
-    if (!isSameDay) {
-      let shiftData = await getDataFromRedis(
-        shift && duration === "6hrs"
-          ? `${line}-${date}-${startTime}-${endTime}-${duration}-${shift}`
-          : `${line}-${date}-${startTime}-${endTime}-${duration}`
-      );
-      if (shiftData) {
-        shiftData = JSON.parse(shiftData);
-        console.log("from redis");
-        return shiftData;
-      }
-    }
+    // if (!isSameDay) {
+    //   let shiftData = await getDataFromRedis(
+    //     shift && duration === "6hrs"
+    //       ? `${line}-${date}-${startTime}-${endTime}-${duration}-${shift}`
+    //       : `${line}-${date}-${startTime}-${endTime}-${duration}`
+    //   );
+    //   if (shiftData) {
+    //     shiftData = JSON.parse(shiftData);
+    //     console.log("from redis");
+    //     return shiftData;
+    //   }
+    // }
 
     let general = await generalService.getShiftRecord2(
       line,
