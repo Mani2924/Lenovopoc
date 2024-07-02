@@ -3,8 +3,8 @@ module.exports = {
     const data = [
       {
         model: 'M80S',
-        assignedTarget: 105,
-        systemTarget: 85,
+        assignedTarget: 140,
+        systemTarget: 126,
         time: '09 - 13',
         shift: '1st',
         isToday: true,
@@ -13,8 +13,8 @@ module.exports = {
       },
       {
         model: 'M70t',
-        assignedTarget: 110,
-        systemTarget: 95,
+        assignedTarget: 160,
+        systemTarget: 130,
         time: '13 - 18',
         shift: '1st',
         isToday: true,
@@ -23,7 +23,7 @@ module.exports = {
       },
       {
         model: 'M85S',
-        assignedTarget: 120,
+        assignedTarget: 150,
         systemTarget: 100,
         time: '09 - 13',
         shift: '2nd',
@@ -33,8 +33,8 @@ module.exports = {
       },
       {
         model: 'M70t',
-        assignedTarget: 100,
-        systemTarget: 80,
+        assignedTarget: 120,
+        systemTarget: 111,
         time: '13 - 18',
         shift: '2nd',
         isToday: true,
@@ -43,8 +43,8 @@ module.exports = {
       },
       {
         model: 'M60S',
-        assignedTarget: 85,
-        systemTarget: 65,
+        assignedTarget: 136,
+        systemTarget: 115,
         time: '09 - 13',
         shift: '1st',
         isToday: false,
@@ -63,7 +63,7 @@ module.exports = {
       },
       {
         model: 'M90S',
-        assignedTarget: 110,
+        assignedTarget: 120,
         systemTarget: 90,
         time: '09 - 13',
         shift: '2nd',
@@ -73,8 +73,8 @@ module.exports = {
       },
       {
         model: 'M95t',
-        assignedTarget: 95,
-        systemTarget: 75,
+        assignedTarget: 134,
+        systemTarget: 116,
         time: '13 - 18',
         shift: '2nd',
         isToday: false,
