@@ -17,7 +17,7 @@ const todaySecondShift = {
 const todayGenaralShift = {
   shift: 'general',
   startTime: '09:00:00',
-  endTime: '18:00:00',
+  endTime: '21:00:00',
   condition: 'AND',
   duration: '8hrs',
 };

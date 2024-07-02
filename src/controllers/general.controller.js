@@ -1294,7 +1294,9 @@ const getCurrentShiftCount = async (req) => {
     let condition = "AND";
     let condition2 = "AND start_time < end_time";
 
-    if (currentTime >= "21:00:00" && currentTime < "09:00:00") {
+   
+
+    if (currentTime <= "21:00:00" && currentTime < "09:00:00") {
       startDate = currentDateString;
 
       currentDate.setDate(currentDate.getDate() + 1);
