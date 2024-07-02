@@ -1414,11 +1414,7 @@ userController.productionData = async (req, res, next) => {
     const overAllDetails = {
       overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
       overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
-      overAllUPH:
-        Math.round(
-          shiftADetails?.shiftUPH +
-            shiftBDetails?.shiftUPH / (shiftA.length + shiftB.length),
-        ) || 0,
+      overAllUPH:Math.round((shiftADetails?.shiftUPH + shiftBDetails?.shiftUPH) / ((shiftA.length + shiftB.length) +1 )) || 0,
       overAllOrdercount:
         shiftADetails?.mfgOrderCount + shiftBDetails?.mfgOrderCount,
       overAlldownTime:
@@ -1688,7 +1684,7 @@ const productionDataFirstShift = async ({
     const shiftADowntimeDetails = [];
     let orderCount = 0;
     let product_count = 0;
-    general = general.map((val, index) => {
+      general = general.map((val, index) => {
       shiftActual += val.y + data.totalCount;
       orderCount += val.ordercount;
       product_count += val.product_count;
