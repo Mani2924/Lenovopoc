@@ -1559,7 +1559,7 @@ const productionDataSecondShift = async ({
       const downTimeMessage =
         index % 2 !== 0 ? "-" : downTimeDatas[index]?.message || "-";
 
-      if (downTimeData.includes("mins")) {
+      if (/\d/.test(downTimeData)) {
         downTime = parseInt(downTimeData.split(" ")[0]) + downTime;
 
         const [shiftAStart, shiftAEnd] = val.x.split(" - ");
