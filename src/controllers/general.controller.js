@@ -14,6 +14,8 @@ const { convertTimeToRange } = require("../utility/shiftUtility");
 
 // const productionDownTime = require("../data/downTime");
 const downTimeService = require("../services/downTime.service");
+const { getFilteredData } = require('../services/generalSocket.service');
+
 
 const moment = require("moment");
 
@@ -1377,6 +1379,7 @@ userController.productionData = async (req, res, next) => {
    
     const currentDate = new Date();
 
+
     const isSameDay =
       recievedDate.getFullYear() === currentDate.getFullYear() &&
       recievedDate.getMonth() === currentDate.getMonth() &&
@@ -1680,11 +1683,13 @@ const productionDataFirstShift = async ({
 
     const downTimeDatas = await downTimeService.getAll();
 
+
+   const data =await  getFilteredData();
     const shiftADowntimeDetails = [];
     let orderCount = 0;
     let product_count = 0;
     general = general.map((val, index) => {
-      shiftActual += val.y;
+      shiftActual += val.y + data.totalCount;
       orderCount += val.ordercount;
       product_count += val.product_count;
       let min = 24;
