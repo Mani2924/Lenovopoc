@@ -1411,10 +1411,19 @@ userController.productionData = async (req, res, next) => {
       isSameDay,
     });
 
+   let currectShiftCount = 0 
+
+    if(isSameDay){
+      currectShiftCount = 1
+    }
+
+
+  
+
     const overAllDetails = {
       overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
       overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
-      overAllUPH:Math.round((shiftADetails?.shiftActual + shiftBDetails?.shiftActual) / ((shiftA.length + shiftB.length) + 1 )) || 0,
+      overAllUPH:Math.round((shiftADetails?.shiftActual + shiftBDetails?.shiftActual) / ((shiftA.length + shiftB.length) + currectShiftCount )) || 0,
       overAllOrdercount:
         shiftADetails?.mfgOrderCount + shiftBDetails?.mfgOrderCount,
       overAlldownTime:
