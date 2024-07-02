@@ -1557,9 +1557,14 @@ const productionDataSecondShift = async ({
     let orderCount = 0;
     let product_count = 0;
     let overTime = "0";
+    const data = await getFilteredData();
+    let count = 0;
+    general.map(async (data) => {
+      count += data.y;
+    });
 
     general = general.map((val, index) => {
-      shiftActual += val.y;
+      shiftActual = count + data.totalCount;
       orderCount += val.ordercount;
       product_count += val.product_count;
       let min = 24;
@@ -1591,7 +1596,7 @@ const productionDataSecondShift = async ({
       // over Time calculation
       let [startTime, endTime] = val?.x.split(" - ");
       overTime =
-        endTime > "07:00:00" && endTime <= "09:00:00" ? endTime : overTime;
+        endTime > "06:00:00" && endTime <= "09:00:00" ? endTime : overTime;
 
       return {
         ...val,
