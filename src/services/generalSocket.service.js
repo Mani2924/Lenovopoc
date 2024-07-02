@@ -18,6 +18,7 @@ async function getFilteredData() {
 
     const totalCount = await sampleData.count({
       where: {
+        line:'L1',
         Op_Finish_Time: {
           [Op.gte]: startHourUTC,
           [Op.lt]: endHourUTC,
