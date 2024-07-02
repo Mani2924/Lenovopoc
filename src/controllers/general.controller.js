@@ -1577,7 +1577,7 @@ const productionDataSecondShift = async ({
       shiftBDetails: {
         shiftTarget: targetModel,
         shiftActual,
-        shiftUPH: Math.round(shiftActual / general?.length + currentHour) || 0,
+        shiftUPH: Math.round(shiftActual / (general?.length + currentHour)) || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
         mfgProductCount: product_count || 0,
@@ -1735,7 +1735,7 @@ const productionDataFirstShift = async ({
       shiftADetails: {
         shiftTarget: targetModel,
         shiftActual,
-        shiftUPH: Math.round(shiftActual / general?.length + currentHour ) || 0,
+        shiftUPH: Math.round(shiftActual / (general?.length + currentHour) ) || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
         mfgProductCount: product_count || 0,
