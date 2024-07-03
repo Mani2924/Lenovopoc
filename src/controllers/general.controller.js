@@ -1494,19 +1494,25 @@ const productionDataSecondShift = async ({
     let shiftEndTime = currentDate;
     shiftStartTime.setHours(21, 0, 0, 0);
     shiftEndTime.setHours(9, 0, 0, 0);
-    let targetModel = 0
+    let finalduration = 0 ;
+    if(duration == '9hrs'){
+      finalduration = 5 ;
+    }else{
+      finalduration = 8 ;
+    }
+   
     if(isSystem == 'true'){
       if(isSameDay){
-        targetModel = (118 * 4) + (110 * 8);
+        targetModel = (118 * 4) + (110 * finalduration);
       }else{
-        targetModel = (112 * 4) + (105 * 8);
+        targetModel = (112 * 4) + (105 * finalduration);
       }
     }else{
       if(isSameDay){
 
-        targetModel = (130 * 4) + (126 * 8);
+        targetModel = (130 * 4) + (126 * finalduration);
       }else{
-        targetModel = (120 * 4) + (125 * 8);
+        targetModel = (120 * 4) + (125 * finalduration);
       }
     }
 
@@ -1683,19 +1689,26 @@ const productionDataFirstShift = async ({
     shiftStartTime.setHours(9, 0, 0, 0);
     shiftEndTime.setHours(21, 0, 0, 0);
     let targetModel = 0
+
+    let finalduration = 0 ;
+    if(duration == '9hrs'){
+      finalduration = 5 ;
+    }else{
+      finalduration = 8 ;
+    }
    
     if(isSystem == 'true'){
       if(isSameDay){
-        targetModel = (118 * 4) + (110 * 8);
+        targetModel = (118 * 4) + (110 * finalduration);
       }else{
-        targetModel = (112 * 4) + (105 * 8);
+        targetModel = (112 * 4) + (105 * finalduration);
       }
     }else{
       if(isSameDay){
 
-        targetModel = (130 * 4) + (126 * 8);
+        targetModel = (130 * 4) + (126 * finalduration);
       }else{
-        targetModel = (120 * 4) + (125 * 8);
+        targetModel = (120 * 4) + (125 * finalduration);
       }
     }
     // targetModel =  duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
