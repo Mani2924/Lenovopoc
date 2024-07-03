@@ -1633,7 +1633,7 @@ const productionDataSecondShift = async ({
         )}`,
       overTime: overTime !== "0" ? formatTimeAMPM(overTime) : overTime,
       },
-      shiftBDowntimeDetails,
+      shiftBDowntimeDetails:shiftBDowntimeDetails.reverse(),
     };
 
     if (!isSameDay && general?.length) {
@@ -1832,7 +1832,7 @@ const productionDataFirstShift = async ({
         )}`,
         overTime: overTime !== "0" ? formatTimeAMPM(overTime) : overTime,
       },
-      shiftADowntimeDetails,
+      shiftADowntimeDetails:shiftADowntimeDetails.reverse(),
     };
 
     // storing data in redis
