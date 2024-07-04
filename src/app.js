@@ -107,17 +107,15 @@ cron.schedule('** * * * * *', async () => {
 
     const data = await getFilteredData();
     const result = {
-      shiftActual:data.totalCount + actualData,
+      shiftActual: data.totalCount + actualData,
       totalCount: data.totalCount,
       timeRange: `${data.startHour} - ${data.endHour}`,
       target,
       overTime,
       uph,
     };
-    // io.emit('dataUpdate', {
-    //   totalCount: data.totalCount + actualData,
-    //   timeRange: `${data.startHour} - ${data.endHour}`,
-    // });
+
+    // console.log('result', result);
 
     io.emit('dataUpdate', result);
   } catch (error) {

@@ -1,6 +1,6 @@
 const { sampleData, weeklyData1 } = require('../../models/index');
 const { Op, Sequelize } = require('sequelize');
-const moment = require('moment-timezone');
+const moment = require('moment');
 const logger = require('../config/logger');
 const { log } = require('../config/vars');
 
@@ -179,73 +179,60 @@ function changeTime() {
 }
 
 function getOverTime() {
-  const currentTimeIST = moment().format('HH:MM:SS');
+  let today = new Date();
+
+  let hours = today.getHours();
+  let minutes = today.getMinutes();
+  let seconds = today.getSeconds();
+
+  const currentTimeIST = `${hours.toString().padStart(2, '0')}:${minutes
+    .toString()
+    .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+  let startTime = '00:00:00';
+  let endTime = '00:00:00';
+
+  // console.log('currentTimeIST', currentTimeIST);
+
   let overTime = 0;
-  // let currentTimeIST = '18:50:00';
-  let startTime = changeTime('00:00:00');
-  let endTime = changeTime('00:00:00');
-  // let startTime = moment().startOf('day');
-  // let endTime = moment().startOf('day');
-
-  // console.log('starttime', startTime.format('HH:MM:SS'));
-  // console.log('endTime', endTime.format('HH:MM:SS'));
-
-  // let overTimeRange = `${startTime} - ${endTime}`;
-
-  // console.log("moment time", moment().format("HH:MM A"));
 
   if (currentTimeIST >= '17:45:00' && currentTimeIST < '18:30:00') {
     overTime = 1;
-    startTime = changeTime('17:30:00');
-    endTime = changeTime('13:30:00');
+    startTime = '17:30:00';
+    endTime = '13:30:00';
   } else if (currentTimeIST > '18:30:00' && currentTimeIST < '19:30:00') {
     overTime = 2;
-    startTime = changeTime('18:30:00');
-    endTime = changeTime('19:30:00');
+    startTime = '18:30:00';
+    endTime = '19:30:00';
   } else if (currentTimeIST > '19:30:00' && currentTimeIST <= '21:00:00') {
     overTime = 3.5;
-    startTime = changeTime('19:30:00');
-    endTime = changeTime('21:00:00');
+    startTime = '19:30:00';
+    endTime = '21:00:00';
   } else if (currentTimeIST >= '05:45:00' && currentTimeIST < '06:30:00') {
     overTime = 1;
-    startTime = changeTime('05:45:00');
-    endTime = changeTime('06:30:00');
+    startTime = '05:45:00';
+    endTime = '06:30:00';
   } else if (currentTimeIST > '06:30:00' && currentTimeIST < '07:30:00') {
     overTime = 2;
-    startTime = changeTime('06:30:00');
-    endTime = changeTime('07:30:00');
+    startTime = '06:30:00';
+    endTime = '07:30:00';
   } else if (currentTimeIST >= '07:30:00' && currentTimeIST < '09:00:00') {
     overTime = 1;
-    startTime = changeTime('07:30:00');
-    endTime = changeTime('09:00:00');
+    startTime = '07:30:00';
+    endTime = '09:00:00';
   }
-  // overTimeRange =
 
-  // overTime =
-  //   currentTimeIST >= "17:45:00" && currentTimeIST < "18:30:00" ? 1 : overTime;
-  // overTime =
-  //   currentTimeIST > "18:30:00" && currentTimeIST < "19:30:00" ? 2 : overTime;
-  // overTime =
-  //   currentTimeIST > "19:30:00" && currentTimeIST <= "21:00:00"
-  //     ? 3.5
-  //     : overTime;
+  // console.log('startTime', startTime);
+  // console.log('endTime', endTime);
+  // console.log('overTime', overTime);
 
-  // overTime =
-  //   currentTimeIST >= "05:45:00" && currentTimeIST < "06:30:00" ? 1 : overTime;
-  // overTime =
-  //   currentTimeIST > "06:30:00" && currentTimeIST < "07:30:00" ? 2 : overTime;
-  // overTime =
-  //   currentTimeIST >= "07:30:00" && currentTimeIST < "09:00:00"
-  //     ? 3.5
-  //     : overTime;
+  // let overTimeRange = `${startTime.format('HH:MM:SS')} - ${endTime.format(
+  //   'HH:MM:SS',
+  // )}`;
 
-  // overTimeRange = `${startTime.format("HH:MM A")} - ${endTime.format(
-  //     "HH:MM A",
-  //   )}`,
+  let overTimeRange = `${startTime} - ${endTime}`;
 
-  let overTimeRange = `${startTime.format('HH:MM:SS')} - ${endTime.format(
-    'HH:MM:SS',
-  )}`;
+  // console.log('overTimeRange', overTimeRange);
 
   return {
     overTime,
@@ -276,7 +263,7 @@ async function getShiftData() {
   const overTime = getOverTime();
   const target = getTarget(overTime?.overTime > 0 ? overTime?.overTime : 0);
 
-  // console.log("target", target);
+  // console.log('target', target);
   // console.log('overTime', overTime);
   // console.log('shiftactual', shiftactual);
 
