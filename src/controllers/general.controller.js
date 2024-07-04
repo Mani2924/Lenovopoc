@@ -1610,7 +1610,6 @@ const productionDataSecondShift = async ({
     }
 
     general = general.map((val, index) => {
-      shiftActual = count;
       orderCount += val.ordercount;
       product_count += val.product_count;
       let min = 24;
@@ -1656,11 +1655,17 @@ const productionDataSecondShift = async ({
       currentHour = 1;
     }
 
+    let currentCount = 0;
+
+    if (currentTimeIST > "9:00:00 pm" && currentTimeIST <= "9:00:00 am") {
+      currentCount = data.totalCount;
+    }    
+
     const result = {
       general,
       shiftBDetails: {
         shiftTarget: targetModel,
-        shiftActual,
+        shiftActual: count + currentCount,
         shiftUPH: mode || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
@@ -1839,11 +1844,8 @@ const productionDataFirstShift = async ({
     });
 
     general.forEach((data) => {
-      console.log(data.y);
       count += data.y;
     });
-
-    console.log("~~~~~~~~~~~~~~~~~~",count);
 
 
     let shiftActualCount = 0;
@@ -1898,12 +1900,17 @@ const productionDataFirstShift = async ({
       currentHour = 1;
     }
 
+    let currentCount = 0;
+
+    if (currentTimeIST > "9:00:00 am" && currentTimeIST <= "9:00:00 pm") {
+      currentCount = data.totalCount;
+    }
 
     const result = {
       general,
       shiftADetails: {
         shiftTarget: targetModel,
-        shiftActual : count ,
+        shiftActual : count + currentCount,
         shiftUPH: mode || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
