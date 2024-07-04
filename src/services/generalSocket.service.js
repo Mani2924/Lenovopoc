@@ -4,6 +4,8 @@ const moment = require('moment');
 const logger = require('../config/logger');
 const { log } = require('../config/vars');
 
+const shiftUtility = require('../utility/shiftUtility');
+
 const db = require('../../models/index');
 
 async function getFilteredData() {
@@ -85,7 +87,7 @@ function getTarget(overTime = 0) {
   }
 }
 
-async function getActualData() {
+async function getShiftActualData() {
   try {
     // const result = await weeklyData1.findAll({
     //   attributes: ["totalcount"],
@@ -106,6 +108,7 @@ async function getActualData() {
     let startDate = currentDate.format('YYYY-MM-DD');
     let condition = 'OR';
     let currentHour = currentDate.format('HH:MM:SS');
+
     let yesterday = moment();
     yesterday.add(1, 'days');
     let endDate = yesterday.format('YYYY-MM-DD');
@@ -161,21 +164,128 @@ async function getActualData() {
   }
 }
 
-function changeTime() {
-  let timeString = '00:00:00';
-  const [hour, minute, second] = timeString.split(':');
-  let time = moment();
-  time.set('hour', +hour);
-  time.set('minute', +minute);
-  time.set('second', +second);
+async function getShiftAActualData() {
+  try {
+    // const result = await weeklyData1.findAll({
+    //   attributes: ["totalcount"],
+    //   where: {
+    //     op_date: "2024-07-02",
+    //     start_time: {
+    //       [Op.gte]: "09:00:00",
+    //     },
+    //     end_time: { [Op.lt]: "21:00:00" },
+    //   },
+    // });
 
-  return time;
+    const currentDate = moment();
 
-  // return (startTime = moment().set({
-  //   hour: parseInt(timeString.slice(0, 2)), // Extract hours and convert to integer
-  //   minute: parseInt(timeString.slice(3, 5)), // Extract minutes and convert to integer
-  //   second: parseInt(timeString.slice(6, 8)), // Extract seconds and convert to integer
-  // }));
+    let line = 'L1';
+    let startTime = '09:00:00';
+    let endTime = '21:00:00';
+    let startDate = currentDate.format('YYYY-MM-DD');
+    let condition = 'AND';
+    let endDate = currentDate.format('YYYY-MM-DD');
+
+    // Raw SQL query string with dynamic conditions
+    const sqlQuery = `
+     SELECT totalcount, op_date, start_time, end_time
+     FROM "weeklyData1"
+     WHERE line = :line
+     AND (
+       (start_time >= :startTime AND DATE(op_date) = :startDate)
+       ${condition}
+       (end_time <= :endTime AND DATE(op_date) = :endDate)
+       AND start_time < end_time
+     );
+   `;
+
+    const results = await db.sequelize.query(sqlQuery, {
+      replacements: {
+        line: line,
+        startTime: startTime,
+        startDate: startDate,
+        endTime: endTime,
+        endDate: endDate,
+      },
+      type: Sequelize.QueryTypes.SELECT,
+    });
+
+    let actualData = 0;
+    let actualCountArray = [];
+
+    if (results?.length) {
+      actualCountArray = results.map((item) => item.totalcount);
+      actualData = actualCountArray.reduce((a, b) => a + b, 0);
+    }
+
+    const uph = uphData(actualCountArray);
+
+    return {
+      actualData,
+      uph,
+    };
+  } catch (error) {
+    console.error('Error fetching total count data:', error);
+    throw error;
+  }
+}
+
+async function getShiftBActualData() {
+  try {
+    const currentDate = moment();
+
+    let line = 'L1';
+    let startTime = '21:00:00';
+    let endTime = '09:00:00';
+    let startDate = currentDate.format('YYYY-MM-DD');
+    let condition = 'OR';
+    let currentHour = currentDate.format('HH:MM:SS');
+    let yesterday = moment();
+    yesterday.add(1, 'days');
+    let endDate = yesterday.format('YYYY-MM-DD');
+
+    // Raw SQL query string with dynamic conditions
+    const sqlQuery = `
+     SELECT totalcount, op_date, start_time, end_time
+     FROM "weeklyData1"
+     WHERE line = :line
+     AND (
+       (start_time >= :startTime AND DATE(op_date) = :startDate)
+       ${condition}
+       (end_time <= :endTime AND DATE(op_date) = :endDate)
+       AND start_time < end_time
+     );
+   `;
+
+    const results = await db.sequelize.query(sqlQuery, {
+      replacements: {
+        line: line,
+        startTime: startTime,
+        startDate: startDate,
+        endTime: endTime,
+        endDate: endDate,
+      },
+      type: Sequelize.QueryTypes.SELECT,
+    });
+
+    let actualData = 0;
+    let actualCountArray = [];
+
+    if (results?.length) {
+      actualCountArray = results.map((item) => item.totalcount);
+      actualData = actualCountArray.reduce((a, b) => a + b, 0);
+    }
+
+    const uph = uphData(actualCountArray);
+
+    return {
+      actualData,
+      uph,
+    };
+  } catch (error) {
+    console.error('Error fetching total count data:', error);
+    throw error;
+  }
 }
 
 function getOverTime() {
@@ -191,8 +301,6 @@ function getOverTime() {
 
   let startTime = '00:00:00';
   let endTime = '00:00:00';
-
-  // console.log('currentTimeIST', currentTimeIST);
 
   let overTime = 0;
 
@@ -222,17 +330,16 @@ function getOverTime() {
     endTime = '09:00:00';
   }
 
-  // console.log('startTime', startTime);
-  // console.log('endTime', endTime);
-  // console.log('overTime', overTime);
-
   // let overTimeRange = `${startTime.format('HH:MM:SS')} - ${endTime.format(
   //   'HH:MM:SS',
   // )}`;
 
-  let overTimeRange = `${startTime} - ${endTime}`;
-
-  // console.log('overTimeRange', overTimeRange);
+  let overTimeRange =
+    startTime !== '00:00:00'
+      ? `${shiftUtility.convertTimeTo12HourFormat(
+          startTime,
+        )} - ${shiftUtility.convertTimeTo12HourFormat(endTime)}`
+      : '00:00 - 00:00';
 
   return {
     overTime,
@@ -259,18 +366,41 @@ function uphData(general) {
 }
 
 async function getShiftData() {
-  const shiftactual = await getActualData();
+  const { actualData: shiftAActual, uph: shiftAUph } =
+    await getShiftAActualData();
+  const { actualData: shiftBActual, uph: shiftBUph } =
+    await getShiftBActualData();
   const overTime = getOverTime();
   const target = getTarget(overTime?.overTime > 0 ? overTime?.overTime : 0);
 
-  // console.log('target', target);
-  // console.log('overTime', overTime);
-  // console.log('shiftactual', shiftactual);
+  const overAllActual = shiftAActual + shiftBActual || 0;
+  const overAllUph = shiftAUph + shiftBUph || 0;
+
+  let today = new Date();
+
+  let hours = today.getHours();
+  let minutes = today.getMinutes();
+  let seconds = today.getSeconds();
+
+  const currentTimeIST = `${hours.toString().padStart(2, '0')}:${minutes
+    .toString()
+    .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+  const currentShift =
+    currentTimeIST >= '09:00:00' && currentTimeIST < '21:00:00'
+      ? 'SHIFTA'
+      : 'SHIFTB';
 
   return {
-    shiftactual,
+    shiftAActual,
+    shiftBActual,
+    shiftAUph,
+    shiftBUph,
+    overAllActual,
+    overAllUph,
     overTime,
     target,
+    currentShift,
   };
 }
 
@@ -278,6 +408,5 @@ module.exports = {
   getFilteredData,
   rollingChart,
   getTarget,
-  getActualData,
   getShiftData,
 };
