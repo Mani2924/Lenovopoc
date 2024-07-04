@@ -11,6 +11,7 @@
   "scripts": {
     "seed:linux:local:users": "export NODE_ENV=local&& npx sequelize-cli db:seed --seed 00000000000042-document.js",
     "seed:windows:local:users": "SET NODE_ENV=local&& npx sequelize-cli db:seed --seed 00000000000042-document.js",
+    "seed:windows:local:weeklydata1": "SET NODE_ENV=local&& npx sequelize-cli db:seed --seed 00000000000002-weeklydata1.js",
     "test": "SET NODE_ENV=local&& jest",
     "seed:windows:local": "SET NODE_ENV=local&& npx sequelize-cli db:seed:all",
     "seed:linux:local": "export NODE_ENV=local&& npx sequelize-cli db:seed:all",

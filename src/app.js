@@ -17,7 +17,10 @@ const response = require('./utility/response');
 const rescodes = require('./utility/rescodes');
 
 const generalService = require('./services/general.service');
-const { getFilteredData } = require('./services/generalSocket.service');
+const {
+  getFilteredData,
+  getShiftData,
+} = require('./services/generalSocket.service');
 const xlsx = require('xlsx');
 const { sampleData } = require('../models/index');
 
@@ -72,12 +75,10 @@ const createSchema = async function () {
 };
 createSchema();
 
-
 cron.schedule('*/59 * * * *', async () => {
   const currentTime = new Date().toLocaleTimeString();
   await generalService.hourlyData2();
 });
-
 
 const httpServer = createServer(app);
 
@@ -94,11 +95,33 @@ io.on('connection', (socket) => {
 // Cron job to emit data every 15 seconds
 cron.schedule('** * * * * *', async () => {
   try {
+    // const target = getTarget();
+    // console.log("target", target);
+    const {
+      shiftactual: { actualData, uph },
+      overTime,
+      target,
+    } = await getShiftData();
+    // console.log("actualData", actualData);
+    // console.log('shiftData', shiftData);
+
     const data = await getFilteredData();
-    io.emit('dataUpdate', {
-      totalCount: data.totalCount,
+    console.log('data', data.totalCount);
+    const result = {
+      totalCount: data.totalCount + actualData,
       timeRange: `${data.startHour} - ${data.endHour}`,
-    });
+      target,
+      overTime,
+      uph,
+    };
+
+    console.log('result', result);
+    // io.emit('dataUpdate', {
+    //   totalCount: data.totalCount + actualData,
+    //   timeRange: `${data.startHour} - ${data.endHour}`,
+    // });
+
+    io.emit('dataUpdate', result);
   } catch (error) {
     console.error('Error while emitting data:', error);
   }

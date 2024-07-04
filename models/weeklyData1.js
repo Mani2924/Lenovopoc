@@ -27,10 +27,24 @@ module.exports = (sequelize, DataTypes) => {
       target: DataTypes.INTEGER,
       product_count: DataTypes.INTEGER,
       totalcount: DataTypes.INTEGER,
-      comments: DataTypes.STRING,
+      comments: {
+        type: DataTypes.STRING,
+        defaultValue: 'Success',
+      },
       ordercount: DataTypes.INTEGER,
-      isActive: DataTypes.BOOLEAN,
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+      },
       deletedAt: DataTypes.DATE,
+      createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: new Date(),
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: new Date(),
+      },
     },
     {
       sequelize,
