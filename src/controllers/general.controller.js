@@ -1892,16 +1892,12 @@ const productionDataFirstShift = async ({
       currentHour = 1;
     }
 
-    if(!isSameDay){
-      overTime = formatTimeAMPM()
-    }
-
 
     const result = {
       general,
       shiftADetails: {
         shiftTarget: targetModel,
-        shiftActual : count + data.totalCount,
+        shiftActual : count ,
         shiftUPH: mode || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
