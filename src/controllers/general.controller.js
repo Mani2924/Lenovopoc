@@ -1494,15 +1494,42 @@ const productionDataSecondShift = async ({
     let shiftEndTime = currentDate;
     shiftStartTime.setHours(21, 0, 0, 0);
     shiftEndTime.setHours(9, 0, 0, 0);
-    const finalDuration = duration === "9hrs" ? 3.5 : 9.5;
-    let targetModel =
-      isSystem === "true"
-        ? isSameDay
-          ? 118 * 4 + 110 * finalDuration
-          : 112 * 4 + 105 * finalDuration
-        : isSameDay
-        ? 130 * 4 + 126 * finalDuration
-        : 120 * 4 + 125 * finalDuration;
+    const now = new Date();
+    const options = {
+      timeZone: "Asia/Kolkata",
+      hour12: true,
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    };
+    const currentTimeIST = now.toLocaleTimeString("en-IN", options);
+
+    let OtTimeCount = 0;
+
+    if (currentTimeIST >= "5:30:00 am" && currentTimeIST <= "6:30:00 am") {
+      OtTimeCount = 1;
+    } else if (
+      currentTimeIST > "6:45:00 am" &&
+      currentTimeIST <= "9:00:00 am"
+    ) {
+      OtTimeCount = 2;
+    } 
+
+    let targetModel = 0;
+
+    if (isSystem === "true") {
+      if (isSameDay) {
+        targetModel = (110 * 7.5) + (110 * OtTimeCount)
+      } else {
+        targetModel = (105 * 7.5) + (105 * OtTimeCount)
+      }
+    } else {
+      if (isSameDay) {
+        targetModel = (121 * 7.5) + (121 * OtTimeCount)
+      } else {
+        targetModel = (117 * 7.5) + (117 * OtTimeCount)
+      }
+    }
     targetModel = Math.round(targetModel);
 
     // let targetModel = duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
@@ -1568,12 +1595,10 @@ const productionDataSecondShift = async ({
         mode = yValue;
       }
     });
-    let shiftActualCount = 0 ;
-    if(isSameDay ===  true ){
+    let shiftActualCount = 0;
+    if (isSameDay == true) {
       shiftActualCount = data.totalCount;
     }
-
-   
 
     general = general.map((val, index) => {
       shiftActual = count + shiftActualCount;
@@ -1692,15 +1717,42 @@ const productionDataFirstShift = async ({
     shiftStartTime.setHours(9, 0, 0, 0);
     shiftEndTime.setHours(21, 0, 0, 0);
 
-    const finalDuration = duration === "9hrs" ? 3.5 : 9.5;
-    let targetModel =
-      isSystem === "true"
-        ? isSameDay
-          ? 118 * 4 + 110 * finalDuration
-          : 112 * 4 + 105 * finalDuration
-        : isSameDay
-        ? 130 * 4 + 126 * finalDuration
-        : 120 * 4 + 125 * finalDuration;
+    const now = new Date();
+    const options = {
+      timeZone: "Asia/Kolkata",
+      hour12: true,
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    };
+    const currentTimeIST = now.toLocaleTimeString("en-IN", options);
+
+    let OtTimeCount = 0;
+
+    if (currentTimeIST >= "5:30:00 pm" && currentTimeIST <= "6:30:00 pm") {
+      OtTimeCount = 1;
+    } else if (
+      currentTimeIST > "6:45:00 pm" &&
+      currentTimeIST <= "9:00:00 pm"
+    ) {
+      OtTimeCount = 2;
+    } 
+
+    let targetModel = 0;
+
+    if (isSystem === "true") {
+      if (isSameDay) {
+        targetModel = (110 * 7.5) + (110 * OtTimeCount)
+      } else {
+        targetModel = (105 * 7.5) + (105 * OtTimeCount)
+      }
+    } else {
+      if (isSameDay) {
+        targetModel = (121 * 7.5) + (121 * OtTimeCount)
+      } else {
+        targetModel = (117 * 7.5) + (117 * OtTimeCount)
+      }
+    }
     targetModel = Math.round(targetModel);
 
     let shiftActual = 0;
@@ -1769,9 +1821,9 @@ const productionDataFirstShift = async ({
       }
     });
 
-    let shiftActualCount = 0 ;
+    let shiftActualCount = 0;
 
-    if(isSameDay===  "true"  ){
+    if (isSameDay === "true") {
       shiftActualCount = data.totalCount;
     }
     general = general.map((val, index) => {
