@@ -1657,9 +1657,10 @@ const productionDataSecondShift = async ({
 
     let currentCount = 0;
 
-    if (currentTimeIST > "9:00:00 pm" && currentTimeIST <= "9:00:00 am") {
+    if (currentTimeIST > "9:00:00 pm" && currentTimeIST > '9:00:00 am') {
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!");
       currentCount = data.totalCount;
-    }    
+    }  
 
     const result = {
       general,
@@ -1902,7 +1903,9 @@ const productionDataFirstShift = async ({
 
     let currentCount = 0;
 
-    if (currentTimeIST > "9:00:00 am" && currentTimeIST <= "9:00:00 pm") {
+
+
+    if (currentTimeIST < "9:00:00 pm" && currentTimeIST < '9:00:00 am') {
       currentCount = data.totalCount;
     }
 
