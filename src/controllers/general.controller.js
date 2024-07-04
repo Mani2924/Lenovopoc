@@ -1830,13 +1830,17 @@ const productionDataFirstShift = async ({
     let mode = null;
     let maxFrequency = 0;
     general.forEach((data) => {
-      count += data.y;
       const yValue = data.y;
       frequencyMap[yValue] = (frequencyMap[yValue] || 0) + 1;
       if (frequencyMap[yValue] > maxFrequency) {
         maxFrequency = frequencyMap[yValue];
         mode = yValue;
       }
+    });
+
+    general.forEach((data) => {
+      console.log(data.y);
+      count += data.y;
     });
 
     console.log("~~~~~~~~~~~~~~~~~~",count);
