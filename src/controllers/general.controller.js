@@ -1570,7 +1570,7 @@ const productionDataSecondShift = async ({
     });
 
     general = general.map((val, index) => {
-      shiftActual = count + data.totalCount;
+      shiftActual = count + isSameDay=== "true" ? data.totalCount : 0;
       orderCount += val.ordercount;
       product_count += val.product_count;
       let min = 24;
@@ -1764,8 +1764,10 @@ const productionDataFirstShift = async ({
       }
     });
 
+
+
     general = general.map((val, index) => {
-      shiftActual = count + data.totalCount;
+      shiftActual = count + isSameDay=== "true" ? data.totalCount : 0;
       orderCount += val.ordercount;
       product_count += val.product_count;
       let min = 24;
