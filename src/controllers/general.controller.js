@@ -1294,8 +1294,6 @@ const getCurrentShiftCount = async (req) => {
     let condition = "AND";
     let condition2 = "AND start_time < end_time";
 
-   
-
     if (currentTime <= "21:00:00" && currentTime < "09:00:00") {
       startDate = currentDateString;
 
@@ -1339,10 +1337,10 @@ userController.getSystemUPH = async (req, res, next) => {
       recievedDate.getDate() === currentDate.getDate();
 
     let isToday = isSameDay;
-    let shift = "1st"
-      // currentDate.getHours() >= "9" && currentDate.getHours() < "21"
-      //   ? "1st"
-      //   : "2nd";
+    let shift = "1st";
+    // currentDate.getHours() >= "9" && currentDate.getHours() < "21"
+    //   ? "1st"
+    //   : "2nd";
 
     const condition = {
       isToday,
@@ -1372,7 +1370,7 @@ userController.getSystemUPH = async (req, res, next) => {
 
 userController.productionData = async (req, res, next) => {
   try {
-    const { line, duration, target, date, shift,isSystem } = req.query;
+    const { line, duration, target, date, shift, isSystem } = req.query;
 
     let recievedDate = new Date(date);
     // recievedDate = new Date(recievedDate.getTime() + recievedDate.getTimezoneOffset() * 60000);
@@ -1395,7 +1393,7 @@ userController.productionData = async (req, res, next) => {
       date,
       shift,
       isSameDay,
-      isSystem
+      isSystem,
     });
 
     const {
@@ -1409,7 +1407,7 @@ userController.productionData = async (req, res, next) => {
       date,
       shift,
       isSameDay,
-      isSystem
+      isSystem,
     });
 
     let currectShiftCount = 0;
@@ -1418,14 +1416,16 @@ userController.productionData = async (req, res, next) => {
       currectShiftCount = 1;
     }
 
+    const shiftUPHA = shiftADetails?.shiftUPH ?? 0;
+    const shiftUPHB = shiftBDetails?.shiftUPH ?? 0;
+
+    const averageShiftUPH =
+      (shiftUPHA + shiftUPHB) / (shiftUPHA === 0 || shiftUPHB === 0 ? 1 : 2);
+
     const overAllDetails = {
       overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,
       overAllActual: shiftADetails?.shiftActual + shiftBDetails?.shiftActual,
-      overAllUPH:
-        Math.round(
-          (shiftADetails?.shiftActual + shiftBDetails?.shiftActual) /
-            (shiftA.length + shiftB.length + currectShiftCount)
-        ) || 0,
+      overAllUPH: averageShiftUPH,
       overAllOrdercount:
         shiftADetails?.mfgOrderCount + shiftBDetails?.mfgOrderCount,
       overAlldownTime:
@@ -1477,7 +1477,7 @@ const productionDataSecondShift = async ({
   date,
   shift,
   isSameDay,
-  isSystem
+  isSystem,
 }) => {
   try {
     const currentDate = new Date(date);
@@ -1494,27 +1494,16 @@ const productionDataSecondShift = async ({
     let shiftEndTime = currentDate;
     shiftStartTime.setHours(21, 0, 0, 0);
     shiftEndTime.setHours(9, 0, 0, 0);
-    let finalduration = 0 ;
-    if(duration == '9hrs'){
-      finalduration = 5 ;
-    }else{
-      finalduration = 8 ;
-    }
-   
-    if(isSystem == 'true'){
-      if(isSameDay){
-        targetModel = (118 * 4) + (110 * finalduration);
-      }else{
-        targetModel = (112 * 4) + (105 * finalduration);
-      }
-    }else{
-      if(isSameDay){
-
-        targetModel = (130 * 4) + (126 * finalduration);
-      }else{
-        targetModel = (120 * 4) + (125 * finalduration);
-      }
-    }
+    const finalDuration = duration === "9hrs" ? 3.5 : 9.5;
+    let targetModel =
+      isSystem === "true"
+        ? isSameDay
+          ? 118 * 4 + 110 * finalDuration
+          : 112 * 4 + 105 * finalDuration
+        : isSameDay
+        ? 130 * 4 + 126 * finalDuration
+        : 120 * 4 + 125 * finalDuration;
+    targetModel = Math.round(targetModel);
 
     // let targetModel = duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
     let shiftActual = 0;
@@ -1567,8 +1556,17 @@ const productionDataSecondShift = async ({
     let overTime = "0";
     const data = await getFilteredData();
     let count = 0;
-    general.map(async (data) => {
+    let frequencyMap = {};
+    let mode = null;
+    let maxFrequency = 0;
+    general.forEach((data) => {
       count += data.y;
+      const yValue = data.y;
+      frequencyMap[yValue] = (frequencyMap[yValue] || 0) + 1;
+      if (frequencyMap[yValue] > maxFrequency) {
+        maxFrequency = frequencyMap[yValue];
+        mode = yValue;
+      }
     });
 
     general = general.map((val, index) => {
@@ -1631,9 +1629,9 @@ const productionDataSecondShift = async ({
         shiftTiming: `${formatTimeAMPM(startTime)} - ${formatTimeAMPM(
           endTime
         )}`,
-      overTime: overTime !== "0" ? formatTimeAMPM(overTime) : overTime,
+        overTime: overTime !== "0" ? formatTimeAMPM(overTime) : overTime,
       },
-      shiftBDowntimeDetails:shiftBDowntimeDetails.reverse(),
+      shiftBDowntimeDetails: shiftBDowntimeDetails.reverse(),
     };
 
     if (!isSameDay && general?.length) {
@@ -1670,7 +1668,7 @@ const productionDataFirstShift = async ({
   date,
   shift,
   isSameDay,
-  isSystem
+  isSystem,
 }) => {
   try {
     const currentDate = new Date(date);
@@ -1688,30 +1686,18 @@ const productionDataFirstShift = async ({
     let shiftEndTime = currentDate;
     shiftStartTime.setHours(9, 0, 0, 0);
     shiftEndTime.setHours(21, 0, 0, 0);
-    let targetModel = 0
 
-    let finalduration = 0 ;
-    if(duration == '9hrs'){
-      finalduration = 5 ;
-    }else{
-      finalduration = 8 ;
-    }
-   
-    if(isSystem == 'true'){
-      if(isSameDay){
-        targetModel = (118 * 4) + (110 * finalduration);
-      }else{
-        targetModel = (112 * 4) + (105 * finalduration);
-      }
-    }else{
-      if(isSameDay){
+    const finalDuration = duration === "9hrs" ? 3.5 : 9.5;
+    let targetModel =
+      isSystem === "true"
+        ? isSameDay
+          ? 118 * 4 + 110 * finalDuration
+          : 112 * 4 + 105 * finalDuration
+        : isSameDay
+        ? 130 * 4 + 126 * finalDuration
+        : 120 * 4 + 125 * finalDuration;
+    targetModel = Math.round(targetModel);
 
-        targetModel = (130 * 4) + (126 * finalduration);
-      }else{
-        targetModel = (120 * 4) + (125 * finalduration);
-      }
-    }
-    // targetModel =  duration && target ? parseInt(target) * extractNumber(duration) : 80 * 12;
     let shiftActual = 0;
     let downTime = 0;
 
@@ -1765,8 +1751,17 @@ const productionDataFirstShift = async ({
     }
 
     let count = 0;
-    general.map(async (data) => {
+    let frequencyMap = {};
+    let mode = null;
+    let maxFrequency = 0;
+    general.forEach((data) => {
       count += data.y;
+      const yValue = data.y;
+      frequencyMap[yValue] = (frequencyMap[yValue] || 0) + 1;
+      if (frequencyMap[yValue] > maxFrequency) {
+        maxFrequency = frequencyMap[yValue];
+        mode = yValue;
+      }
     });
 
     general = general.map((val, index) => {
@@ -1822,8 +1817,7 @@ const productionDataFirstShift = async ({
       shiftADetails: {
         shiftTarget: targetModel,
         shiftActual,
-        shiftUPH:
-          Math.round(shiftActual / (general?.length + currentHour)) || 0,
+        shiftUPH: mode || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
         mfgProductCount: product_count || 0,
@@ -1832,7 +1826,7 @@ const productionDataFirstShift = async ({
         )}`,
         overTime: overTime !== "0" ? formatTimeAMPM(overTime) : overTime,
       },
-      shiftADowntimeDetails:shiftADowntimeDetails.reverse(),
+      shiftADowntimeDetails: shiftADowntimeDetails.reverse(),
     };
 
     // storing data in redis
