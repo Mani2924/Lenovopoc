@@ -1839,6 +1839,8 @@ const productionDataFirstShift = async ({
       }
     });
 
+    console.log("~~~~~~~~~~~~~~~~~~",count);
+
 
     let shiftActualCount = 0;
 
