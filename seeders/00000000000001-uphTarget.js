@@ -3,8 +3,8 @@ module.exports = {
     const data = [
       {
         model: 'M80S',
-        assignedTarget: 130,
-        systemTarget: 118,
+        assignedTarget: 126,
+        systemTarget: 115,
         time: '09 - 12',
         shift: '1st',
         isToday: true,
@@ -13,7 +13,7 @@ module.exports = {
       },
       {
         model: 'M70t',
-        assignedTarget: 126,
+        assignedTarget: 121,
         systemTarget: 110,
         time: '13 - 21',
         shift: '1st',
@@ -23,7 +23,7 @@ module.exports = {
       },
       {
         model: 'M60S',
-        assignedTarget: 120,
+        assignedTarget: 122,
         systemTarget: 112,
         time: '09 - 12',
         shift: '1st',
@@ -33,7 +33,7 @@ module.exports = {
       },
       {
         model: 'M65t',
-        assignedTarget: 125,
+        assignedTarget: 117,
         systemTarget: 105,
         time: '13 - 21',
         shift: '1st',
