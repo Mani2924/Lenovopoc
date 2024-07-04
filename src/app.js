@@ -108,7 +108,8 @@ cron.schedule('** * * * * *', async () => {
     const data = await getFilteredData();
     console.log('data', data.totalCount);
     const result = {
-      totalCount: data.totalCount + actualData,
+      shiftActual:data.totalCount + actualData,
+      totalCount: data.totalCount,
       timeRange: `${data.startHour} - ${data.endHour}`,
       target,
       overTime,
