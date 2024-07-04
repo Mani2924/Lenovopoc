@@ -1521,13 +1521,13 @@ const productionDataSecondShift = async ({
       if (isSameDay) {
         targetModel = (110 * 7.5) + (110 * OtTimeCount)
       } else {
-        targetModel = (105 * 7.5) + (105 * OtTimeCount)
+        targetModel = (105 * 9.5)
       }
     } else {
       if (isSameDay) {
         targetModel = (121 * 7.5) + (121 * OtTimeCount)
       } else {
-        targetModel = (117 * 7.5) + (117 * OtTimeCount)
+        targetModel = (117 * 9.5)
       }
     }
     targetModel = Math.round(targetModel);
@@ -1744,13 +1744,13 @@ const productionDataFirstShift = async ({
       if (isSameDay) {
         targetModel = (110 * 7.5) + (110 * OtTimeCount)
       } else {
-        targetModel = (105 * 7.5) + (105 * OtTimeCount)
+        targetModel = (105 * 9.5) 
       }
     } else {
       if (isSameDay) {
         targetModel = (121 * 7.5) + (121 * OtTimeCount)
       } else {
-        targetModel = (117 * 7.5) + (117 * OtTimeCount)
+        targetModel = (117 * 9.5)
       }
     }
     targetModel = Math.round(targetModel);
