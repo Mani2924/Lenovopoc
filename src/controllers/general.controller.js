@@ -1521,13 +1521,22 @@ const productionDataSecondShift = async ({
       if (isSameDay) {
         targetModel = (110 * 7.5) + (110 * OtTimeCount)
       } else {
-        targetModel = (105 * 9.5)
+        if(duration === "9hrs") {
+          targetModel = (105 * 7.5) 
+        }else{
+          targetModel = (105 * 9.5) 
+        }
+        
       }
     } else {
       if (isSameDay) {
         targetModel = (121 * 7.5) + (121 * OtTimeCount)
       } else {
-        targetModel = (117 * 9.5)
+        if(duration === "9hrs"){
+          targetModel = (117 * 7.5)
+        }else{
+          targetModel = (117 * 9.5)
+        }
       }
     }
     targetModel = Math.round(targetModel);
@@ -1601,7 +1610,7 @@ const productionDataSecondShift = async ({
     }
 
     general = general.map((val, index) => {
-      shiftActual = count + shiftActualCount;
+      shiftActual = count;
       orderCount += val.ordercount;
       product_count += val.product_count;
       let min = 24;
@@ -1744,13 +1753,22 @@ const productionDataFirstShift = async ({
       if (isSameDay) {
         targetModel = (110 * 7.5) + (110 * OtTimeCount)
       } else {
-        targetModel = (105 * 9.5) 
+        if(duration === "9hrs") {
+          targetModel = (105 * 7.5) 
+        }else{
+          targetModel = (105 * 9.5) 
+        }
+        
       }
     } else {
       if (isSameDay) {
         targetModel = (121 * 7.5) + (121 * OtTimeCount)
       } else {
-        targetModel = (117 * 9.5)
+        if(duration === "9hrs"){
+          targetModel = (117 * 7.5)
+        }else{
+          targetModel = (117 * 9.5)
+        }
       }
     }
     targetModel = Math.round(targetModel);
@@ -1827,7 +1845,7 @@ const productionDataFirstShift = async ({
       shiftActualCount = data.totalCount;
     }
     general = general.map((val, index) => {
-      shiftActual = count + shiftActualCount;
+      shiftActual = count;
       orderCount += val.ordercount;
       product_count += val.product_count;
       let min = 24;
@@ -1873,6 +1891,11 @@ const productionDataFirstShift = async ({
     if (shiftStartTime != startTime) {
       currentHour = 1;
     }
+
+    if(!isSameDay){
+      overTime = formatTimeAMPM()
+    }
+
 
     const result = {
       general,
