@@ -1569,10 +1569,11 @@ const productionDataSecondShift = async ({
       }
     });
     let shiftActualCount = 0 ;
-
-    if(isSameDay===  "true"  ){
+    if(isSameDay ===  true ){
       shiftActualCount = data.totalCount;
     }
+
+   
 
     general = general.map((val, index) => {
       shiftActual = count + shiftActualCount;
