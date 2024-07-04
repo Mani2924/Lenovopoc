@@ -1839,13 +1839,13 @@ const productionDataFirstShift = async ({
       }
     });
 
+
     let shiftActualCount = 0;
 
     if (isSameDay === "true") {
       shiftActualCount = data.totalCount;
     }
     general = general.map((val, index) => {
-      shiftActual = count;
       orderCount += val.ordercount;
       product_count += val.product_count;
       let min = 24;
@@ -1901,7 +1901,7 @@ const productionDataFirstShift = async ({
       general,
       shiftADetails: {
         shiftTarget: targetModel,
-        shiftActual,
+        shiftActual : count + data.totalCount,
         shiftUPH: mode || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
