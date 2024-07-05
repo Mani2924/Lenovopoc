@@ -1513,7 +1513,7 @@ const productionDataSecondShift = async ({
       currentTimeIST <= "9:00:00 am"
     ) {
       OtTimeCount = 2;
-    } 
+    }
 
     let targetModel = 0;
 
@@ -1657,10 +1657,11 @@ const productionDataSecondShift = async ({
 
     let currentCount = 0;
 
-    if (currentTimeIST > "9:00:00 pm" && currentTimeIST > '9:00:00 am') {
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!");
-      currentCount = data.totalCount;
-    }  
+    if (!isSameDay) {
+      if (currentTimeIST > "9:00:00 pm" && currentTimeIST > "9:00:00 am") {
+        currentCount = data.totalCount;
+      }
+    }
 
     const result = {
       general,
@@ -1751,7 +1752,7 @@ const productionDataFirstShift = async ({
       currentTimeIST <= "9:00:00 pm"
     ) {
       OtTimeCount = 2;
-    } 
+    }
 
     let targetModel = 0;
 
@@ -1848,7 +1849,6 @@ const productionDataFirstShift = async ({
       count += data.y;
     });
 
-
     let shiftActualCount = 0;
 
     if (isSameDay === "true") {
@@ -1903,17 +1903,17 @@ const productionDataFirstShift = async ({
 
     let currentCount = 0;
 
-
-
-    if (currentTimeIST < "9:00:00 pm" && currentTimeIST < '9:00:00 am') {
-      currentCount = data.totalCount;
+    if (!isSameDay) {
+      if (currentTimeIST < "9:00:00 pm" && currentTimeIST < "9:00:00 am") {
+        currentCount = data.totalCount;
+      }
     }
 
     const result = {
       general,
       shiftADetails: {
         shiftTarget: targetModel,
-        shiftActual : count + currentCount,
+        shiftActual: count + currentCount,
         shiftUPH: mode || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
