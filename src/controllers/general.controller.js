@@ -1667,7 +1667,7 @@ const productionDataSecondShift = async ({
       general,
       shiftBDetails: {
         shiftTarget: targetModel,
-        shiftActual: count + currentCount,
+        shiftActual: count,
         shiftUPH: mode || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
@@ -1913,7 +1913,7 @@ const productionDataFirstShift = async ({
       general,
       shiftADetails: {
         shiftTarget: targetModel,
-        shiftActual: count + currentCount,
+        shiftActual: count,
         shiftUPH: mode || 0,
         shiftdownTime: downTime,
         mfgOrderCount: orderCount || 0,
