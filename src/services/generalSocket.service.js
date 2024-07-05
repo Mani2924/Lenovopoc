@@ -218,7 +218,7 @@ async function getShiftAActualData() {
       actualData = actualCountArray.reduce((a, b) => a + b, 0);
     }
 
-    const uph = uphData(actualCountArray);
+    const uph = uphData(actualCountArray) || 0;
 
     return {
       actualData,
@@ -276,7 +276,7 @@ async function getShiftBActualData() {
       actualData = actualCountArray.reduce((a, b) => a + b, 0);
     }
 
-    const uph = uphData(actualCountArray);
+    const uph = uphData(actualCountArray) || 0;
 
     return {
       actualData,
@@ -392,15 +392,12 @@ async function getShiftData() {
       : 'SHIFTB';
 
   return {
-    shiftAActual,
-    shiftBActual,
-    shiftAUph,
-    shiftBUph,
+    shiftActual: currentShift === 'SHIFTA' ? shiftAActual : shiftBActual,
+    shiftUph: currentShift === 'SHIFTA' ? shiftAUph : shiftBUph,
     overAllActual,
     overAllUph,
     overTime,
     target,
-    currentShift,
   };
 }
 
@@ -409,4 +406,5 @@ module.exports = {
   rollingChart,
   getTarget,
   getShiftData,
+  getOverTime,
 };

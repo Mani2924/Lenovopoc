@@ -96,33 +96,24 @@ io.on('connection', (socket) => {
 cron.schedule('** * * * * *', async () => {
   try {
     const {
-      shiftAActual,
-      shiftBActual,
-      shiftAUph,
-      shiftBUph,
+      shiftActual,
+      shiftUph,
       overAllActual,
       overAllUph,
       overTime,
       target,
-      currentShift,
     } = await getShiftData();
 
     const data = await getFilteredData();
     const result = {
-      shiftActual:
-        currentShift === 'SHIFTA'
-          ? data.totalCount + shiftAActual
-          : data.totalCount + shiftBActual,
+      shiftActual: data.totalCount + shiftActual,
       totalCount: data.totalCount,
       timeRange: `${data.startHour} - ${data.endHour}`,
       target,
       overTime,
-      shiftBUph,
-      shiftAUph,
+      shiftUph,
       overAllActual: overAllActual + data.totalCount,
       overAllUph,
-      shiftAActual,
-      shiftBActual,
     };
 
     io.emit('dataUpdate', result);
