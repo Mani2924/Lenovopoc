@@ -85,9 +85,10 @@ generalService.getProductOwnerEmail = async (mt) => {
   return result.productOwnerEmail;
 };
 
-generalService.getLastThreeHourData = async(todayDate,nowTime,threeHoursAgoTime) =>{
+generalService.getLastThreeHourData = async(todayDate,nowTime,threeHoursAgoTime,line) =>{
   const result = await weeklyData1.findAll({
     where: {
+      line:line,
       op_date: todayDate,
       start_time: {
         [Op.between]: [threeHoursAgoTime, nowTime],

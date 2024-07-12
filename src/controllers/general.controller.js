@@ -1985,6 +1985,7 @@ const extractNumber = (str) => {
 
 userController.getLastThreeHourData = async (req,res,next)=>{
   try {
+    const { line } = req.query;
     const now = moment.tz("Asia/Kolkata");
     const threeHoursAgo = moment.tz("Asia/Kolkata").subtract(3, 'hours');
 
@@ -1993,7 +1994,7 @@ userController.getLastThreeHourData = async (req,res,next)=>{
     const todayDate = now.format("YYYY-MM-DD");
 
 
-    const lastThreeHoursdata = await generalService.getLastThreeHourData(todayDate,nowTime,threeHoursAgoTime,limit);
+    const lastThreeHoursdata = await generalService.getLastThreeHourData(todayDate,nowTime,threeHoursAgoTime,line);
     res.response = {
       code: 200,
       data: {
