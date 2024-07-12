@@ -85,6 +85,20 @@ generalService.getProductOwnerEmail = async (mt) => {
   return result.productOwnerEmail;
 };
 
+generalService.getLastThreeHourData = async(todayDate,nowTime,threeHoursAgoTime) =>{
+  const result = await weeklyData1.findAll({
+    where: {
+      op_date: todayDate,
+      start_time: {
+        [Op.between]: [threeHoursAgoTime, nowTime],
+      },
+    },
+    limit: 3,
+  });
+
+  return result;
+}
+
 generalService.bulkCreate = async (data) => {
   const result = await general.bulkCreate(data);
   return result;

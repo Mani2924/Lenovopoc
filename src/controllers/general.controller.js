@@ -1983,4 +1983,35 @@ const extractNumber = (str) => {
   return match ? parseInt(match[0], 10) : null;
 };
 
+userController.getLastThreeHourData = async (req,res,next)=>{
+  try {
+    const now = moment.tz("Asia/Kolkata");
+    const threeHoursAgo = moment.tz("Asia/Kolkata").subtract(3, 'hours');
+
+    const nowTime = now.format("HH:mm:ss");
+    const threeHoursAgoTime = threeHoursAgo.format("HH:mm:ss");
+    const todayDate = now.format("YYYY-MM-DD");
+
+
+    const lastThreeHoursdata = await generalService.getLastThreeHourData(todayDate,nowTime,threeHoursAgoTime,limit);
+    res.response = {
+      code: 200,
+      data: {
+        status: "Ok",
+        message: rescodes?.success,
+        data: lastThreeHoursdata,
+      },
+    };
+
+    return next();
+  } catch (error) {
+    logger.error(error);
+    res.response = {
+      code: 400,
+      data: { status: "Error", message: rescodes?.wentWrong },
+    };
+    return next();
+  }
+}
+
 module.exports = userController;
