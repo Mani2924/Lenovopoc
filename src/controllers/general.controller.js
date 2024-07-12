@@ -1987,7 +1987,7 @@ userController.getLastThreeHourData = async (req,res,next)=>{
   try {
     const { line } = req.query;
     const now = moment.tz("Asia/Kolkata");
-    const threeHoursAgo = moment.tz("Asia/Kolkata").subtract(3, 'hours');
+    const threeHoursAgo = moment.tz("Asia/Kolkata").subtract(2, 'hours');
 
     const nowTime = now.format("HH:mm:ss");
     const threeHoursAgoTime = threeHoursAgo.format("HH:mm:ss");

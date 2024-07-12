@@ -94,7 +94,7 @@ generalService.getLastThreeHourData = async(todayDate,nowTime,threeHoursAgoTime,
         [Op.between]: [threeHoursAgoTime, nowTime],
       },
     },
-    limit: 3,
+    limit: 2,
   });
 
   return result;
