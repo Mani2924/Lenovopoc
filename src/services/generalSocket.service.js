@@ -3,6 +3,7 @@ const { Op, Sequelize } = require('sequelize');
 const moment = require('moment');
 const logger = require('../config/logger');
 const { log } = require('../config/vars');
+const generalService = require("../services/general.service");
 
 const shiftUtility = require('../utility/shiftUtility');
 
@@ -401,10 +402,91 @@ async function getShiftData() {
   };
 }
 
+async function processCurrentHourData() {
+  try {
+    // Get the current time in Asia/Kolkata timezone
+    const currentTime = moment.tz("Asia/Kolkata");
+
+    // Define start time for the desired hour (start of the current hour) in Asia/Kolkata timezone
+    const startHour = currentTime.clone().startOf('hour');
+    const endHour = currentTime.clone(); // End time is the current minute
+
+    // Convert start and end times to UTC for querying
+    const startHourUTC = startHour.clone().utc().toISOString();
+    const endHourUTC = endHour.clone().utc().toISOString();
+
+    // Get data for the current hour until the current minute
+    const currentHourData = await generalService.getCurrentData(startHourUTC, endHourUTC);
+
+    // Initialize arrays to hold counts and intervals for each 24-second interval for each line
+    const intervalCountsL1 = [];
+    const intervalCountsL2 = [];
+    const intervalCountsL3 = [];
+
+    // Helper function to initialize interval counts
+    const initializeIntervalCounts = (startHour) => {
+      const intervalCounts = [];
+      for (let i = 0; i < 60 * 60; i += 24) {
+        const startInterval = startHour.clone().add(i, 'seconds').format('HH:mm:ss');
+        intervalCounts.push({
+          interval: `${startInterval}`,
+          count: 0,
+        });
+      }
+      return intervalCounts;
+    };
+
+    // Initialize interval counts for each line
+    const intervalCounts = {
+      L1: initializeIntervalCounts(startHour),
+      L2: initializeIntervalCounts(startHour),
+      L3: initializeIntervalCounts(startHour),
+    };
+
+    // Process each data entry
+    currentHourData.forEach(entry => {
+      const entryTime = moment.utc(entry.Op_Finish_Time).tz("Asia/Kolkata");
+      const diffInSeconds = entryTime.diff(startHour, 'seconds');
+
+      // Calculate the index for the 24-second interval
+      const intervalIndex = Math.floor(diffInSeconds / 24);
+
+      // Increment the count for the corresponding interval based on the line
+      if (intervalIndex >= 0 && intervalIndex < 60 * 60 / 24) {
+        if (entry.line === 'L1') {
+          intervalCounts.L1[intervalIndex].count++;
+        } else if (entry.line === 'L2') {
+          intervalCounts.L2[intervalIndex].count++;
+        } else if (entry.line === 'L3') {
+          intervalCounts.L3[intervalIndex].count++;
+        }
+      }
+    });
+
+    // Prepare the final result based on the current time
+    const currentFormatted = currentTime.format('HH:mm:ss');
+
+    const filterCurrentIntervals = (intervalCounts) => {
+      return intervalCounts.filter(interval => interval.interval < currentFormatted);
+    };
+
+    return {
+      L1: filterCurrentIntervals(intervalCounts.L1),
+      L2: filterCurrentIntervals(intervalCounts.L2),
+      L3: filterCurrentIntervals(intervalCounts.L3)
+    };
+
+  } catch (error) {
+    console.error('Error processing current hour data:', error);
+    return { L1: [], L2: [], L3: [] }; // Return empty arrays or handle error as needed
+  }
+}
+
 module.exports = {
   getFilteredData,
   rollingChart,
   getTarget,
   getShiftData,
   getOverTime,
+  processCurrentHourData
 };

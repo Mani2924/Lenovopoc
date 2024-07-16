@@ -204,6 +204,18 @@ generalService.hourlyData = async () => {
   }
 };
 
+generalService.getCurrentData = async(startHourUTC,endHourUTC)=>{
+  const totalCount = await sampleData.findAll({
+    where: {
+      Op_Finish_Time: {
+        [Op.gte]: startHourUTC,
+        [Op.lt]: endHourUTC,
+      },
+    },
+  });
+  return totalCount;
+}
+
 generalService.currentShiftToRedis = async (data) => {
   try {
     const uniqueLines = await weeklyData.findAll({

@@ -20,9 +20,11 @@ const generalService = require('./services/general.service');
 const {
   getFilteredData,
   getShiftData,
+  processCurrentHourData
 } = require('./services/generalSocket.service');
 const xlsx = require('xlsx');
 const { sampleData } = require('../models/index');
+const userController = require('./controllers/general.controller');
 
 // app express
 const app = express();
@@ -115,8 +117,9 @@ cron.schedule('** * * * * *', async () => {
       overAllActual: overAllActual + data.totalCount,
       overAllUph,
     };
-
+    const currenthourData= await processCurrentHourData()
     io.emit('dataUpdate', result);
+    io.emit('getCurrentHour',currenthourData)
   } catch (error) {
     console.error('Error while emitting data:', error);
   }
