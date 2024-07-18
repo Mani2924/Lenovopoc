@@ -91,8 +91,15 @@ const io = new Server(httpServer, {
 });
 
 io.on('connection', (socket) => {
-  socket.on('disconnect', () => {});
+  
+  socket.on('message',async(data) => {
+    const parsedData = JSON.parse(data);
+
+    const currenthourData= await processCurrentHourData(parsedData.duration);
+        io.emit('getCurrentHour',currenthourData)
+  });
 });
+
 
 // Cron job to emit data every 15 seconds
 cron.schedule('** * * * * *', async () => {
@@ -117,9 +124,7 @@ cron.schedule('** * * * * *', async () => {
       overAllActual: overAllActual + data.totalCount,
       overAllUph,
     };
-    const currenthourData= await processCurrentHourData()
-    io.emit('dataUpdate', result);
-    io.emit('getCurrentHour',currenthourData)
+    // io.emit('dataUpdate', result);
   } catch (error) {
     console.error('Error while emitting data:', error);
   }

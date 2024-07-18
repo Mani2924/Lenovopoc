@@ -402,12 +402,10 @@ async function getShiftData() {
   };
 }
 
-async function processCurrentHourData() {
+async function processCurrentHourData(duration) {
   try {
     // Get the current time in Asia/Kolkata timezone
     const currentTime = moment.tz("Asia/Kolkata");
-
-    // Define start time for the desired hour (start of the current hour) in Asia/Kolkata timezone
     const startHour = currentTime.clone().startOf('hour');
     const endHour = currentTime.clone(); // End time is the current minute
 
@@ -426,7 +424,7 @@ async function processCurrentHourData() {
     // Helper function to initialize interval counts
     const initializeIntervalCounts = (startHour) => {
       const intervalCounts = [];
-      for (let i = 0; i < 60 * 60; i += 24) {
+      for (let i = 0; i < 60 * 60; i += duration) {
         const startInterval = startHour.clone().add(i, 'seconds').format('HH:mm:ss');
         intervalCounts.push({
           interval: `${startInterval}`,
@@ -449,10 +447,10 @@ async function processCurrentHourData() {
       const diffInSeconds = entryTime.diff(startHour, 'seconds');
 
       // Calculate the index for the 24-second interval
-      const intervalIndex = Math.floor(diffInSeconds / 24);
+      const intervalIndex = Math.floor(diffInSeconds / duration);
 
       // Increment the count for the corresponding interval based on the line
-      if (intervalIndex >= 0 && intervalIndex < 60 * 60 / 24) {
+      if (intervalIndex >= 0 && intervalIndex < 60 * 60 / duration) {
         if (entry.line === 'L1') {
           intervalCounts.L1[intervalIndex].count++;
         } else if (entry.line === 'L2') {
