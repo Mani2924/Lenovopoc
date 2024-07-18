@@ -124,7 +124,7 @@ cron.schedule('** * * * * *', async () => {
       overAllActual: overAllActual + data.totalCount,
       overAllUph,
     };
-    // io.emit('dataUpdate', result);
+    io.emit('dataUpdate', result);
   } catch (error) {
     console.error('Error while emitting data:', error);
   }
