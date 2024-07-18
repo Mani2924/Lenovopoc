@@ -7,17 +7,20 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const socket = io('http://137.184.206.139:8001');
-
-      socket.on('connect', () => {
-      });
+      const socket = io('http://137.184.206.139/:8001');
+      const payload = { duration: 24 };
+      socket.send(JSON.stringify(payload));
 
       socket.on('dataUpdate', (data) => {
         console.log("data",data);
         updateUI(data);
       });
+      socket.on('getCurrentHour', (getCurrentHour) => {
+        console.log("getCurrentHour",getCurrentHour);
+      });
 
       socket.on('disconnect', () => {
+        updateUI(data);
       });
 
       function updateUI(data) {
