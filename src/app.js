@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
     };
 
     // Schedule the task to run every second
-    const task = cron.schedule('** * * * * *', emitCurrentHourData);
+    const task = cron.schedule('*/15 * * * * *', emitCurrentHourData);
 
     // Start the cron job
     task.start();
@@ -114,7 +114,7 @@ io.on('connection', (socket) => {
 });
 
 // Cron job to emit data every 15 seconds
-cron.schedule('** * * * * *', async () => {
+cron.schedule('*/15 * * * * *', async () => {
   try {
     const {
       shiftActual,
