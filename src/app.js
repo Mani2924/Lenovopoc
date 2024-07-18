@@ -91,8 +91,7 @@ const io = new Server(httpServer, {
 });
 
 io.on('connection', (socket) => {
-  
-  socket.on('message', async (data) => {
+  socket.on('message', (data) => {
     const parsedData = JSON.parse(data);
 
     // Function to process current hour data and emit it
@@ -101,12 +100,15 @@ io.on('connection', (socket) => {
       io.emit('getCurrentHour', currentHourData);
     };
 
-    // Call the function every second
-    const intervalId = setInterval(emitCurrentHourData, 1000);
+    // Schedule the task to run every second
+    const task = cron.schedule('* * * * * *', emitCurrentHourData);
 
-    // Clear the interval when the socket disconnects
+    // Start the cron job
+    task.start();
+
+    // Stop the cron job when the socket disconnects
     socket.on('disconnect', () => {
-      clearInterval(intervalId);
+      task.stop();
     });
   });
 });
