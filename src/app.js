@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
     };
 
     // Schedule the task to run every second
-    const task = cron.schedule('* * * * * *', emitCurrentHourData);
+    const task = cron.schedule('** * * * * *', emitCurrentHourData);
 
     // Start the cron job
     task.start();
