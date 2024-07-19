@@ -94,6 +94,10 @@ let task;
 
 io.on('connection', (socket) => {
   socket.on('message', async(data) => {
+
+    if (task) {
+      task.stop();
+    }
     const parsedData = JSON.parse(data);
     const currentHourData = await processCurrentHourData(parsedData.duration);
 
@@ -113,6 +117,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
       if (task) {
         task.stop();
+        task = null;
       }
     });
   });
