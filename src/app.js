@@ -90,29 +90,26 @@ const io = new Server(httpServer, {
   },
 });
 
-io.on('connection', (socket) => {
-  // Handle new messages
-  socket.on('message', async (data) => {
-    const parsedData = JSON.parse(data);
+let task;
 
-    // Process the data for the current hour
+io.on('connection', (socket) => {
+  socket.on('message', async(data) => {
+    const parsedData = JSON.parse(data);
     const currentHourData = await processCurrentHourData(parsedData.duration);
 
     // Function to process current hour data and emit it
     const emitCurrentHourData = async () => {
+      
       io.emit('getCurrentHour', currentHourData);
     };
 
-    // If there's an existing task, stop it
-    if (task) {
-      task.stop();
-    }
+    // Schedule the task to run every second
+     task = cron.schedule('*/15 * * * * *', emitCurrentHourData);
 
-    // Create and start a new cron job
-    task = cron.schedule('*/15 * * * * *', emitCurrentHourData);
+    // Start the cron job
     task.start();
 
-    // Handle socket disconnection
+    // Stop the cron job when the socket disconnects
     socket.on('disconnect', () => {
       if (task) {
         task.stop();
@@ -120,7 +117,6 @@ io.on('connection', (socket) => {
     });
   });
 });
-
 
 // Cron job to emit data every 15 seconds
 cron.schedule('*/15 * * * * *', async () => {
