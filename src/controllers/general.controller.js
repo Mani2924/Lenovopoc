@@ -1422,7 +1422,7 @@ userController.productionData = async (req, res, next) => {
     const shiftUPHB = shiftBDetails?.shiftUPH ?? 0;
 
     const averageShiftUPH =
-      (shiftUPHA + shiftUPHB) / (shiftUPHA === 0 || shiftUPHB === 0 ? 1 : 2);
+      (Math.round(shiftUPHA + shiftUPHB) / (shiftUPHA === 0 || shiftUPHB === 0 ? 1 : 2));
 
     const overAllDetails = {
       overAllTarget: shiftADetails?.shiftTarget + shiftBDetails?.shiftTarget,

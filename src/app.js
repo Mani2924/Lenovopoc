@@ -91,12 +91,12 @@ const io = new Server(httpServer, {
 });
 
 io.on('connection', (socket) => {
-  socket.on('message', (data) => {
+  socket.on('message', async(data) => {
     const parsedData = JSON.parse(data);
+    const currentHourData = await processCurrentHourData(parsedData.duration);
 
     // Function to process current hour data and emit it
     const emitCurrentHourData = async () => {
-      const currentHourData = await processCurrentHourData(parsedData.duration);
       io.emit('getCurrentHour', currentHourData);
     };
 
