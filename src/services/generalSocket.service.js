@@ -1,28 +1,28 @@
-const { sampleData, weeklyData1 } = require('../../models/index');
-const { Op, Sequelize } = require('sequelize');
-const moment = require('moment');
-const logger = require('../config/logger');
-const { log } = require('../config/vars');
+const { sampleData, weeklyData1 } = require("../../models/index");
+const { Op, Sequelize } = require("sequelize");
+const moment = require("moment");
+const logger = require("../config/logger");
+const { log } = require("../config/vars");
 const generalService = require("../services/general.service");
 
-const shiftUtility = require('../utility/shiftUtility');
+const shiftUtility = require("../utility/shiftUtility");
 
-const db = require('../../models/index');
+const db = require("../../models/index");
 
 async function getFilteredData() {
   try {
     // Get current time in IST
-    const nowIST = moment.tz('Asia/Kolkata');
+    const nowIST = moment.tz("Asia/Kolkata");
 
     // Calculate start and end hour for the current hour in IST
-    const startHourIST = nowIST.clone().startOf('hour');
-    const endHourIST = startHourIST.clone().add(1, 'hour');
+    const startHourIST = nowIST.clone().startOf("hour");
+    const endHourIST = startHourIST.clone().add(1, "hour");
     const startHourUTC = startHourIST.clone().utc().format();
     const endHourUTC = endHourIST.clone().utc().format();
 
     const totalCount = await sampleData.count({
       where: {
-        line: 'L1',
+        line: "L1",
         Op_Finish_Time: {
           [Op.gte]: startHourUTC,
           [Op.lt]: endHourUTC,
@@ -31,15 +31,15 @@ async function getFilteredData() {
     });
 
     // Extract the hour component in 'HH' format (24-hour clock)
-    let startHour = startHourIST.format('HH');
-    let endHour = endHourIST.format('HH');
+    let startHour = startHourIST.format("HH");
+    let endHour = endHourIST.format("HH");
 
     // Convert to 12-hour format
-    startHour = moment(startHour, 'HH').format('hh');
-    endHour = moment(endHour, 'HH').format('hh');
+    startHour = moment(startHour, "HH").format("hh");
+    endHour = moment(endHour, "HH").format("hh");
 
-    const startHourFormatted = startHour.padStart(2, '0');
-    const endHourFormatted = endHour.padStart(2, '0');
+    const startHourFormatted = startHour.padStart(2, "0");
+    const endHourFormatted = endHour.padStart(2, "0");
 
     return {
       totalCount,
@@ -47,7 +47,7 @@ async function getFilteredData() {
       endHour: endHourFormatted,
     };
   } catch (error) {
-    console.error('Error fetching total count data:', error);
+    console.error("Error fetching total count data:", error);
     throw error;
   }
 }
@@ -56,7 +56,7 @@ async function rollingChart() {
   try {
     sampleData;
   } catch (error) {
-    console.error('Error fetching total count data:', error);
+    console.error("Error fetching total count data:", error);
     throw error;
   }
 }
@@ -83,7 +83,7 @@ function getTarget(overTime = 0) {
       overAllTarget,
     };
   } catch (error) {
-    console.error('Error fetching total count data:', error);
+    console.error("Error fetching total count data:", error);
     throw error;
   }
 }
@@ -103,22 +103,22 @@ async function getShiftActualData() {
 
     const currentDate = moment();
 
-    let line = 'L1';
-    let startTime = '21:00:00';
-    let endTime = '09:00:00';
-    let startDate = currentDate.format('YYYY-MM-DD');
-    let condition = 'OR';
-    let currentHour = currentDate.format('HH:MM:SS');
+    let line = "L1";
+    let startTime = "21:00:00";
+    let endTime = "09:00:00";
+    let startDate = currentDate.format("YYYY-MM-DD");
+    let condition = "OR";
+    let currentHour = currentDate.format("HH:MM:SS");
 
     let yesterday = moment();
-    yesterday.add(1, 'days');
-    let endDate = yesterday.format('YYYY-MM-DD');
-    if (currentHour >= '09:00:00' && currentHour < '21:00:00') {
-      startTime = '09:00:00';
-      endTime = '21:00:00';
-      endDate = currentDate.format('YYYY-MM-DD');
-      startDate = currentDate.format('YYYY-MM-DD');
-      condition = 'AND';
+    yesterday.add(1, "days");
+    let endDate = yesterday.format("YYYY-MM-DD");
+    if (currentHour >= "09:00:00" && currentHour < "21:00:00") {
+      startTime = "09:00:00";
+      endTime = "21:00:00";
+      endDate = currentDate.format("YYYY-MM-DD");
+      startDate = currentDate.format("YYYY-MM-DD");
+      condition = "AND";
     }
 
     // Raw SQL query string with dynamic conditions
@@ -160,7 +160,7 @@ async function getShiftActualData() {
       uph,
     };
   } catch (error) {
-    console.error('Error fetching total count data:', error);
+    console.error("Error fetching total count data:", error);
     throw error;
   }
 }
@@ -180,12 +180,12 @@ async function getShiftAActualData() {
 
     const currentDate = moment();
 
-    let line = 'L1';
-    let startTime = '09:00:00';
-    let endTime = '21:00:00';
-    let startDate = currentDate.format('YYYY-MM-DD');
-    let condition = 'AND';
-    let endDate = currentDate.format('YYYY-MM-DD');
+    let line = "L1";
+    let startTime = "09:00:00";
+    let endTime = "21:00:00";
+    let startDate = currentDate.format("YYYY-MM-DD");
+    let condition = "AND";
+    let endDate = currentDate.format("YYYY-MM-DD");
 
     // Raw SQL query string with dynamic conditions
     const sqlQuery = `
@@ -226,7 +226,7 @@ async function getShiftAActualData() {
       uph,
     };
   } catch (error) {
-    console.error('Error fetching total count data:', error);
+    console.error("Error fetching total count data:", error);
     throw error;
   }
 }
@@ -235,15 +235,15 @@ async function getShiftBActualData() {
   try {
     const currentDate = moment();
 
-    let line = 'L1';
-    let startTime = '21:00:00';
-    let endTime = '09:00:00';
-    let startDate = currentDate.format('YYYY-MM-DD');
-    let condition = 'OR';
-    let currentHour = currentDate.format('HH:MM:SS');
+    let line = "L1";
+    let startTime = "21:00:00";
+    let endTime = "09:00:00";
+    let startDate = currentDate.format("YYYY-MM-DD");
+    let condition = "OR";
+    let currentHour = currentDate.format("HH:MM:SS");
     let yesterday = moment();
-    yesterday.add(1, 'days');
-    let endDate = yesterday.format('YYYY-MM-DD');
+    yesterday.add(1, "days");
+    let endDate = yesterday.format("YYYY-MM-DD");
 
     // Raw SQL query string with dynamic conditions
     const sqlQuery = `
@@ -284,7 +284,7 @@ async function getShiftBActualData() {
       uph,
     };
   } catch (error) {
-    console.error('Error fetching total count data:', error);
+    console.error("Error fetching total count data:", error);
     throw error;
   }
 }
@@ -296,39 +296,39 @@ function getOverTime() {
   let minutes = today.getMinutes();
   let seconds = today.getSeconds();
 
-  const currentTimeIST = `${hours.toString().padStart(2, '0')}:${minutes
+  const currentTimeIST = `${hours.toString().padStart(2, "0")}:${minutes
     .toString()
-    .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
-  let startTime = '00:00:00';
-  let endTime = '00:00:00';
+  let startTime = "00:00:00";
+  let endTime = "00:00:00";
 
   let overTime = 0;
 
-  if (currentTimeIST >= '17:45:00' && currentTimeIST < '18:30:00') {
+  if (currentTimeIST >= "17:45:00" && currentTimeIST < "18:30:00") {
     overTime = 1;
-    startTime = '17:30:00';
-    endTime = '13:30:00';
-  } else if (currentTimeIST > '18:30:00' && currentTimeIST < '19:30:00') {
+    startTime = "17:30:00";
+    endTime = "13:30:00";
+  } else if (currentTimeIST > "18:30:00" && currentTimeIST < "19:30:00") {
     overTime = 2;
-    startTime = '18:30:00';
-    endTime = '19:30:00';
-  } else if (currentTimeIST > '19:30:00' && currentTimeIST <= '21:00:00') {
+    startTime = "18:30:00";
+    endTime = "19:30:00";
+  } else if (currentTimeIST > "19:30:00" && currentTimeIST <= "21:00:00") {
     overTime = 3.5;
-    startTime = '19:30:00';
-    endTime = '21:00:00';
-  } else if (currentTimeIST >= '05:45:00' && currentTimeIST < '06:30:00') {
+    startTime = "19:30:00";
+    endTime = "21:00:00";
+  } else if (currentTimeIST >= "05:45:00" && currentTimeIST < "06:30:00") {
     overTime = 1;
-    startTime = '05:45:00';
-    endTime = '06:30:00';
-  } else if (currentTimeIST > '06:30:00' && currentTimeIST < '07:30:00') {
+    startTime = "05:45:00";
+    endTime = "06:30:00";
+  } else if (currentTimeIST > "06:30:00" && currentTimeIST < "07:30:00") {
     overTime = 2;
-    startTime = '06:30:00';
-    endTime = '07:30:00';
-  } else if (currentTimeIST >= '07:30:00' && currentTimeIST < '09:00:00') {
+    startTime = "06:30:00";
+    endTime = "07:30:00";
+  } else if (currentTimeIST >= "07:30:00" && currentTimeIST < "09:00:00") {
     overTime = 1;
-    startTime = '07:30:00';
-    endTime = '09:00:00';
+    startTime = "07:30:00";
+    endTime = "09:00:00";
   }
 
   // let overTimeRange = `${startTime.format('HH:MM:SS')} - ${endTime.format(
@@ -336,11 +336,11 @@ function getOverTime() {
   // )}`;
 
   let overTimeRange =
-    startTime !== '00:00:00'
+    startTime !== "00:00:00"
       ? `${shiftUtility.convertTimeTo12HourFormat(
-          startTime,
+          startTime
         )} - ${shiftUtility.convertTimeTo12HourFormat(endTime)}`
-      : '00:00 - 00:00';
+      : "00:00 - 00:00";
 
   return {
     overTime,
@@ -383,18 +383,18 @@ async function getShiftData() {
   let minutes = today.getMinutes();
   let seconds = today.getSeconds();
 
-  const currentTimeIST = `${hours.toString().padStart(2, '0')}:${minutes
+  const currentTimeIST = `${hours.toString().padStart(2, "0")}:${minutes
     .toString()
-    .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
   const currentShift =
-    currentTimeIST >= '09:00:00' && currentTimeIST < '21:00:00'
-      ? 'SHIFTA'
-      : 'SHIFTB';
+    currentTimeIST >= "09:00:00" && currentTimeIST < "21:00:00"
+      ? "SHIFTA"
+      : "SHIFTB";
 
   return {
-    shiftActual: currentShift === 'SHIFTA' ? shiftAActual : shiftBActual,
-    shiftUph: currentShift === 'SHIFTA' ? shiftAUph : shiftBUph,
+    shiftActual: currentShift === "SHIFTA" ? shiftAActual : shiftBActual,
+    shiftUph: currentShift === "SHIFTA" ? shiftAUph : shiftBUph,
     overAllActual,
     overAllUph,
     overTime,
@@ -406,7 +406,7 @@ async function processCurrentHourData(duration) {
   try {
     // Get the current time in Asia/Kolkata timezone
     const currentTime = moment.tz("Asia/Kolkata");
-    const startHour = currentTime.clone().startOf('hour');
+    const startHour = currentTime.clone().startOf("hour");
     const endHour = currentTime.clone(); // End time is the current minute
 
     // Convert start and end times to UTC for querying
@@ -416,16 +416,11 @@ async function processCurrentHourData(duration) {
     // Get data for the current hour until the current minute
     const currentHourData = await generalService.getCurrentData(startHourUTC, endHourUTC);
 
-    // Initialize arrays to hold counts and intervals for each 24-second interval for each line
-    const intervalCountsL1 = [];
-    const intervalCountsL2 = [];
-    const intervalCountsL3 = [];
-
     // Helper function to initialize interval counts
     const initializeIntervalCounts = (startHour) => {
       const intervalCounts = [];
       for (let i = 0; i < 60 * 60; i += duration) {
-        const startInterval = startHour.clone().add(i, 'seconds').format('HH:mm:ss');
+        const startInterval = startHour.clone().add(i, "seconds").format("HH:mm:ss");
         intervalCounts.push({
           interval: `${startInterval}`,
           count: 0,
@@ -441,44 +436,67 @@ async function processCurrentHourData(duration) {
       L3: initializeIntervalCounts(startHour),
     };
 
-    // Process each data entry
-    currentHourData.forEach(entry => {
-      const entryTime = moment.utc(entry.Op_Finish_Time).tz("Asia/Kolkata");
-      const diffInSeconds = entryTime.diff(startHour, 'seconds');
+    // Initialize running totals for each line
+    let runningTotalL1 = 0;
+    let runningTotalL2 = 0;
+    let runningTotalL3 = 0;
 
-      // Calculate the index for the 24-second interval
+    // Process each data entry
+    currentHourData.forEach((entry) => {
+      const entryTime = moment.utc(entry.Op_Finish_Time).tz("Asia/Kolkata");
+      const diffInSeconds = entryTime.diff(startHour, "seconds");
+
+      // Calculate the index for the interval
       const intervalIndex = Math.floor(diffInSeconds / duration);
 
-      // Increment the count for the corresponding interval based on the line
-      if (intervalIndex >= 0 && intervalIndex < 60 * 60 / duration) {
-        if (entry.line === 'L1') {
-          intervalCounts.L1[intervalIndex].count++;
-        } else if (entry.line === 'L2') {
-          intervalCounts.L2[intervalIndex].count++;
-        } else if (entry.line === 'L3') {
-          intervalCounts.L3[intervalIndex].count++;
+      // Update the count and running total for the corresponding interval based on the line
+      if (intervalIndex >= 0 && intervalIndex < (60 * 60) / duration) {
+        if (entry.line === "L1") {
+          runningTotalL1++;
+          intervalCounts.L1[intervalIndex].count = runningTotalL1;
+        } else if (entry.line === "L2") {
+          runningTotalL2++;
+          intervalCounts.L2[intervalIndex].count = runningTotalL2;
+        } else if (entry.line === "L3") {
+          runningTotalL3++;
+          intervalCounts.L3[intervalIndex].count = runningTotalL3;
         }
       }
     });
 
+    // Ensure zero counts take the previous interval's count
+    const ensureNonZeroCounts = (intervalCounts) => {
+      for (let i = 1; i < intervalCounts.length; i++) {
+        if (intervalCounts[i].count === 0) {
+          intervalCounts[i].count = intervalCounts[i - 1].count;
+        }
+      }
+      return intervalCounts;
+    };
+
     // Prepare the final result based on the current time
-    const currentFormatted = currentTime.format('HH:mm:ss');
+    const currentFormatted = currentTime.format("HH:mm:ss");
 
     const filterCurrentIntervals = (intervalCounts) => {
-      return intervalCounts.filter(interval => interval.interval < currentFormatted);
+      return intervalCounts.filter((interval) => interval.interval <= currentFormatted);
     };
+
+    let L1Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L1));
+    let L2Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L2));
+    let L3Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L3));
 
     return {
-      L1: filterCurrentIntervals(intervalCounts.L1),
-      L2: filterCurrentIntervals(intervalCounts.L2),
-      L3: filterCurrentIntervals(intervalCounts.L3)
+      L1: L1Details,
+      L2: L2Details,
+      L3: L3Details,
     };
-
   } catch (error) {
-    console.error('Error processing current hour data:', error);
+    console.error("Error processing current hour data:", error);
     return { L1: [], L2: [], L3: [] }; // Return empty arrays or handle error as needed
   }
 }
+
+
 
 module.exports = {
   getFilteredData,
@@ -486,5 +504,5 @@ module.exports = {
   getTarget,
   getShiftData,
   getOverTime,
-  processCurrentHourData
+  processCurrentHourData,
 };

@@ -99,16 +99,16 @@ io.on('connection', (socket) => {
       task.stop();
     }
     const parsedData = JSON.parse(data);
-    const currentHourData = await processCurrentHourData(parsedData.duration);
+
 
     // Function to process current hour data and emit it
     const emitCurrentHourData = async () => {
-      
+      const currentHourData = await processCurrentHourData(parsedData.duration);
       io.emit('getCurrentHour', currentHourData);
     };
 
     // Schedule the task to run every second
-     task = cron.schedule('*/15 * * * * *', emitCurrentHourData);
+     task = cron.schedule('* * * * * *', emitCurrentHourData);
 
     // Start the cron job
     task.start();

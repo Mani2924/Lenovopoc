@@ -1372,19 +1372,20 @@ userController.getSystemUPH = async (req, res, next) => {
 
 userController.productionData = async (req, res, next) => {
   try {
-    const { line, duration, target, date, shift, isSystem } = req.query;
+    let { line, duration, target, date, shift, isSystem } = req.query;
 
     let recievedDate = new Date(date);
-    // recievedDate = new Date(recievedDate.getTime() + recievedDate.getTimezoneOffset() * 60000);
 
     const currentDate = new Date();
+    const isInRange = isNightOrEarlyMorning();
 
+    date = !isInRange ? date : moment(date).subtract(1, 'day').toDate();
     const isSameDay =
       recievedDate.getFullYear() === currentDate.getFullYear() &&
       recievedDate.getMonth() === currentDate.getMonth() &&
       recievedDate.getDate() === currentDate.getDate();
-
-    const {
+    
+      const {
       general: shiftA,
       shiftADetails,
       shiftADowntimeDetails,
@@ -2020,5 +2021,20 @@ userController.getLastThreeHourData = async (req, res, next) => {
     return next();
   }
 };
+
+function isNightOrEarlyMorning() {
+  const currentTime = moment.tz("Asia/Kolkata");
+  const currentHour = currentTime.hour();
+  const currentMinute = currentTime.minute();
+  const startHour = 0; 
+  const endHour = 9;
+
+  if ((currentHour >= startHour && currentHour < endHour) || 
+      (currentHour === endHour && currentMinute === 0)) {
+    return true; 
+  } else {
+    return false; 
+  }
+}
 
 module.exports = userController;

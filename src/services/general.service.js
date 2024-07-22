@@ -100,6 +100,23 @@ generalService.getLastThreeHourData = async(todayDate,nowTime,threeHoursAgoTime,
   return result;
 }
 
+generalService.getLastThreeHourCount = async(todayDate,nowTime,threeHoursAgoTime,line) =>{
+  const result = await weeklyData1.findAll({
+    where: {
+      line:line,
+      op_date: todayDate,
+      start_time: {
+        [Op.between]: [threeHoursAgoTime, nowTime],
+      },
+    },
+    limit: 2,
+  });
+
+  const totalcount = result.reduce((acc, record) => acc + record.totalcount, 0);
+
+  return totalcount;
+}
+
 generalService.bulkCreate = async (data) => {
   const result = await general.bulkCreate(data);
   return result;
