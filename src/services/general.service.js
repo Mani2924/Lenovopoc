@@ -113,8 +113,9 @@ generalService.getLastThreeHourCount = async(todayDate,nowTime,threeHoursAgoTime
   });
 
   const totalcount = result.reduce((acc, record) => acc + record.totalcount, 0);
+  const minCount = result.reduce((min, record) => Math.min(min, record.totalcount), Infinity);
 
-  return totalcount;
+  return { totalcount, minCount };
 }
 
 generalService.bulkCreate = async (data) => {

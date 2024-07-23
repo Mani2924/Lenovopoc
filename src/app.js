@@ -91,29 +91,39 @@ const io = new Server(httpServer, {
 });
 
 let task;
+// Replace 'server' with your actual server variable
 
 io.on('connection', (socket) => {
-  socket.on('message', async(data) => {
+  let task = null;
 
+  socket.on('message', async (data) => {
     if (task) {
       task.stop();
+      task = null;
     }
-    const parsedData = JSON.parse(data);
 
+    const parsedData = JSON.parse(data || {duration: 60});
+    const duration = parsedData.duration;
+    const line = parsedData.line || 'L1';
 
-    // Function to process current hour data and emit it
     const emitCurrentHourData = async () => {
-      const currentHourData = await processCurrentHourData(parsedData.duration);
+      const currentHourData = await processCurrentHourData(duration);
+      const now = moment.tz("Asia/Kolkata").startOf('minute');
+      const threeHoursAgo = now.clone().subtract(2, "hours");
+      const [nowTime, threeHoursAgoTime, todayDate] = [now, threeHoursAgo].map(t => t.format("HH:mm:ss")).concat(now.format("YYYY-MM-DD"));
+
+      const actualCount = await generalService.getLastThreeHourCount(todayDate, nowTime, threeHoursAgoTime, line);
+      const getLastIndexValue = (dataArray) => dataArray.length > 0 ? dataArray[dataArray.length - 1] : { count: 0 };
+      const lastIndex = getLastIndexValue(currentHourData[line]);
+      const lastThreeHourActual = lastIndex.count + actualCount.totalcount;
+      const threeHoursTarget = 110 * 3;
       io.emit('getCurrentHour', currentHourData);
+      io.emit('LastThreeHourdata', { target: threeHoursTarget, actual: lastThreeHourActual , shiftUph:actualCount.minCount });
     };
 
-    // Schedule the task to run every second
-     task = cron.schedule('* * * * * *', emitCurrentHourData);
-
-    // Start the cron job
+    task = cron.schedule('* * * * * *', emitCurrentHourData);
     task.start();
 
-    // Stop the cron job when the socket disconnects
     socket.on('disconnect', () => {
       if (task) {
         task.stop();
@@ -122,6 +132,7 @@ io.on('connection', (socket) => {
     });
   });
 });
+
 
 // Cron job to emit data every 15 seconds
 cron.schedule('*/15 * * * * *', async () => {
