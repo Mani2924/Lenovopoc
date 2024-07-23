@@ -13,6 +13,7 @@ const {
   modelTarget,
 } = require('../../models/index');
 const db = require('../../models/index');
+const downTimeService = require("../services/downTime.service");
 
 const generalService = {};
 
@@ -85,10 +86,10 @@ generalService.getProductOwnerEmail = async (mt) => {
   return result.productOwnerEmail;
 };
 
-generalService.getLastThreeHourData = async(todayDate,nowTime,threeHoursAgoTime,line) =>{
+generalService.getLastThreeHourData = async (todayDate, nowTime, threeHoursAgoTime, line) => {
   const result = await weeklyData1.findAll({
     where: {
-      line:line,
+      line: line,
       op_date: todayDate,
       start_time: {
         [Op.between]: [threeHoursAgoTime, nowTime],
@@ -96,9 +97,27 @@ generalService.getLastThreeHourData = async(todayDate,nowTime,threeHoursAgoTime,
     },
     limit: 2,
   });
+  const downTimeDatas = await downTimeService.getAll();
+  let lastThreeHoursdata = result.map((val,index) => {
+    const plainObject = val.get({ plain: true }); 
+    let min = 24;
+    let max = 26;
+    let randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
+    plainObject.headcount = randomValue;
+    plainObject.upph = (plainObject.totalcount / randomValue).toFixed(1);
+    const downTimeData =
+    index % 2 !== 0
+      ? "-"
+      : downTimeDatas[index]?.downTime.replace(" mins", "") || "-";
+  const downTimeMessage =
+    index % 2 !== 0 ? "-" : downTimeDatas[index]?.message || "-";
+    plainObject.downTime = downTimeData
+    plainObject.message = downTimeMessage
+    return plainObject;
+  });
 
-  return result;
-}
+  return lastThreeHoursdata;
+};
 
 generalService.getLastThreeHourCount = async(todayDate,nowTime,threeHoursAgoTime,line) =>{
   const result = await weeklyData1.findAll({
