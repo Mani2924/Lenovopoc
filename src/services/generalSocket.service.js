@@ -402,6 +402,100 @@ async function getShiftData() {
   };
 }
 
+// async function processCurrentHourData(duration) {
+//   try {
+//     // Get the current time in Asia/Kolkata timezone
+//     const currentTime = moment.tz("Asia/Kolkata");
+//     const startHour = currentTime.clone().startOf("hour");
+//     const endHour = currentTime.clone(); // End time is the current minute
+
+//     // Convert start and end times to UTC for querying
+//     const startHourUTC = startHour.clone().utc().toISOString();
+//     const endHourUTC = endHour.clone().utc().toISOString();
+
+//     // Get data for the current hour until the current minute
+//     const currentHourData = await generalService.getCurrentData(startHourUTC, endHourUTC);
+
+//     // Helper function to initialize interval counts
+//     const initializeIntervalCounts = (startHour) => {
+//       const intervalCounts = [];
+//       for (let i = 0; i < 60 * 60; i += duration) {
+//         const startInterval = startHour.clone().add(i, "seconds").format("HH:mm:ss");
+//         intervalCounts.push({
+//           interval: `${startInterval}`,
+//           count: 0,
+//         });
+//       }
+//       return intervalCounts;
+//     };
+
+//     // Initialize interval counts for each line
+//     const intervalCounts = {
+//       L1: initializeIntervalCounts(startHour),
+//       L2: initializeIntervalCounts(startHour),
+//       L3: initializeIntervalCounts(startHour),
+//     };
+
+//     // Initialize running totals for each line
+//     let runningTotalL1 = 0;
+//     let runningTotalL2 = 0;
+//     let runningTotalL3 = 0;
+
+//     // Process each data entry
+//     currentHourData.forEach((entry) => {
+//       const entryTime = moment.utc(entry.Op_Finish_Time).tz("Asia/Kolkata");
+//       const diffInSeconds = entryTime.diff(startHour, "seconds");
+
+//       // Calculate the index for the interval
+//       const intervalIndex = Math.floor(diffInSeconds / duration);
+
+//       // Update the count and running total for the corresponding interval based on the line
+//       if (intervalIndex >= 0 && intervalIndex < (60 * 60) / duration) {
+//         if (entry.line === "L1") {
+//           runningTotalL1++;
+//           intervalCounts.L1[intervalIndex].count = runningTotalL1;
+//         } else if (entry.line === "L2") {
+//           runningTotalL2++;
+//           intervalCounts.L2[intervalIndex].count = runningTotalL2;
+//         } else if (entry.line === "L3") {
+//           runningTotalL3++;
+//           intervalCounts.L3[intervalIndex].count = runningTotalL3;
+//         }
+//       }
+//     });
+
+//     // Ensure zero counts take the previous interval's count
+//     const ensureNonZeroCounts = (intervalCounts) => {
+//       for (let i = 1; i < intervalCounts.length; i++) {
+//         if (intervalCounts[i].count === 0) {
+//           intervalCounts[i].count = intervalCounts[i - 1].count;
+//         }
+//       }
+//       return intervalCounts;
+//     };
+
+//     // Prepare the final result based on the current time
+//     const currentFormatted = currentTime.format("HH:mm:ss");
+
+//     const filterCurrentIntervals = (intervalCounts) => {
+//       return intervalCounts.filter((interval) => interval.interval <= currentFormatted);
+//     };
+
+//     let L1Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L1));
+//     let L2Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L2));
+//     let L3Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L3));
+
+//     return {
+//       L1: L1Details,
+//       L2: L2Details,
+//       L3: L3Details,
+//     };
+//   } catch (error) {
+//     console.error("Error processing current hour data:", error);
+//     return { L1: [], L2: [], L3: [] }; // Return empty arrays or handle error as needed
+//   }
+// }
+
 async function processCurrentHourData(duration) {
   try {
     // Get the current time in Asia/Kolkata timezone
@@ -415,86 +509,49 @@ async function processCurrentHourData(duration) {
 
     // Get data for the current hour until the current minute
     const currentHourData = await generalService.getCurrentData(startHourUTC, endHourUTC);
-
-    // Helper function to initialize interval counts
-    const initializeIntervalCounts = (startHour) => {
-      const intervalCounts = [];
-      for (let i = 0; i < 60 * 60; i += duration) {
-        const startInterval = startHour.clone().add(i, "seconds").format("HH:mm:ss");
-        intervalCounts.push({
-          interval: `${startInterval}`,
-          count: 0,
-        });
-      }
-      return intervalCounts;
-    };
-
-    // Initialize interval counts for each line
-    const intervalCounts = {
-      L1: initializeIntervalCounts(startHour),
-      L2: initializeIntervalCounts(startHour),
-      L3: initializeIntervalCounts(startHour),
-    };
-
-    // Initialize running totals for each line
-    let runningTotalL1 = 0;
-    let runningTotalL2 = 0;
-    let runningTotalL3 = 0;
+    let countL1 = 0;
+    let countL2 = 0;
+    let countL3 = 0;
 
     // Process each data entry
     currentHourData.forEach((entry) => {
-      const entryTime = moment.utc(entry.Op_Finish_Time).tz("Asia/Kolkata");
-      const diffInSeconds = entryTime.diff(startHour, "seconds");
-
-      // Calculate the index for the interval
-      const intervalIndex = Math.floor(diffInSeconds / duration);
-
-      // Update the count and running total for the corresponding interval based on the line
-      if (intervalIndex >= 0 && intervalIndex < (60 * 60) / duration) {
-        if (entry.line === "L1") {
-          runningTotalL1++;
-          intervalCounts.L1[intervalIndex].count = runningTotalL1;
-        } else if (entry.line === "L2") {
-          runningTotalL2++;
-          intervalCounts.L2[intervalIndex].count = runningTotalL2;
-        } else if (entry.line === "L3") {
-          runningTotalL3++;
-          intervalCounts.L3[intervalIndex].count = runningTotalL3;
-        }
+      if (entry.line === "L1") {
+        countL1++;
+      } else if (entry.line === "L2") {
+        countL2++;
+      } else if (entry.line === "L3") {
+        countL3++;
       }
     });
+    const lastEntryTimeL1 = currentTime.clone().subtract(duration, "seconds").format("HH:mm:ss");
 
-    // Ensure zero counts take the previous interval's count
-    const ensureNonZeroCounts = (intervalCounts) => {
-      for (let i = 1; i < intervalCounts.length; i++) {
-        if (intervalCounts[i].count === 0) {
-          intervalCounts[i].count = intervalCounts[i - 1].count;
-        }
-      }
-      return intervalCounts;
+    // Prepare the final result based on the last entries
+    const finalData = {
+      L1: {
+        lastEntryTime: lastEntryTimeL1,
+        count: countL1,
+      },
+      L2: {
+        lastEntryTime: lastEntryTimeL1,
+        count: countL2,
+      },
+      L3: {
+        lastEntryTime: lastEntryTimeL1,
+        count: countL3,
+      },
     };
 
-    // Prepare the final result based on the current time
-    const currentFormatted = currentTime.format("HH:mm:ss");
-
-    const filterCurrentIntervals = (intervalCounts) => {
-      return intervalCounts.filter((interval) => interval.interval <= currentFormatted);
-    };
-
-    let L1Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L1));
-    let L2Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L2));
-    let L3Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L3));
-
-    return {
-      L1: L1Details,
-      L2: L2Details,
-      L3: L3Details,
-    };
+    return finalData;
   } catch (error) {
     console.error("Error processing current hour data:", error);
-    return { L1: [], L2: [], L3: [] }; // Return empty arrays or handle error as needed
+    return {
+      L1: { lastEntryTime: null, count: 0 },
+      L2: { lastEntryTime: null, count: 0 },
+      L3: { lastEntryTime: null, count: 0 },
+    }; 
   }
 }
+
 
 
 

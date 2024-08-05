@@ -2022,6 +2022,121 @@ userController.getLastThreeHourData = async (req, res, next) => {
   }
 };
 
+userController.getLastHourData = async (req, res, next) => {
+  try {
+    const { duration } = req.query;
+    const parsedDuration = parseInt(duration, 10);
+    if (isNaN(parsedDuration) || parsedDuration <= 0) {
+      throw new Error("Invalid duration parameter");
+    }
+    
+    const currentTime = moment.tz("Asia/Kolkata");
+    const startHour = currentTime.clone().startOf("hour");
+    const endHour = currentTime.clone();
+    const startHourUTC = startHour.clone().utc().toISOString();
+    const endHourUTC = endHour.clone().utc().toISOString();
+
+    const currentHourData = await generalService.getCurrentData(startHourUTC, endHourUTC);
+    
+    if (!currentHourData || currentHourData.length === 0) {
+      res.response = {
+        code: 200,
+        data: {
+          status: "Ok",
+          message: "No data available",
+          data: finalData,
+        },
+      };
+      return next();
+    }
+
+    const initializeIntervalCounts = (startHour) => {
+      const intervalCounts = [];
+      for (let i = 0; i < 60 * 60; i += parsedDuration) {
+        const startInterval = startHour.clone().add(i, "seconds").format("HH:mm:ss");
+        intervalCounts.push({
+          interval: `${startInterval}`,
+          count: 0,
+        });
+      }
+      return intervalCounts;
+    };
+
+    const intervalCounts = {
+      L1: initializeIntervalCounts(startHour),
+      L2: initializeIntervalCounts(startHour),
+      L3: initializeIntervalCounts(startHour),
+    };
+
+    let runningTotalL1 = 0;
+    let runningTotalL2 = 0;
+    let runningTotalL3 = 0;
+
+    currentHourData.forEach((entry) => {
+      const entryTime = moment.utc(entry.Op_Finish_Time).tz("Asia/Kolkata");
+      const diffInSeconds = entryTime.diff(startHour, "seconds");
+      const intervalIndex = Math.floor(diffInSeconds / parsedDuration);
+
+      if (intervalIndex >= 0 && intervalIndex < (60 * 60) / parsedDuration) {
+        if (entry.line === "L1") {
+          runningTotalL1++;
+          intervalCounts.L1[intervalIndex].count = runningTotalL1;
+        } else if (entry.line === "L2") {
+          runningTotalL2++;
+          intervalCounts.L2[intervalIndex].count = runningTotalL2;
+        } else if (entry.line === "L3") {
+          runningTotalL3++;
+          intervalCounts.L3[intervalIndex].count = runningTotalL3;
+        }
+      }
+    });
+
+    const ensureNonZeroCounts = (intervalCounts) => {
+      for (let i = 1; i < intervalCounts.length; i++) {
+        if (intervalCounts[i].count === 0) {
+          intervalCounts[i].count = intervalCounts[i - 1].count;
+        }
+      }
+      return intervalCounts;
+    };
+
+    const currentFormatted = currentTime.format("HH:mm:ss");
+
+    const filterCurrentIntervals = (intervalCounts) => {
+      return intervalCounts.filter((interval) => interval.interval <= currentFormatted);
+    };
+
+    let L1Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L1));
+    let L2Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L2));
+    let L3Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L3));
+
+    const finalData = {
+      L1: L1Details,
+      L2: L2Details,
+      L3: L3Details,
+    };
+
+    res.response = {
+      code: 200,
+      data: {
+        status: "Ok",
+        message: rescodes?.success,
+        data: finalData,
+      },
+    };
+
+    return next();
+  } catch (error) {
+    logger.error(error);
+    res.response = {
+      code: 400,
+      data: { status: "Error", message: rescodes?.wentWrong },
+    };
+    return next();
+  }
+};
+
+
 function isNightOrEarlyMorning() {
   const currentTime = moment.tz("Asia/Kolkata");
   const currentHour = currentTime.hour();

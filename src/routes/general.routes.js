@@ -6,7 +6,8 @@ const {
   getEmoji,
   getSystemUPH,
   productionData,
-  getLastThreeHourData
+  getLastThreeHourData,
+  getLastHourData
 } = require('../controllers/general.controller');
 const multer = require('multer');
 const router = express.Router();
@@ -17,5 +18,6 @@ router.get('/getTarget', getSystemUPH);
 router.post('/insertTarget', targetCalculation);
 router.get('/productiondata', productionData);
 router.get('/getLastThreeHour',getLastThreeHourData)
+router.get('/getLastHour',getLastHourData)
 
 module.exports = router;
