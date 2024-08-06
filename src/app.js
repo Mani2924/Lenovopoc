@@ -120,8 +120,10 @@ io.on('connection', (socket) => {
       io.emit('getCurrentHour', currentHourData);
       io.emit('LastThreeHourdata', { target: threeHoursTarget, actual: lastThreeHourActual , shiftUph:actualCount.minCount });
     };
-
-    task = cron.schedule('* * * * * *', emitCurrentHourData);
+    const cronSchedule = getCronSchedule(duration);
+    task = cron.schedule(cronSchedule, emitCurrentHourData);
+    // task = cron.schedule('* * * * * *', emitCurrentHourData);
+    console.log(`Cron job started with a schedule of every ${duration} seconds`);
     task.start();
 
     socket.on('disconnect', () => {
@@ -132,6 +134,11 @@ io.on('connection', (socket) => {
     });
   });
 });
+
+function getCronSchedule(duration) {
+    return `*/${duration} * * * * *`; 
+}
+
 
 
 // Cron job to emit data every 15 seconds

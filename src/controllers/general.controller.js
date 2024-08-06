@@ -2076,7 +2076,6 @@ userController.getLastHourData = async (req, res, next) => {
       const entryTime = moment.utc(entry.Op_Finish_Time).tz("Asia/Kolkata");
       const diffInSeconds = entryTime.diff(startHour, "seconds");
       const intervalIndex = Math.floor(diffInSeconds / parsedDuration);
-
       if (intervalIndex >= 0 && intervalIndex < (60 * 60) / parsedDuration) {
         if (entry.line === "L1") {
           runningTotalL1++;
@@ -2110,18 +2109,17 @@ userController.getLastHourData = async (req, res, next) => {
     let L2Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L2));
     let L3Details = filterCurrentIntervals(ensureNonZeroCounts(intervalCounts.L3));
 
-    const finalData = {
-      L1: L1Details,
-      L2: L2Details,
-      L3: L3Details,
-    };
-
+    
     res.response = {
       code: 200,
       data: {
         status: "Ok",
         message: rescodes?.success,
-        data: finalData,
+        data: {
+          L1Details,
+          L2Details,
+          L3Details
+        },
       },
     };
 
